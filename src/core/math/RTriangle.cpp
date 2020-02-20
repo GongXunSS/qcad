@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -44,10 +44,10 @@ RTriangle::RTriangle(const RVector& p1, const RVector& p2, const RVector& p3) {
 RTriangle::~RTriangle() {
 }
 
-void RTriangle::to2D() {
-    corner[0].z = 0.0;
-    corner[1].z = 0.0;
-    corner[2].z = 0.0;
+void RTriangle::setZ(double z) {
+    corner[0].z = z;
+    corner[1].z = z;
+    corner[2].z = z;
 }
 
 QList<RVector> RTriangle::getVectorProperties() const {
@@ -196,6 +196,16 @@ QList<RVector> RTriangle::getPointsWithDistanceToEnd(double distance, int from) 
     c.append(l3.getPointsWithDistanceToEnd(distance));
 
     return c;
+}
+
+QList<RVector> RTriangle::getPointCloud(double segmentLength) const {
+    Q_UNUSED(segmentLength)
+
+    QList<RVector> ret;
+    ret.append(corner[0]);
+    ret.append(corner[1]);
+    ret.append(corner[2]);
+    return ret;
 }
 
 /**

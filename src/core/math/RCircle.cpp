@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -22,6 +22,7 @@
 #include "RBox.h"
 #include "RCircle.h"
 #include "RTriangle.h"
+#include "RPolyline.h"
 
 /**
  * Creates a circle object with invalid center and 0 radius.
@@ -82,8 +83,12 @@ RCircle RCircle::createFrom3Points(const RVector& p1,
     return RCircle(center, radius);
 }
 
-void RCircle::to2D() {
-    center.z = 0.0;
+RArc RCircle::toArc(double startAngle) const {
+    return RArc(getCenter(), getRadius(), startAngle, startAngle + 2*M_PI, false);
+}
+
+void RCircle::setZ(double z) {
+    center.z = z;
 }
 
 QList<RVector> RCircle::getVectorProperties() const {
@@ -168,12 +173,28 @@ QList<RVector> RCircle::getCenterPoints() const {
     return ret;
 }
 
+QList<RVector> RCircle::getArcReferencePoints() const {
+    QList<RVector> ret;
+
+    ret.append(center + RVector(radius, 0));
+    ret.append(center + RVector(0, radius));
+    ret.append(center - RVector(radius, 0));
+    ret.append(center - RVector(0, radius));
+
+    return ret;
+}
+
 QList<RVector> RCircle::getPointsWithDistanceToEnd(double distance, int from) const {
     Q_UNUSED(distance)
     Q_UNUSED(from)
 
     QList<RVector> ret;
     return ret;
+}
+
+QList<RVector> RCircle::getPointCloud(double segmentLength) const {
+    RArc arc = toArc();
+    return arc.getPointCloud(segmentLength);
 }
 
 double RCircle::getAngleAt(double distance, RS::From from) const {

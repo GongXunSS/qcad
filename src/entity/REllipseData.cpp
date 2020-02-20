@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -55,8 +55,8 @@ QList<RRefPoint> REllipseData::getReferencePoints(RS::ProjectionRenderingHint hi
     return ret;
 }
 
-bool REllipseData::moveReferencePoint(const RVector& referencePoint,
-        const RVector& targetPoint) {
+bool REllipseData::moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers) {
+    Q_UNUSED(modifiers)
 
     RVector startPoint = getStartPoint();
     RVector endPoint = getEndPoint();

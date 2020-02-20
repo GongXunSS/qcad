@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -28,6 +28,7 @@
 #include "RBlock.h"
 
 class RDocument;
+class RExporter;
 
 /**
  * Defines the geometry and appearance of a block reference entity.
@@ -56,8 +57,14 @@ public:
         return RS::EntityBlockRef;
     }
 
+    virtual bool isPointType() const;
+
     virtual QList<RBox> getBoundingBoxes(bool ignoreEmpty=false) const;
     virtual RBox getBoundingBox(bool ignoreEmpty=false) const;
+
+    virtual void to2D();
+
+    virtual RVector getPointOnEntity() const;
 
     virtual QList<RRefPoint> getInternalReferencePoints(RS::ProjectionRenderingHint hint = RS::RenderTop) const;
     virtual QList<RRefPoint> getReferencePoints(RS::ProjectionRenderingHint hint = RS::RenderTop) const;
@@ -70,12 +77,14 @@ public:
 
     //virtual void setSelected(bool on);
 
-    virtual bool moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint);
+    virtual bool moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
     virtual bool move(const RVector& offset);
     virtual bool rotate(double rotation, const RVector& center = RDEFAULT_RVECTOR);
     virtual bool mirror(const RLine& axis);
     virtual bool scale(const RVector& scaleFactors,
                        const RVector& center = RDEFAULT_RVECTOR);
+
+    virtual void scaleVisualProperties(double scaleFactor);
 
     void setReferencedBlockId(RBlock::Id blockId);
 
@@ -134,12 +143,22 @@ public:
     virtual void update() const;
     virtual void update(RObject::Id entityId) const;
 
-    QSharedPointer<REntity> queryEntity(REntity::Id entityId) const;
+    QSharedPointer<REntity> queryEntity(REntity::Id entityId, bool transform = false) const;
     bool applyTransformationTo(REntity& entity) const;
-    RVector getColumnRowOffset(int col, int row) const;
-    void applyColumnRowOffsetTo(REntity& entity, int col, int row) const;
+    /**
+     * \nonscriptable
+     */
+    bool applyTransformationTo(QSharedPointer<REntity>& entity) const;
+
+    QTransform getTransform() const;
+    void exportTransforms(RExporter& e) const;
+    void exportEndTransforms(RExporter& e) const;
+
+    RVector getColumnRowOffset(int col, int row, bool rotated = false) const;
+    void applyColumnRowOffsetTo(REntity& entity, int col, int row, bool rotated = false) const;
     RVector mapToBlock(const RVector& v) const;
 
+    bool isPixelUnit() const;
 
 private:
     mutable RBlock::Id referencedBlockId;
@@ -150,6 +169,9 @@ private:
     int rowCount;
     double columnSpacing;
     double rowSpacing;
+
+    double visualPropertiesScale;
+
     mutable QList<RBox> boundingBoxes;
     mutable QList<RBox> boundingBoxesIgnoreEmpty;
     mutable QMap<REntity::Id, QSharedPointer<REntity> > cache;

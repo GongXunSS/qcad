@@ -63,7 +63,7 @@
         isDirected
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        to2D
+        setZ
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getVectorProperties
@@ -85,6 +85,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getPointsWithDistanceToEnd
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getPointCloud
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getAngleAt
@@ -118,6 +121,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setAngle
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isParallel
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         isVertical

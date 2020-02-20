@@ -139,6 +139,8 @@
             
             REcmaHelper::registerFunction(&engine, proto, isEntitySelected, "isEntitySelected");
             
+            REcmaHelper::registerFunction(&engine, proto, isPatternContinuous, "isPatternContinuous");
+            
             REcmaHelper::registerFunction(&engine, proto, startExport, "startExport");
             
             REcmaHelper::registerFunction(&engine, proto, endExport, "endExport");
@@ -153,6 +155,8 @@
             
             REcmaHelper::registerFunction(&engine, proto, exportLayers, "exportLayers");
             
+            REcmaHelper::registerFunction(&engine, proto, exportLayerStates, "exportLayerStates");
+            
             REcmaHelper::registerFunction(&engine, proto, exportBlocks, "exportBlocks");
             
             REcmaHelper::registerFunction(&engine, proto, exportViews, "exportViews");
@@ -160,6 +164,8 @@
             REcmaHelper::registerFunction(&engine, proto, exportLinetypes, "exportLinetypes");
             
             REcmaHelper::registerFunction(&engine, proto, exportLayer, "exportLayer");
+            
+            REcmaHelper::registerFunction(&engine, proto, exportLayerState, "exportLayerState");
             
             REcmaHelper::registerFunction(&engine, proto, exportBlock, "exportBlock");
             
@@ -223,6 +229,22 @@
             
             REcmaHelper::registerFunction(&engine, proto, exportClipRectangle, "exportClipRectangle");
             
+            REcmaHelper::registerFunction(&engine, proto, exportTransform, "exportTransform");
+            
+            REcmaHelper::registerFunction(&engine, proto, exportEndTransform, "exportEndTransform");
+            
+            REcmaHelper::registerFunction(&engine, proto, exportTranslation, "exportTranslation");
+            
+            REcmaHelper::registerFunction(&engine, proto, exportEndTranslation, "exportEndTranslation");
+            
+            REcmaHelper::registerFunction(&engine, proto, exportRotation, "exportRotation");
+            
+            REcmaHelper::registerFunction(&engine, proto, exportEndRotation, "exportEndRotation");
+            
+            REcmaHelper::registerFunction(&engine, proto, exportScale, "exportScale");
+            
+            REcmaHelper::registerFunction(&engine, proto, exportEndScale, "exportEndScale");
+            
             REcmaHelper::registerFunction(&engine, proto, exportThickPolyline, "exportThickPolyline");
             
             REcmaHelper::registerFunction(&engine, proto, exportQuad, "exportQuad");
@@ -266,6 +288,8 @@
             REcmaHelper::registerFunction(&engine, proto, setVisualExporter, "setVisualExporter");
             
             REcmaHelper::registerFunction(&engine, proto, getPixelSizeHint, "getPixelSizeHint");
+            
+            REcmaHelper::registerFunction(&engine, proto, getCurrentPixelSizeHint, "getCurrentPixelSizeHint");
             
             REcmaHelper::registerFunction(&engine, proto, setPixelSizeHint, "setPixelSizeHint");
             
@@ -1108,6 +1132,50 @@
                     return REcmaHelper::throwError("self is NULL", context);
                 }
                 
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RColor */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RColor*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RColor*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RExporter: Argument 0 is not of type RColor.",
+                               context);                    
+                    }
+                    RColor 
+                    a0 = 
+                    *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'RColor'
+    RColor cppResult =
+        
+               self->getColor(a0);
+        // return type: RColor
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
     
     if( context->argumentCount() ==
     1 && (
@@ -2149,6 +2217,78 @@
             return result;
         }
          QScriptValue
+        REcmaExporter::isPatternContinuous
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::isPatternContinuous", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::isPatternContinuous";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("isPatternContinuous", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RLinetypePattern */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RLinetypePattern*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RLinetypePattern*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RExporter: Argument 0 is not of type RLinetypePattern.",
+                               context);                    
+                    }
+                    RLinetypePattern 
+                    a0 = 
+                    *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isPatternContinuous(a0);
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.isPatternContinuous().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::isPatternContinuous", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaExporter::startExport
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -2615,6 +2755,50 @@
             return result;
         }
          QScriptValue
+        REcmaExporter::exportLayerStates
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportLayerStates", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportLayerStates";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportLayerStates", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportLayerStates();
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportLayerStates().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportLayerStates", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaExporter::exportBlocks
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -2839,6 +3023,71 @@
             return result;
         }
          QScriptValue
+        REcmaExporter::exportLayerState
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportLayerState", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportLayerState";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportLayerState", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RLayerState */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is reference
+                    RLayerState*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RLayerState*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if( ap0 == NULL ){
+                           return REcmaHelper::throwError("RExporter: Argument 0 is not of type RLayerState*.",
+                               context);                    
+                    }
+                    RLayerState& a0 = *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportLayerState(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportLayerState().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportLayerState", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaExporter::exportBlock
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -3054,7 +3303,7 @@
     ){
     // prepare arguments:
     
-                    // argument isCopyable and has default constructor and isSimpleClass 
+                    // argument is reference
                     RLinetype*
                     ap0 =
                     qscriptvalue_cast<
@@ -3064,13 +3313,11 @@
                         0
                         )
                     );
-                    if (ap0 == NULL) {
-                           return REcmaHelper::throwError("RExporter: Argument 0 is not of type RLinetype.",
+                    if( ap0 == NULL ){
+                           return REcmaHelper::throwError("RExporter: Argument 0 is not of type RLinetype*.",
                                context);                    
                     }
-                    RLinetype 
-                    a0 = 
-                    *ap0;
+                    RLinetype& a0 = *ap0;
                 
     // end of arguments
 
@@ -5622,6 +5869,47 @@
         
     
     if( context->argumentCount() ==
+    2 && (
+            context->argument(0).isArray()
+        ) /* type: QList < RPainterPath > */
+     && (
+            context->argument(1).isNumber()
+        ) /* type: double */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isArray
+                    QList < RPainterPath >
+                    a0;
+                    REcmaHelper::fromScriptValue(
+                        engine,
+                        context->argument(0),
+                        a0
+                    );
+                
+                    // argument isStandardType
+                    double
+                    a1 =
+                    (double)
+                    
+                    context->argument( 1 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportPainterPaths(a0
+        ,
+    a1);
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
     3 && (
             context->argument(0).isArray()
         ) /* type: QList < RPainterPath > */
@@ -6114,6 +6402,436 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaExporter::exportClipRectangle", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::exportTransform
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportTransform", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportTransform";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportTransform", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: QTransform */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is reference
+                    QTransform*
+                    ap0 =
+                    qscriptvalue_cast<
+                    QTransform*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if( ap0 == NULL ){
+                           return REcmaHelper::throwError("RExporter: Argument 0 is not of type QTransform*.",
+                               context);                    
+                    }
+                    QTransform& a0 = *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportTransform(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportTransform().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportTransform", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::exportEndTransform
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportEndTransform", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportEndTransform";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportEndTransform", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportEndTransform();
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportEndTransform().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportEndTransform", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::exportTranslation
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportTranslation", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportTranslation";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportTranslation", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RVector */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RVector*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RVector*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RExporter: Argument 0 is not of type RVector.",
+                               context);                    
+                    }
+                    RVector 
+                    a0 = 
+                    *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportTranslation(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportTranslation().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportTranslation", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::exportEndTranslation
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportEndTranslation", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportEndTranslation";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportEndTranslation", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportEndTranslation();
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportEndTranslation().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportEndTranslation", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::exportRotation
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportRotation", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportRotation";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportRotation", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isNumber()
+        ) /* type: double */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    double
+                    a0 =
+                    (double)
+                    
+                    context->argument( 0 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportRotation(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportRotation().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportRotation", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::exportEndRotation
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportEndRotation", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportEndRotation";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportEndRotation", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportEndRotation();
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportEndRotation().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportEndRotation", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::exportScale
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportScale", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportScale";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportScale", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RVector */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RVector*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RVector*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RExporter: Argument 0 is not of type RVector.",
+                               context);                    
+                    }
+                    RVector 
+                    a0 = 
+                    *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportScale(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportScale().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportScale", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::exportEndScale
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::exportEndScale", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::exportEndScale";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("exportEndScale", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->exportEndScale();
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.exportEndScale().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::exportEndScale", context, engine);
             return result;
         }
          QScriptValue
@@ -7483,6 +8201,55 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaExporter::getPixelSizeHint", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaExporter::getCurrentPixelSizeHint
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaExporter::getCurrentPixelSizeHint", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaExporter::getCurrentPixelSizeHint";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RExporter* self = 
+                        getSelf("getCurrentPixelSizeHint", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'double'
+    double cppResult =
+        
+               self->getCurrentPixelSizeHint();
+        // return type: double
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RExporter.getCurrentPixelSizeHint().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaExporter::getCurrentPixelSizeHint", context, engine);
             return result;
         }
          QScriptValue

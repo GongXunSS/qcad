@@ -412,6 +412,10 @@ xmlns:rs="http://www.ribbonsoft.com">
         name="referencePoint" isConst="true" />
         <arg type="RVector &amp;" typeName="RVector"
         name="targetPoint" isConst="true" />
+        <arg type="Qt::KeyboardModifiers"
+        typeName="Qt::KeyboardModifiers" name="modifiers"
+        hasDefault="true" default="Qt :: NoModifier"
+        isConst="false" />
       </variant>
     </method>
     <method name="move" cppName="move" specifier="public"
@@ -588,6 +592,8 @@ xmlns:rs="http://www.ribbonsoft.com">
         <arg type="double" typeName="double"
         name="fontHeightFactor" hasDefault="true" default="1.0"
         isConst="false" />
+        <arg type="bool" typeName="bool" name="simpleText"
+        hasDefault="true" default="false" isConst="false" />
       </variant>
     </method>
     <method name="toRichText" cppName="toRichText"

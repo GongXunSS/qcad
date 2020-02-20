@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -73,7 +73,15 @@ QStringList RPluginLoader::getPluginFiles() {
         pluginFiles.append(pluginsDir.absoluteFilePath(fileName));
     }
 
-    //qSort();
+    // make sure plugins which depend on other plugins are loaded last:
+    pluginFiles.sort();
+    for (int i=0; i<pluginFiles.length(); i++) {
+        if (pluginFiles[i].contains("nest")) {
+            QString pf = pluginFiles.takeAt(i);
+            pluginFiles.append(pf);
+            break;
+        }
+    }
 
     return pluginFiles;
 }
@@ -139,7 +147,9 @@ void RPluginLoader::loadPlugin(QObject* plugin, bool init, const QString& fileNa
         RPluginInterface* p = qobject_cast<RPluginInterface*>(plugin);
         if (p) {
             if (init) {
-                p->init();
+                if (!p->init()) {
+                    qDebug() << "plugin not initialized";
+                }
             }
             info = p->getPluginInfo();
         }
@@ -219,6 +229,27 @@ void RPluginLoader::initScriptExtensions(QObject* plugin, QScriptEngine& engine)
     }
 }
 
+void RPluginLoader::initTranslations() {
+    foreach (QString fileName, getPluginFiles()) {
+        QPluginLoader loader(fileName);
+        QObject* plugin = loader.instance();
+        initTranslations(plugin);
+    }
+
+    QObjectList staticPlugins = QPluginLoader::staticInstances();
+    for (int i=0; i<staticPlugins.size(); i++) {
+        QObject* plugin = staticPlugins[i];
+        initTranslations(plugin);
+    }
+}
+
+void RPluginLoader::initTranslations(QObject* plugin) {
+    RPluginInterface* p = qobject_cast<RPluginInterface*>(plugin);
+    if (p) {
+        p->initTranslations();
+    }
+}
+
 RPluginInfo RPluginLoader::getPluginInfo(int i) {
     if (i<0 || i>pluginsInfo.count()) {
         return RPluginInfo();
@@ -242,7 +273,7 @@ QString RPluginLoader::getPluginsPath() {
     if (!pluginsDir.cd("plugins")) {
         pluginsDir.cdUp();
         if (!pluginsDir.cd("PlugIns")) {
-            qWarning() << "RPluginLoader::loadPlugins: No plugins directory found.";
+            qWarning() << "RPluginLoader::getPluginsPath: No plugins directory found.";
             return QString();
         }
     }
@@ -258,4 +289,36 @@ bool RPluginLoader::hasPlugin(const QString& id) {
         }
     }
     return false;
+}
+
+bool RPluginLoader::checkPluginLicenses() {
+    bool ret = true;
+
+    foreach (QString fileName, getPluginFiles()) {
+        QPluginLoader loader(fileName);
+        QObject* plugin = loader.instance();
+        ret = ret && checkPluginLicense(plugin);
+    }
+
+    // check license of statically compiled in plugins:
+    QObjectList staticPlugins = QPluginLoader::staticInstances();
+    for (int i=0; i<staticPlugins.size(); i++) {
+        QObject* plugin = staticPlugins[i];
+        ret = ret && checkPluginLicense(plugin);
+    }
+
+    return ret;
+}
+
+bool RPluginLoader::checkPluginLicense(QObject* plugin) {
+    bool ret = true;
+
+    if (plugin) {
+        RPluginInterface* p = qobject_cast<RPluginInterface*>(plugin);
+        if (p) {
+            ret = p->checkLicense();
+        }
+    }
+
+    return ret;
 }

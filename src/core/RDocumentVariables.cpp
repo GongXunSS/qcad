@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -64,7 +64,7 @@ QSet<RPropertyTypeId> RDocumentVariables::getCustomPropertyTypeIds() const {
 }
 
 QPair<QVariant, RPropertyAttributes> RDocumentVariables::getProperty(RPropertyTypeId& propertyTypeId,
-        bool humanReadable, bool noAttributes) {
+        bool humanReadable, bool noAttributes, bool showOnRequest) {
 
     if (propertyTypeId == PropertyCurrentLayerId) {
         return qMakePair(QVariant(currentLayerId), RPropertyAttributes());
@@ -87,11 +87,12 @@ QPair<QVariant, RPropertyAttributes> RDocumentVariables::getProperty(RPropertyTy
         QString name = propertyTypeId.getCustomPropertyName();
         RS::KnownVariable v = RDxfServices::stringToVariable(name);
         if (appId=="QCAD" && v!=RS::INVALID) {
+            // custom property is a known DXF variable:
             return qMakePair(getKnownVariable(v), RPropertyAttributes(RPropertyAttributes::KnownVariable));
         }
     }
 
-    return RObject::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return RObject::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 bool RDocumentVariables::setProperty(RPropertyTypeId propertyTypeId,
@@ -173,6 +174,31 @@ QVariant RDocumentVariables::getKnownVariable(RS::KnownVariable key) const {
 
 bool RDocumentVariables::hasKnownVariable(RS::KnownVariable key) const {
     return knownVariables.contains(key);
+}
+
+QString RDocumentVariables::addAutoVariable(double value) {
+    int c = getCustomIntProperty("QCAD", "AutoVariableCounter", 0);
+    c++;
+
+    QString key = QString("d%1").arg(c);
+
+    setCustomProperty("QCAD", key, value);
+    setCustomProperty("QCAD", "AutoVariableCounter", c);
+
+    return key;
+}
+
+QStringList RDocumentVariables::getAutoVariables() const {
+    QStringList ret;
+    int c = getCustomIntProperty("QCAD", "AutoVariableCounter", 0);
+    QString key;
+    for (int i=1; i<=c; i++) {
+        key = QString("d%1").arg(i);
+        if (hasCustomProperty("QCAD", key)) {
+            ret.append(key);
+        }
+    }
+    return ret;
 }
 
 void RDocumentVariables::print(QDebug dbg) const {

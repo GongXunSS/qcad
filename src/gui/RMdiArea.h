@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -58,6 +58,7 @@ signals:
 
 protected:
     virtual void resizeEvent(QResizeEvent* event);
+    virtual void keyPressEvent(QKeyEvent* event);
 
 private:
     QTabBar* tabBarOri;

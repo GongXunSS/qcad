@@ -163,6 +163,10 @@
         
     
       RColor getColor(
+                const RColor & unresolvedColor
+            );
+        
+      RColor getColor(
                 bool resolve
             );
         
@@ -253,6 +257,11 @@
             );
         
     
+      bool isPatternContinuous(
+                const RLinetypePattern & p
+            );
+        
+    
       void startExport(
                 
             );
@@ -289,6 +298,11 @@
             );
         
     
+      void exportLayerStates(
+                
+            );
+        
+    
       void exportBlocks(
                 
             );
@@ -310,6 +324,11 @@
         
       void exportLayer(
                 RLayer::Id layerId
+            );
+        
+    
+      void exportLayerState(
+                RLayerState & arg1
             );
         
     
@@ -460,7 +479,8 @@
         
     
       void exportPainterPaths(
-                const QList < RPainterPath > & paths
+                const QList < RPainterPath > & paths, double z
+        = 0.0
             );
         
       void exportPainterPaths(
@@ -488,6 +508,46 @@
       void exportClipRectangle(
                 const RBox & clipRectangle, bool forceSelected
         = false
+            );
+        
+    
+      void exportTransform(
+                const QTransform & t
+            );
+        
+    
+      void exportEndTransform(
+                
+            );
+        
+    
+      void exportTranslation(
+                const RVector & offset
+            );
+        
+    
+      void exportEndTranslation(
+                
+            );
+        
+    
+      void exportRotation(
+                double angle
+            );
+        
+    
+      void exportEndRotation(
+                
+            );
+        
+    
+      void exportScale(
+                const RVector & factors
+            );
+        
+    
+      void exportEndScale(
+                
             );
         
     
@@ -587,6 +647,11 @@
         
     
       double getPixelSizeHint(
+                
+            );
+        
+    
+      double getCurrentPixelSizeHint(
                 
             );
         

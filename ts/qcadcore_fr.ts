@@ -181,7 +181,7 @@ Parsec</translatorcomment>
 <context>
     <name>RColor</name>
     <message>
-        <location filename="../src/core/RColor.cpp" line="+287"/>
+        <location filename="../src/core/RColor.cpp" line="+288"/>
         <source>By Layer</source>
         <translatorcomment>--exact match--
 --file: qcadguiqt_fr.ts--
@@ -237,7 +237,7 @@ Cyan</translatorcomment>
         <translatorcomment>--exact match--
 --file: designer_fr.ts--
 Bleu
-Bleu : 
+Bleu&#xa0;: 
 Bluetooth</translatorcomment>
         <translation>Bleu</translation>
     </message>
@@ -333,17 +333,17 @@ Autres...</translatorcomment>
     <message>
         <location filename="../src/core/RDocumentVariables.cpp" line="+45"/>
         <source>Current Layer ID</source>
-        <translation>Calque actuel uniquement</translation>
+        <translation>ID du calque actuel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Drawing Unit</source>
-        <translation>Unité de dessin</translation>
+        <translation>Unité de mesure du dessin</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Linetype Scale</source>
-        <translation>Échelle du type de ligne</translation>
+        <translation>Échelle du type de la ligne</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -369,7 +369,7 @@ Liste des blocs</translatorcomment>
         <translation type="obsolete">Bloc référencé</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="+62"/>
+        <location filename="../src/core/RBlock.cpp" line="+66"/>
         <location filename="../src/core/RBlockReferenceEntity.cpp" line="+1"/>
         <location line="+3"/>
         <location filename="../src/core/RLayout.cpp" line="+82"/>
@@ -405,7 +405,12 @@ Indiquer la position [angle/longueur]</translatorcomment>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="+0"/>
+        <location filename="../src/core/RBlock.cpp" line="-1"/>
+        <source>Pixel Unit</source>
+        <translation>Pixel unité</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <location line="+1"/>
         <location line="+1"/>
         <source>Origin</source>
@@ -467,7 +472,7 @@ Partage Horizontal
 &amp;Echelle
 Echelle
 Met les entités à l&apos;échelle</translatorcomment>
-        <translation>Echelle</translation>
+        <translation>Échelle</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -500,8 +505,13 @@ Indiquer l&apos;angle de la ligne de cote :</translatorcomment>
         <translation>Espacement des lignes</translation>
     </message>
     <message>
-        <location filename="../src/core/REntity.cpp" line="+86"/>
-        <location filename="../src/core/RObject.cpp" line="+61"/>
+        <location line="+3"/>
+        <source>Attributes</source>
+        <translation>Attributs</translation>
+    </message>
+    <message>
+        <location filename="../src/core/REntity.cpp" line="+91"/>
+        <location filename="../src/core/RObject.cpp" line="+68"/>
         <source>Type</source>
         <translatorcomment>--exact match--
 --file: qt_fr.ts--
@@ -526,7 +536,7 @@ Liste des calques</translatorcomment>
     </message>
     <message>
         <location line="+1"/>
-        <location filename="../src/core/RLayer.cpp" line="+99"/>
+        <location filename="../src/core/RLayer.cpp" line="+102"/>
         <source>Linetype</source>
         <translatorcomment>--exact match--
 --file: LinetypeSettings_fr.ts--
@@ -601,7 +611,7 @@ Ouvrir la boîte de dialogue des couleurs</translatorcomment>
     </message>
     <message>
         <location filename="../src/core/RObject.cpp" line="-1"/>
-        <location filename="../src/core/RPropertyTypeId.cpp" line="+108"/>
+        <location filename="../src/core/RPropertyTypeId.cpp" line="+151"/>
         <source>Custom</source>
         <translation>Personnalisé</translation>
     </message>
@@ -614,6 +624,16 @@ Ouvrir la boîte de dialogue des couleurs</translatorcomment>
         <location line="+1"/>
         <source>Protected</source>
         <translation>Protégé</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected</source>
+        <translation>Sélectionné</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Invisible</source>
+        <translation>Invisible</translation>
     </message>
     <message>
         <location filename="../src/core/REntity.cpp" line="+2"/>
@@ -737,8 +757,9 @@ Ouvrir la boîte de dialogue des couleurs</translatorcomment>
         <translation>Overall</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="-5"/>
+        <location filename="../src/core/RBlock.cpp" line="-6"/>
         <location filename="../src/core/RLayer.cpp" line="-8"/>
+        <location filename="../src/core/RLayerState.cpp" line="+46"/>
         <location filename="../src/core/RLayout.cpp" line="-24"/>
         <source>Name</source>
         <translation>Nom</translation>
@@ -828,7 +849,7 @@ Ouvrir la boîte de dialogue des couleurs</translatorcomment>
         <translation type="vanished">Marges des tracés</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlockReferenceData.cpp" line="+571"/>
+        <location filename="../src/core/RBlockReferenceData.cpp" line="+852"/>
         <source>Circular (recursive) block referencing detected:</source>
         <translation>Une référence de bloc circulaire (récursive) a été détectée :</translation>
     </message>
@@ -841,10 +862,10 @@ Ouvrir la boîte de dialogue des couleurs</translatorcomment>
 <context>
     <name>RGuiAction</name>
     <message>
-        <location filename="../src/core/RGuiAction.cpp" line="+180"/>
+        <location filename="../src/core/RGuiAction.cpp" line="+186"/>
         <source>Requires selection</source>
         <translatorcomment>--google--</translatorcomment>
-        <translation>Nécessite une sélection</translation>
+        <translation>Demande une sélection</translation>
     </message>
 </context>
 <context>
@@ -855,7 +876,7 @@ Ouvrir la boîte de dialogue des couleurs</translatorcomment>
     </message>
     <message>
         <source>Frozen</source>
-        <translation type="vanished">Caché</translation>
+        <translation type="vanished">Gelé</translation>
     </message>
     <message>
         <source>Hidden</source>
@@ -1039,7 +1060,7 @@ Bordure (grande)</translatorcomment>
         <translation type="vanished">Bordure (grande)</translation>
     </message>
     <message>
-        <location filename="../src/core/RLinetype.cpp" line="+48"/>
+        <location filename="../src/core/RLinetype.cpp" line="+52"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
@@ -1062,7 +1083,7 @@ Bordure (grande)</translatorcomment>
 <context>
     <name>RLinetypePattern</name>
     <message>
-        <location filename="../src/core/RLinetypePattern.cpp" line="+856"/>
+        <location filename="../src/core/RLinetypePattern.cpp" line="+869"/>
         <source>By Layer</source>
         <translation>Par calque</translation>
     </message>

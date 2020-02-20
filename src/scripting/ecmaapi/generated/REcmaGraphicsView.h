@@ -175,6 +175,9 @@
         zoomToSelection
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        zoomToEntities
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         centerToPoint
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -265,6 +268,15 @@
         setMargin
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        setExporting
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isExporting
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isPrintingOrExporting
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         setPrinting
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -290,6 +302,12 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getHairlineMode
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setHairlineMinimumMode
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getHairlineMinimumMode
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getTextLabels

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -46,8 +46,9 @@ QList<RRefPoint> RCircleData::getReferencePoints(RS::ProjectionRenderingHint hin
     return ret;
 }
 
-bool RCircleData::moveReferencePoint(const RVector& referencePoint,
-        const RVector& targetPoint) {
+bool RCircleData::moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers) {
+    Q_UNUSED(modifiers)
+
     bool ret = false;
     if (referencePoint.equalsFuzzy(center)) {
         center = targetPoint;

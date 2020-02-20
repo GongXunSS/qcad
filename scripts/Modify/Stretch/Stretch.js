@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Modify.js");
+include("scripts/Modify/Modify.js");
 
 function Stretch(guiAction) {
     Modify.call(this, guiAction);
@@ -214,7 +214,22 @@ Stretch.prototype.getOperation = function(preview) {
 Stretch.getStrechOperation = function(document, polygon, preview, offset, layerId, op) {
     // limit search to bounding box of polygon:
     var box = polygon.getBoundingBox();
-    var entities = document.queryIntersectedEntitiesXY(box);
+
+    // only stretch selected if there is a selection,
+    // otherwise stretch all:
+    // 20200121: only go by bounding box:
+    // allows stretching of ordinate dimension origin:
+    var entities = document.queryIntersectedEntitiesXY(box, true, false, RObject.INVALID_ID, [], document.hasSelection());
+    //var entities = document.queryIntersectedEntitiesXY(box, false, false, RObject.INVALID_ID, [], document.hasSelection());
+
+    if (entities.length===0 && !preview) {
+        if (document.hasSelection()) {
+            EAction.handleUserWarning(qsTr("No selected entities in given range"));
+        }
+        else {
+            EAction.handleUserWarning(qsTr("No entities in given range"));
+        }
+    }
 
     if (isNull(op)) {
         op = new RAddObjectsOperation();
@@ -236,6 +251,12 @@ Stretch.getStrechOperation = function(document, polygon, preview, offset, layerI
         // check if the entity intersects with any of the polygon edges:
         var gotIntersection = false;
         if (entity.intersectsWith(polygon)) {
+            gotIntersection = true;
+        }
+
+        // ordinate dimension might be completely inside stretch area and
+        // still needs stretching (origin outside stretch area):
+        if (isDimOrdinateEntity(entity)) {
             gotIntersection = true;
         }
 

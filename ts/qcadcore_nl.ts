@@ -112,9 +112,9 @@
 <context>
     <name>RColor</name>
     <message>
-        <location filename="../src/core/RColor.cpp" line="+287"/>
+        <location filename="../src/core/RColor.cpp" line="+288"/>
         <source>By Layer</source>
-        <translation>Door Laag bepaald</translation>
+        <translation>Door laag bepaald</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -222,17 +222,17 @@
     <message>
         <location line="+1"/>
         <source>Drawing Unit</source>
-        <translation>Tekening eenheid</translation>
+        <translation>Tekeningseenheid</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Linetype Scale</source>
-        <translation>Lijntype schaal</translation>
+        <translation>Lijntypeschaal</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension Font</source>
-        <translation>Bemating lettertype</translation>
+        <translation>Bematingslettertype</translation>
     </message>
 </context>
 <context>
@@ -253,7 +253,12 @@
         <translation>Positie</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="+62"/>
+        <location filename="../src/core/RBlock.cpp" line="+65"/>
+        <source>Pixel Unit</source>
+        <translation>Pixeleenheid</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <location filename="../src/core/RBlockReferenceEntity.cpp" line="-2"/>
         <location line="+3"/>
         <location filename="../src/core/RLayout.cpp" line="+82"/>
@@ -337,16 +342,21 @@
     <message>
         <location line="+1"/>
         <source>Column Spacing</source>
-        <translation>Kolom tussenafstand</translation>
+        <translation>Kolomafstand</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Row Spacing</source>
-        <translation>Rij tussenafstand</translation>
+        <translation>Rijafstand</translation>
     </message>
     <message>
-        <location filename="../src/core/REntity.cpp" line="+86"/>
-        <location filename="../src/core/RObject.cpp" line="+61"/>
+        <location line="+3"/>
+        <source>Attributes</source>
+        <translation>Attributen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/REntity.cpp" line="+91"/>
+        <location filename="../src/core/RObject.cpp" line="+68"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
@@ -362,14 +372,14 @@
     </message>
     <message>
         <location line="+1"/>
-        <location filename="../src/core/RLayer.cpp" line="+99"/>
+        <location filename="../src/core/RLayer.cpp" line="+102"/>
         <source>Linetype</source>
         <translation>Lijntype</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Linetype Scale</source>
-        <translation>Lijntype schaal</translation>
+        <translation>Lijntypeschaal</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -386,7 +396,7 @@
     <message>
         <location line="+1"/>
         <source>Displayed Color</source>
-        <translation>Getoond kleur</translation>
+        <translation>Getoonde kleur</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -427,9 +437,9 @@
     </message>
     <message>
         <location filename="../src/core/RObject.cpp" line="-1"/>
-        <location filename="../src/core/RPropertyTypeId.cpp" line="+108"/>
+        <location filename="../src/core/RPropertyTypeId.cpp" line="+151"/>
         <source>Custom</source>
-        <translation>Gebruiker gedefinieerd</translation>
+        <translation>Gebruikergedefinieerd</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -440,6 +450,16 @@
         <location line="+1"/>
         <source>Protected</source>
         <translation>Beschermd</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected</source>
+        <translation>Geselecteerd</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Invisible</source>
+        <translation>Onzichtbaar</translation>
     </message>
     <message>
         <location filename="../src/core/REntity.cpp" line="+2"/>
@@ -471,7 +491,7 @@
         <location line="+1"/>
         <location line="+1"/>
         <source>Text Position</source>
-        <translation>Tekst positie</translation>
+        <translation>Tekstpositie</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -496,7 +516,7 @@
     <message>
         <location line="+1"/>
         <source>Text Angle</source>
-        <translation>Tekst hoek</translation>
+        <translation>Teksthoek</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -548,14 +568,14 @@
         <location line="+1"/>
         <location line="+1"/>
         <source>View Center</source>
-        <translation>Beeld centrum</translation>
+        <translation>Centrum van aanzicht</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+1"/>
         <location line="+1"/>
         <source>View Target</source>
-        <translation>Beeld doel</translation>
+        <translation>Doelpunt van aanzicht</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -563,8 +583,9 @@
         <translation>Overall</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="-5"/>
+        <location filename="../src/core/RBlock.cpp" line="-6"/>
         <location filename="../src/core/RLayer.cpp" line="-8"/>
+        <location filename="../src/core/RLayerState.cpp" line="+46"/>
         <location filename="../src/core/RLayout.cpp" line="-24"/>
         <source>Name</source>
         <translation>Naam</translation>
@@ -602,7 +623,7 @@
     <message>
         <location line="+1"/>
         <source>Snappable</source>
-        <translation>Snapbaar</translation>
+        <translation>Vangbaar</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -633,30 +654,30 @@
         <location line="+1"/>
         <location line="+1"/>
         <source>Insertion Base</source>
-        <translation>Invoeging basis</translation>
+        <translation>Basis van invoeging</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+1"/>
         <location line="+1"/>
         <source>Min Extents</source>
-        <translation>Min mate</translation>
+        <translation>Min afmetingen</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+1"/>
         <location line="+1"/>
         <source>Max Extents</source>
-        <translation>Max mate</translation>
+        <translation>Max afmetingen</translation>
     </message>
     <message>
         <source>Plot Margins</source>
-        <translation type="vanished">Plot randen</translation>
+        <translation type="vanished">Plotranden</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlockReferenceData.cpp" line="+571"/>
+        <location filename="../src/core/RBlockReferenceData.cpp" line="+852"/>
         <source>Circular (recursive) block referencing detected:</source>
-        <translation>Circular (recursieve) blok referencing gedetecteerd:</translation>
+        <translation>Circulaire (recursieve) blokverwijzingen gedetecteerd:</translation>
     </message>
     <message>
         <location line="+2"/>
@@ -667,7 +688,7 @@
 <context>
     <name>RGuiAction</name>
     <message>
-        <location filename="../src/core/RGuiAction.cpp" line="+180"/>
+        <location filename="../src/core/RGuiAction.cpp" line="+186"/>
         <source>Requires selection</source>
         <translation>Selectie vereist</translation>
     </message>
@@ -706,7 +727,7 @@
 <context>
     <name>RLinetype</name>
     <message>
-        <location filename="../src/core/RLinetype.cpp" line="+48"/>
+        <location filename="../src/core/RLinetype.cpp" line="+52"/>
         <source>Name</source>
         <translation>Naam</translation>
     </message>
@@ -729,7 +750,7 @@
 <context>
     <name>RLinetypePattern</name>
     <message>
-        <location filename="../src/core/RLinetypePattern.cpp" line="+856"/>
+        <location filename="../src/core/RLinetypePattern.cpp" line="+869"/>
         <source>By Layer</source>
         <translation>Door laag bepaald</translation>
     </message>
@@ -1066,7 +1087,7 @@
     <name>RObject</name>
     <message>
         <source>Custom</source>
-        <translation type="vanished">Gebruiker gedefinieerd</translation>
+        <translation type="vanished">Gebruikergedefinieerd</translation>
     </message>
     <message>
         <source>Type</source>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -65,7 +65,8 @@ public:
         return true;
     }
 
-    virtual void to2D();
+    virtual void setZ(double z);
+    bool isFlat() const;
 
     virtual QList<RVector> getVectorProperties() const;
     virtual QList<double> getDoubleProperties() const;
@@ -79,22 +80,25 @@ public:
     bool appendShapeAuto(const RShape& shape);
 
     void appendVertex(const RVector& vertex, double bulge = 0.0, double w1 = 0.0, double w2 = 0.0);
+    void appendVertex(double x, double y, double bulge = 0.0, double w1 = 0.0, double w2 = 0.0);
     void prependVertex(const RVector& vertex, double bulge = 0.0, double w1 = 0.0, double w2 = 0.0);
-    void insertVertex(int index, const RVector& vertex);
+    void insertVertex(int index, const RVector& vertex, double bulgeBefore = 0.0, double bulgeAfter = 0.0);
     void insertVertexAt(const RVector& point);
+    RVector insertVertexAtDistance(double dist);
     void removeFirstVertex();
     void removeLastVertex();
     void removeVertex(int index);
     void removeVerticesAfter(int index);
     void removeVerticesBefore(int index);
 
-    bool isEmpty() {
+    bool isEmpty() const {
         return countVertices()==0;
     }
 
     void setVertices(const QList<RVector>& vertices);
     QList<RVector> getVertices() const;
     void setVertexAt(int i, const RVector& v);
+    void moveVertexAt(int i, const RVector& offset);
     RVector getVertexAt(int i) const;
     int getVertexIndex(const RVector& v, double tolerance=RS::PointTolerance) const;
     RVector getLastVertex() const;
@@ -123,8 +127,8 @@ public:
     void setClosed(bool on);
     bool isClosed() const;
     bool isGeometricallyClosed(double tolerance=RS::PointTolerance) const;
-    bool autoClose() {
-        return toLogicallyClosed();
+    bool autoClose(double tolerance=RS::PointTolerance) {
+        return toLogicallyClosed(tolerance);
     }
     bool toLogicallyClosed(double tolerance=RS::PointTolerance);
     bool toLogicallyOpen();
@@ -132,6 +136,10 @@ public:
     QList<RVector> getSelfIntersectionPoints() const;
 
     RS::Orientation getOrientation(bool implicitelyClosed = false) const;
+    bool setOrientation(RS::Orientation orientation);
+
+    RPolyline convertArcToLineSegments(int segments) const;
+    RPolyline convertArcToLineSegmentsLength(double segmentLength) const;
 
     bool contains(const RVector& point, bool borderIsInside=false, double tolerance=RS::PointTolerance) const;
     bool containsShape(const RShape& shape) const;
@@ -144,6 +152,8 @@ public:
 
     void moveStartPoint(const RVector& pos);
     void moveEndPoint(const RVector& pos);
+
+    void moveSegmentAt(int i, const RVector& offset);
 
     virtual double getDirection1() const;
     virtual double getDirection2() const;
@@ -170,8 +180,10 @@ public:
     virtual QList<RVector> getEndPoints() const;
     virtual QList<RVector> getMiddlePoints() const;
     virtual QList<RVector> getCenterPoints() const;
+    virtual RVector getPointAtPercent(double p) const;
     virtual QList<RVector> getPointsWithDistanceToEnd(
         double distance, int from = RS::FromAny) const;
+    virtual QList<RVector> getPointCloud(double segmentLength) const;
 
     virtual double getAngleAt(double distance, RS::From from = RS::FromStart) const;
 
@@ -211,9 +223,9 @@ public:
 
     static bool isStraight(double bulge);
 
-    RPainterPath toPainterPath() const;
+    RPainterPath toPainterPath(bool addOriginalShapes = false) const;
 
-    bool simplify(double angleTolerance = RS::AngleTolerance);
+    bool simplify(double tolerance = RS::PointTolerance);
     QList<RVector> verifyTangency(double toleranceMin = RS::AngleTolerance, double toleranceMax = M_PI_4);
 
     void stripWidths();
@@ -230,10 +242,22 @@ public:
             const RShape& trimmedShape2, RS::Ending ending2, int segmentIndex2,
             const RShape* cornerShape = NULL) const;
 
+    bool isConcave() const;
     QList<RVector> getConvexVertices(bool convex = true) const;
     QList<RVector> getConcaveVertices() const;
 
     QList<RPolyline> splitAtDiscontinuities(double tolerance) const;
+    QList<RPolyline> splitAtSegmentTypeChange() const;
+
+    double getBaseAngle() const;
+    double getWidth() const;
+    bool setWidth(double v);
+    double getHeight() const;
+    bool setHeight(double v);
+
+    QList<RPolyline> morph(const RPolyline& target, int steps, RS::Easing easing = RS::Linear, bool zLinear = true, double customFactor = RNANDOUBLE) const;
+    RPolyline roundAllCorners(double radius) const;
+    RPolyline getPolygonHull(double angle, double tolerance, bool inner = false) const;
 
     static bool hasProxy() {
         return polylineProxy!=NULL;

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -35,6 +35,7 @@ function InsertBlockItem(guiAction) {
     this.docItem = undefined;
 
     this.blockName = undefined;
+    // set to flatten all entities to this one layer:
     this.layerName = undefined;
     this.offset = undefined;
     this.scale = 1.0;
@@ -68,7 +69,7 @@ InsertBlockItem.prototype.beginEvent = function() {
     // part library item is loaded into this document:
     if (isNull(this.diItem)) {
         var ms = new RMemoryStorage();
-        var si = new RSpatialIndexNavel();
+        var si = createSpatialIndex();
         this.docItem = new RDocument(ms, si);
         this.diItem = new RDocumentInterface(this.docItem);
         this.diItem.setNotifyListeners(false);
@@ -124,11 +125,10 @@ InsertBlockItem.prototype.beginEvent = function() {
         while (isNull(this.blockName) || doc.hasBlock(this.blockName)) {
             this.blockName = 'block_' + c++;
         }
-        EAction.handleUserMessage(qsTr("Adjusted invalid block name to '%1'").arg(this.blockName));
+        EAction.handleUserMessage(qsTr("Adjusted invalid block name to \"%1\"").arg(this.blockName));
     }
 
     if (this.docItem.hasBlock(this.blockName)) {
-        // 20140520:
         // if the item contains a block with the same name as the file base name,
         // insert without creating a new block:
         this.blockName = undefined;
@@ -297,20 +297,20 @@ InsertBlockItem.prototype.getOperation = function(preview) {
 };
 
 InsertBlockItem.prototype.slotScaleChanged = function(value) {
-    var scale = RMath.eval(value);
-    if (RMath.getError() === "") {
-        this.scale = scale;
-    } else {
+    if (isNumber(value)) {
+        this.scale = value;
+    }
+    else {
         this.scale = 1.0;
     }
     this.updatePreview(true);
 };
 
 InsertBlockItem.prototype.slotRotationChanged = function(value) {
-    var rotation = RMath.eval(value);
-    if (RMath.getError() === "") {
-        this.rotation = RMath.deg2rad(rotation);
-    } else {
+    if (isNumber(value)) {
+        this.rotation = value;
+    }
+    else {
         this.rotation = 0.0;
     }
     this.updatePreview(true);

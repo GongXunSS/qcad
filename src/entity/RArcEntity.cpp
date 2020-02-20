@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,6 +17,8 @@
  * along with QCAD.
  */
 #include "RArcEntity.h"
+#include "RCircleEntity.h"
+#include "REllipseEntity.h"
 #include "RExporter.h"
 #include "RPoint.h"
 
@@ -84,13 +86,14 @@ void RArcEntity::init() {
     RArcEntity::PropertyColor.generateId(typeid(RArcEntity), REntity::PropertyColor);
     RArcEntity::PropertyDisplayedColor.generateId(typeid(RArcEntity), REntity::PropertyDisplayedColor);
     RArcEntity::PropertyDrawOrder.generateId(typeid(RArcEntity), REntity::PropertyDrawOrder);
-    RArcEntity::PropertyCenterX.generateId(typeid(RArcEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "X"));
-    RArcEntity::PropertyCenterY.generateId(typeid(RArcEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "Y"));
-    RArcEntity::PropertyCenterZ.generateId(typeid(RArcEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "Z"));
-    RArcEntity::PropertyRadius.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "Radius"));
-    RArcEntity::PropertyStartAngle.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "Start Angle"));
-    RArcEntity::PropertyEndAngle.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "End Angle"));
-    RArcEntity::PropertyReversed.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "Reversed"));
+
+    RArcEntity::PropertyCenterX.generateId(typeid(RArcEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RArcEntity::PropertyCenterY.generateId(typeid(RArcEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RArcEntity::PropertyCenterZ.generateId(typeid(RArcEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
+    RArcEntity::PropertyRadius.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "Radius"), false, RPropertyAttributes::Geometry);
+    RArcEntity::PropertyStartAngle.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "Start Angle"), false, RPropertyAttributes::Geometry);
+    RArcEntity::PropertyEndAngle.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "End Angle"), false, RPropertyAttributes::Geometry);
+    RArcEntity::PropertyReversed.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "Reversed"), false, RPropertyAttributes::Geometry);
 
     RArcEntity::PropertyDiameter.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "Diameter"));
     RArcEntity::PropertyLength.generateId(typeid(RArcEntity), "", QT_TRANSLATE_NOOP("REntity", "Length"));
@@ -139,7 +142,8 @@ bool RArcEntity::setProperty(RPropertyTypeId propertyTypeId, const QVariant& val
 }
 
 QPair<QVariant, RPropertyAttributes> RArcEntity::getProperty(
-        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes) {
+        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes, bool showOnRequest) {
+
     if (propertyTypeId == PropertyCenterX) {
         return qMakePair(QVariant(data.center.x), RPropertyAttributes());
     } else if (propertyTypeId == PropertyCenterY) {
@@ -168,7 +172,7 @@ QPair<QVariant, RPropertyAttributes> RArcEntity::getProperty(
         return qMakePair(QVariant(data.getArea()), RPropertyAttributes(RPropertyAttributes::Sum));
     }
 
-    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 
@@ -178,6 +182,57 @@ void RArcEntity::exportEntity(RExporter& e, bool preview, bool forceSelected) co
 
     e.setBrush(Qt::NoBrush);
     e.exportArc(data);
+}
+
+QSharedPointer<REntity> RArcEntity::scaleNonUniform(const RVector& scaleFactors, const RVector& center) {
+    return scaleNonUniform(*this, scaleFactors, center);
+}
+
+QSharedPointer<REntity> RArcEntity::scaleNonUniform(REntity& entity, const RVector& scaleFactors, const RVector& center) {
+    RShape* s = entity.castToShape();
+    if (s==NULL) {
+        return QSharedPointer<REntity>();
+    }
+
+    RShapeTransformationScale scale(scaleFactors, center);
+    QSharedPointer<RShape> shapeT = RShape::transformArc(*s, scale);
+    if (shapeT.isNull()) {
+        return QSharedPointer<REntity>();
+    }
+
+    if (RShape::isEllipseShape(*shapeT)) {
+        QSharedPointer<REllipse> ellipseT = shapeT.dynamicCast<REllipse>();
+        if (ellipseT.isNull()) {
+            return QSharedPointer<REntity>();
+        }
+        REllipseEntity* e = new REllipseEntity(entity.getDocument(), REllipseData(*ellipseT));
+        return QSharedPointer<REntity>(e);
+    }
+    else if (RShape::isArcShape(*shapeT)) {
+        QSharedPointer<RArc> arcT = shapeT.dynamicCast<RArc>();
+        if (arcT.isNull()) {
+            return QSharedPointer<REntity>();
+        }
+        RArcEntity* arcEntity = dynamic_cast<RArcEntity*>(&entity);
+        if (arcEntity==NULL) {
+            return QSharedPointer<REntity>();
+        }
+        RArcEntity* cl = arcEntity->clone();
+        cl->setShape(*arcT);
+        return QSharedPointer<REntity>(cl);
+    }
+    else if (RShape::isCircleShape(*shapeT)) {
+        QSharedPointer<RCircle> circleT = shapeT.dynamicCast<RCircle>();
+        if (circleT.isNull()) {
+            return QSharedPointer<REntity>();
+        }
+        RCircleEntity* e = new RCircleEntity(entity.getDocument(), RCircleData(*circleT));
+        return QSharedPointer<REntity>(e);
+    }
+
+    qWarning() << "Unexpected shape returned from RShape::transformArc";
+    return QSharedPointer<REntity>();
+
 }
 
 void RArcEntity::print(QDebug dbg) const {

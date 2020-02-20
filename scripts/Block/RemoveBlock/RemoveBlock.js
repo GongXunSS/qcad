@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Block.js");
+include("scripts/Block/Block.js");
 include("scripts/library.js");
 include("scripts/Widgets/BlockList/BlockList.js");
 
@@ -41,7 +41,7 @@ RemoveBlock.prototype.beginEvent = function() {
         return;
     }
 
-    var item = blockList.currentItem();
+    var item = BlockList.getActiveItem();
     if (isNull(item)) {
         this.terminate();
         return;
@@ -62,8 +62,17 @@ RemoveBlock.prototype.beginEvent = function() {
         Block.editBlock(di, doc.getBlockName(doc.getModelSpaceBlockId()));
     }
 
-    var op = new RDeleteObjectOperation(block);
+    var op = new RDeleteObjectsOperation();
     op.setText(this.getToolTitle());
+    op.deleteObject(block);
+
+    if (block.hasLayout()) {
+        var layout = doc.queryLayout(block.getLayoutId());
+        if (!isNull(layout)) {
+            op.deleteObject(layout);
+        }
+    }
+
     di.applyOperation(op);
     di.clearPreview();
     di.repaintViews();

@@ -1,6 +1,6 @@
 /**
  * Modifications Copyright (c) 2015 by Robert S.
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -69,7 +69,7 @@ ShapePolygonAFCP.prototype.setState = function(state) {
         var trMiddlePoint = qsTr("Middle of Side");
         this.setCommandPrompt(trMiddlePoint);
         this.setLeftMouseTip(trMiddlePoint);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         break;
     }
 

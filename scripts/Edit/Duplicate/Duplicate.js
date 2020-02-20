@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Edit.js");
+include("scripts/Edit/Edit.js");
 
 /**
  * \class Duplicate
@@ -51,12 +51,7 @@ Duplicate.prototype.beginEvent = function() {
 
     di.applyOperation(op);
 
-    if (ids.length===1) {
-        EAction.handleUserMessage(qsTr("1 entity duplicated"));
-    }
-    else {
-        EAction.handleUserMessage(qsTr("%1 entities duplicated").arg(ids.length));
-    }
+    EAction.handleUserMessage(qsTr("%n entity/ies duplicated", "", ids.length));
 
     this.terminate();
 };

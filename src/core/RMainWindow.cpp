@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -31,6 +31,7 @@
 #include "RFontList.h"
 #include "RGraphicsView.h"
 #include "RGuiAction.h"
+#include "RKeyListener.h"
 #include "RLayerListener.h"
 #include "RMainWindow.h"
 #include "RNewDocumentListener.h"
@@ -201,7 +202,8 @@ void RMainWindow::notifyListeners(bool withNull) {
     notifyTransactionListeners(document);
     notifyPropertyListeners(document);
     notifySelectionListeners(di);
-    notifyLayerListeners(di);
+    QList<RLayer::Id> layerIds;
+    notifyLayerListeners(di, layerIds);
     notifyPenListeners(di);
     notifyBlockListeners(di);
     notifyViewListeners(di);
@@ -421,10 +423,10 @@ void RMainWindow::removeNewDocumentListener(RNewDocumentListener* l) {
 /**
  * Notifies all transaction in progress listeners.
  */
-void RMainWindow::notifyNewDocumentListeners(RDocument* document, RTransaction* transaction) {
+void RMainWindow::notifyNewDocumentListeners(RDocument* document, RTransaction* transaction, bool beforeLoad) {
     QList<RNewDocumentListener*>::iterator it;
     for (it = newDocumentListeners.begin(); it != newDocumentListeners.end(); ++it) {
-        (*it)->updateNewDocumentListener(document, transaction);
+        (*it)->updateNewDocumentListener(document, transaction, beforeLoad);
     }
 }
 
@@ -451,6 +453,31 @@ void RMainWindow::notifySnapListeners(RDocumentInterface* documentInterface) {
     QList<RSnapListener*>::iterator it;
     for (it = snapListeners.begin(); it != snapListeners.end(); ++it) {
         (*it)->updateSnap(documentInterface);
+    }
+}
+
+/**
+ * Adds a listener for key changes.
+ */
+void RMainWindow::addKeyListener(RKeyListener* l) {
+    if (l != NULL) {
+        keyListeners.push_back(l);
+    } else {
+        qWarning("RMainWindow::addKeyListener(): Listener is NULL.");
+    }
+}
+
+void RMainWindow::removeKeyListener(RKeyListener* l) {
+    keyListeners.removeAll(l);
+}
+
+/**
+ * Notifies all key listeners.
+ */
+void RMainWindow::notifyKeyListeners(QKeyEvent* event) {
+    QList<RKeyListener*>::iterator it;
+    for (it = keyListeners.begin(); it != keyListeners.end(); ++it) {
+        (*it)->keyPressed(event);
     }
 }
 
@@ -620,17 +647,17 @@ void RMainWindow::removeLayerListener(RLayerListener* l) {
 /**
  * Notifies all layer listeners that at least one layer object has changed.
  */
-void RMainWindow::notifyLayerListeners(RDocumentInterface* documentInterface) {
+void RMainWindow::notifyLayerListeners(RDocumentInterface* documentInterface, QList<RLayer::Id>& layerIds) {
     QList<RLayerListener*>::iterator it;
     for (it = layerListeners.begin(); it != layerListeners.end(); ++it) {
-        (*it)->updateLayers(documentInterface);
+        (*it)->updateLayers(documentInterface, layerIds);
     }
 }
 
-void RMainWindow::notifyLayerListenersCurrentLayer(RDocumentInterface* documentInterface) {
+void RMainWindow::notifyLayerListenersCurrentLayer(RDocumentInterface* documentInterface, RLayer::Id previousLayerId) {
     QList<RLayerListener*>::iterator it;
     for (it = layerListeners.begin(); it != layerListeners.end(); ++it) {
-        (*it)->setCurrentLayer(documentInterface);
+        (*it)->setCurrentLayer(documentInterface, previousLayerId);
     }
 }
 

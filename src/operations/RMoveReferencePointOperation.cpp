@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -26,9 +26,12 @@
 
 RMoveReferencePointOperation::RMoveReferencePointOperation(
     const RVector& referencePoint, 
-    const RVector& targetPoint)
+    const RVector& targetPoint,
+    Qt::KeyboardModifiers modifiers)
     : referencePoint(referencePoint),
-      targetPoint(targetPoint) {
+      targetPoint(targetPoint),
+      modifiers(modifiers),
+      scene(NULL) {
 }
 
 
@@ -39,6 +42,16 @@ RTransaction RMoveReferencePointOperation::apply(RDocument& document, bool previ
     RTransaction transaction(document.getStorage(), text);
     transaction.setGroup(transactionGroup);
 
+    RVector delta = targetPoint-referencePoint;
+    bool moveSelected = false;
+    QMap<REntity::Id, QList<RRefPoint> > referencePoints;
+
+    // if multilpe reference points are selected, move all of those:
+    if (scene!=NULL && scene->hasSelectedReferencePoints()) {
+        moveSelected = true;
+        referencePoints = scene->getReferencePoints();
+    }
+
     QSet<REntity::Id> selectedEntities = document.querySelectedEntities();
     QSet<REntity::Id>::iterator it;
     for (it=selectedEntities.begin(); it!=selectedEntities.end(); it++) {
@@ -47,11 +60,24 @@ RTransaction RMoveReferencePointOperation::apply(RDocument& document, bool previ
             continue;
         }
         
-        // apply operation to cloned entity:
-        bool modified = entity->moveReferencePoint(referencePoint, targetPoint);
-        
-        if (modified) {
-            transaction.addObject(entity, false);
+        // move all selected reference points:
+        if (moveSelected) {
+            QList<RRefPoint> entityReferencePoints = referencePoints[*it];
+            for (int i=0; i<entityReferencePoints.length(); i++) {
+                if (entityReferencePoints[i].isSelected()) {
+                    entity->moveReferencePoint(entityReferencePoints[i], entityReferencePoints[i]+delta, modifiers);
+                }
+            }
+            QSet<RPropertyTypeId> props = entity->getPropertyTypeIds(RPropertyAttributes::RefPoint);
+            transaction.addObject(entity, false, false, props);
+        }
+
+        // move single reference point:
+        else {
+            if (entity->moveReferencePoint(referencePoint, targetPoint, modifiers)) {
+                QSet<RPropertyTypeId> props = entity->getPropertyTypeIds(RPropertyAttributes::RefPoint);
+                transaction.addObject(entity, false, false, props);
+            }
         }
     }
         

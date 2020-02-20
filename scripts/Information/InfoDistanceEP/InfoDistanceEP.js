@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Information.js");
+include("scripts/Information/Information.js");
 
 /**
  * \class InfoDistanceEP
@@ -67,7 +67,7 @@ InfoDistanceEP.prototype.setState = function(state) {
         var trSecondPoint = qsTr("Specify point");
         this.setCommandPrompt(trSecondPoint);
         this.setLeftMouseTip(trSecondPoint);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         break;
     }
 
@@ -144,9 +144,18 @@ InfoDistanceEP.prototype.pickCoordinate = function(event, preview) {
     }
 
     if (!preview) {
-        this.setState(InfoDistanceEP.State.SettingShape);
         var distance = this.point1.getDistanceTo(this.point2);
         EAction.getMainWindow().handleUserInfo(qsTr("Distance:") + " " + this.formatLinearResultCmd(distance));
+
+        if (this.autoTerminate) {
+            this.updateLineEdit(distance);
+            this.setNoState(false);
+            this.terminate();
+            return;
+        }
+        else {
+            this.setState(InfoDistanceEP.State.SettingShape);
+        }
     }
 };
 

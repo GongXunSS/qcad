@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -56,13 +56,20 @@ RBox RViewportData::getBoundingBox(bool ignoreEmpty) const {
     return RBox(position, width, height);
 }
 
+void RViewportData::to2D() {
+    REntityData::to2D();
+
+    viewCenter = viewCenter.get2D();
+    viewTarget = viewTarget.get2D();
+}
+
 /**
  * \return Offset or position of 0/0 of view (model space block) for this viewport.
  */
 RVector RViewportData::getViewOffset() const {
     RVector offset(0,0);
-    offset -= viewCenter * scaleFactor;
-    offset -= viewTarget * scaleFactor;
+    offset -= viewCenter.get2D() * scaleFactor;
+    offset -= viewTarget.get2D() * scaleFactor;
     return position + offset;
 }
 
@@ -82,8 +89,9 @@ QList<RRefPoint> RViewportData::getReferencePoints(RS::ProjectionRenderingHint h
     return ret;
 }
 
-bool RViewportData::moveReferencePoint(const RVector& referencePoint,
-        const RVector& targetPoint) {
+bool RViewportData::moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers) {
+    Q_UNUSED(modifiers)
+
     bool ret = false;
 
     RVector offset = targetPoint - referencePoint;

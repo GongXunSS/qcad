@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -37,7 +37,6 @@ Q_OBJECT
 
 signals:
     void clearHistory();
-    void multiLinePaste();
     void commandConfirmed(const QString& command);
     void completeCommand(const QString& command);
     void escape();
@@ -48,6 +47,12 @@ public:
     void appendCommand(const QString& cmd);
     QStringList getHistory() const;
     void setHistory(QStringList& h);
+    void triggerCommand(const QString& cmd) {
+        emit commandConfirmed(cmd);
+    }
+
+public slots:
+    void paste();
 
 protected:
     virtual void keyPressEvent(QKeyEvent* event);

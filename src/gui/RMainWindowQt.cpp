@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -137,6 +137,11 @@ void RMainWindowQt::postSelectionChangedEvent() {
 
 void RMainWindowQt::postTransactionEvent(RTransaction& t, bool onlyChanges, RS::EntityType entityTypeFilter) {
     RTransactionEvent* event = new RTransactionEvent(t, onlyChanges, entityTypeFilter);
+    QCoreApplication::postEvent(this, event);
+}
+
+void RMainWindowQt::postPropertyEvent(RPropertyTypeId propertyTypeId, const QVariant& value, RS::EntityType entityTypeFilter) {
+    RPropertyEvent* event = new RPropertyEvent(propertyTypeId, value, entityTypeFilter);
     QCoreApplication::postEvent(this, event);
 }
 
@@ -369,6 +374,16 @@ void RMainWindowQt::enable() {
     disableCounter--;
     if (disableCounter==0) {
         setEnabled(true);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION == 0x050B00 || QT_VERSION == 0x050B01
+        // workaround for Qt 5.10.0-5.11.1 bug
+        // only small portion of app win is redrawn when enabled
+        // redraw can only be forced with a resize
+        resize(width(), height()+1);
+        resize(width(), height()-1);
+#endif
+#endif
     }
 }
 
@@ -495,6 +510,7 @@ void RMainWindowQt::setGraphicsViewCursor(const QCursor& cursor) {
             continue;
         }
 
+        // false here prevents recursion:
         diOther->setCursor(cursor, false);
     }
 }
@@ -578,6 +594,10 @@ QMenu* RMainWindowQt::createPopupMenu() {
     return menu;
 }
 
+void RMainWindowQt::clearKeyLog() {
+    keyLog.clear();
+}
+
 bool RMainWindowQt::event(QEvent* e) {
     if (e==NULL) {
         return false;
@@ -586,6 +606,11 @@ bool RMainWindowQt::event(QEvent* e) {
     if (e->type()==QEvent::KeyPress) {
         QKeyEvent* ke = dynamic_cast<QKeyEvent*>(e);
         if (ke!=NULL) {
+
+            // notify key listeners,
+            // e.g. for up / down / left / right keys
+            notifyKeyListeners(ke);
+
             if (ke->key()==Qt::Key_Enter || ke->key()==Qt::Key_Return) {
                 QWidget* w = QApplication::focusWidget();
                 if (w!=NULL) {
@@ -601,7 +626,24 @@ bool RMainWindowQt::event(QEvent* e) {
                     }
                 }
             }
+            else {
+                if (ke->key()<128) {
+                    if (keyTimeOut.elapsed()>RSettings::getIntValue("Keyboard/Timeout", 2000)) {
+                        keyLog.clear();
+                    }
+                    keyLog += QChar(ke->key());
+                    //qDebug() << "keyLog" << keyLog;
+                    if (RGuiAction::triggerByShortcut(keyLog)) {
+                        keyLog.clear();
+                    }
+                    else {
+                        keyTimeOut.restart();
+                    }
+                }
+                e->accept();
+            }
         }
+        return true;
     }
 
     RSelectionChangedEvent* sce = dynamic_cast<RSelectionChangedEvent*>(e);
@@ -618,6 +660,7 @@ bool RMainWindowQt::event(QEvent* e) {
         if (di!=NULL) {
             di->coordinateEvent(*coe);
         }
+        return true;
     }
 
     RTransactionEvent* te = dynamic_cast<RTransactionEvent*>(e);
@@ -630,6 +673,14 @@ bool RMainWindowQt::event(QEvent* e) {
         RTransaction t = te->getTransaction();
         notifyTransactionListeners(getDocument(), &t);
         return true;
+    }
+
+    RPropertyEvent* pe = dynamic_cast<RPropertyEvent*>(e);
+    if (pe!=NULL) {
+        RDocumentInterface* documentInterface = getDocumentInterface();
+        if (documentInterface!=NULL) {
+            documentInterface->propertyChangeEvent(*pe);
+        }
     }
 
     RCloseCurrentEvent* cce = dynamic_cast<RCloseCurrentEvent*>(e);

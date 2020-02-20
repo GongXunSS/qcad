@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Edit.js");
+include("scripts/Edit/Edit.js");
 
 function Esc(guiAction) {
     Edit.call(this, guiAction);
@@ -30,11 +30,12 @@ Esc.prototype.beginEvent = function() {
 
     var returnFocus = false;
 
+    var appWin = EAction.getMainWindow();
     var w = QApplication.focusWidget();
 
     // focus in RMathLineEdit (e.g. in options toolbar)
     // return focus to graphics view:
-    if (isOfType(w, RMathLineEdit)) {
+    if (isOfType(w, RMathLineEdit) || isOfType(w, QSpinBox)) {
         if (w.ignoreEscape===true) {
             // ignore escape and use standard action for escape
             // this is for some actions to make sure esc triggers step back
@@ -110,7 +111,6 @@ Esc.prototype.beginEvent = function() {
             }
         }
         else {
-            var appWin = EAction.getMainWindow();
             appWin.setFocus(Qt.OtherFocusReason);
             this.terminate();
             return;
@@ -122,6 +122,10 @@ Esc.prototype.beginEvent = function() {
     if (!isNull(base)) {
         base.escapeEvent();
     }
+
+    // clear key log of recorded keystrokes:
+    appWin.clearKeyLog();
+
     this.terminate();
 };
 

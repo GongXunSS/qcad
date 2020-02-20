@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -34,6 +34,7 @@
 
 
 QMap<QString, RGuiAction*> RGuiAction::actionsByCommand;
+QMap<QString, RGuiAction*> RGuiAction::actionsByShortcut;
 QMap<QString, RGuiAction*> RGuiAction::actionsByPrimaryCommand;
 QMap<QString, RGuiAction*> RGuiAction::actionsByScriptFile;
 QMultiMap<QString, RGuiAction*> RGuiAction::actionsByGroup;
@@ -47,7 +48,8 @@ RGuiAction::RGuiAction(const QString& text, QObject* parent)
     factory(NULL),
     oriText(text),
     groupDefault(false),
-    requiresDocument(true), 
+    forceGlobal(false),
+    requiresDocument(true),
     requiresSelection(false),
     requiresUndoableTransaction(false),
     requiresRedoableTransaction(false),
@@ -56,8 +58,8 @@ RGuiAction::RGuiAction(const QString& text, QObject* parent)
     noState(false),
     toggleable(false),
     iconDisabled(false),
-    enabledOverride(-1),
-    documentInterface(NULL) {
+    enabledOverride(-1) {
+    //documentInterface(NULL) {
     
     initTexts();
     
@@ -73,8 +75,11 @@ RGuiAction::RGuiAction(const QString& text, QObject* parent)
 
 
 RGuiAction::~RGuiAction() {
+    //qDebug() << "RGuiAction::~RGuiAction:" << scriptFile << " / sep: " << isSeparator();
+
     QList<QMap<QString, RGuiAction*>*> maps;
     maps << &actionsByCommand;
+    maps << &actionsByShortcut;
     maps << &actionsByPrimaryCommand;
     maps << &actionsByScriptFile;
     maps << &actionsByGroup;
@@ -99,16 +104,17 @@ RGuiAction::~RGuiAction() {
     }
 
     actions.removeAll(this);
+    //documentInterface = NULL;
 }
 
 
-void RGuiAction::setDocumentInterface(RDocumentInterface* di) {
-    documentInterface = di;
-}
+//void RGuiAction::setDocumentInterface(RDocumentInterface* di) {
+//    documentInterface = di;
+//}
 
-RDocumentInterface* RGuiAction::getDocumentInterface() const {
-    return documentInterface;
-}
+//RDocumentInterface* RGuiAction::getDocumentInterface() const {
+//    return documentInterface;
+//}
 
 void RGuiAction::setText(const QString& text) {
     this->oriText = text;
@@ -125,8 +131,8 @@ void RGuiAction::initTexts() {
     // Override shortcut text:
     if (!shortcutText.isEmpty()) {
 #ifdef Q_OS_MACX
-        if (!textAndKeycode.endsWith(shortcutText)) {
-            textAndKeycode += shortcutText;
+        if (!textAndKeycode.endsWith(" (" + shortcutText + ")")) {
+            textAndKeycode += " (" + shortcutText + ")";
         }
 #else
         // tab does not work for Mac OS X:
@@ -163,7 +169,7 @@ QString RGuiAction::formatToolTip(const QString& text, const QString& shortcut) 
     sc.replace("Ctrl+", QString("%1").arg(QChar(0x2318)));
     sc.replace("Shift+", QString("%1").arg(QChar(0x21E7)));
 #endif
-    QString col = RSettings::hasDarkGuiBackground() ? "white" : "gray";
+    QString col = RSettings::hasDarkGuiBackground() ? "lightgray" : "gray";
 
     return QString("%1 <span style=\"color: " + col + "; font-size: small\">%2</span>")
                 .arg(text)
@@ -191,6 +197,24 @@ void RGuiAction::setShortcutText(const QString& text) {
 
 QString RGuiAction::getShortcutText() const {
     return shortcutText;
+}
+
+QString RGuiAction::getShortcutsString(const QString& separator, QKeySequence::SequenceFormat format) const {
+//    if (isNull(ksList)) {
+//        return "";
+//    }
+
+    QString ret = "";
+
+    QList<QKeySequence> scs = getShortcuts();
+    for (int i=0; i<scs.length(); ++i) {
+        ret += scs[i].toString(format);
+        if (i<scs.length()-1) {
+            ret += separator;
+        }
+    }
+
+    return ret;
 }
 
 void RGuiAction::setIcon(const QString& iconFile) {
@@ -266,7 +290,7 @@ bool RGuiAction::isIconDisabled() const {
 
 void RGuiAction::setDefaultShortcuts(const QList<QKeySequence>& shortcuts) {
     defaultShortcuts = shortcuts;
-    this->setShortcuts(shortcuts);
+    setShortcuts(shortcuts);
 }
 
 QList<QKeySequence> RGuiAction::getDefaultShortcuts() {
@@ -275,17 +299,91 @@ QList<QKeySequence> RGuiAction::getDefaultShortcuts() {
 
 void RGuiAction::setDefaultShortcut(const QKeySequence& shortcut) {
     defaultShortcuts = QList<QKeySequence>() << shortcut;
-    this->setShortcut(shortcut);
+    setShortcut(shortcut);
+}
+
+void RGuiAction::addShortcut(const QKeySequence& shortcut) {
+    if (shortcut.count()==1) {
+        return;
+    }
+
+    QString key;
+    for (int i=0; i<shortcut.count(); i++) {
+        key += QChar(shortcut[i]);
+    }
+    key = key.toLower();
+    actionsByShortcut.insert(key, this);
+
+    if (shortcutText.isEmpty()) {
+        // for first shortcut, set text to display in menu:
+        shortcutText = key.toUpper();
+    }
+
+    multiKeyShortcuts.append(shortcut);
 }
 
 void RGuiAction::setShortcut(const QKeySequence& shortcut) {
-    QAction::setShortcut(shortcut);
+    multiKeyShortcuts.clear();
+
+    if (shortcut.count()==1) {
+        // single key stroke (Ctrl-A, +, ...):
+        // supported by Qt:
+        QAction::setShortcut(shortcut);
+    }
+    else {
+        // multi key stroke (LI, ...):
+        // broken in Qt, use own implementation:
+        addShortcut(shortcut);
+    }
+
+    //QAction::setShortcut(shortcut);
+    //shortcuts = QList<QKeySequence>() << shortcut;
     initTexts();
 }
 
 void RGuiAction::setShortcuts(const QList<QKeySequence>& shortcuts) {
-    QAction::setShortcuts(shortcuts);
+    QList<QKeySequence> scs;
+
+    multiKeyShortcuts.clear();
+
+    for (int i=0; i<shortcuts.length(); i++) {
+        if (shortcuts[i].count()==1) {
+            scs.append(shortcuts[i]);
+        }
+        else {
+            //setShortcut(shortcuts[i]);
+            addShortcut(shortcuts[i]);
+        }
+    }
+
+    // only one key shortcuts are set here:
+    QAction::setShortcuts(scs);
     initTexts();
+}
+
+void RGuiAction::setShortcutsFromStrings(const QStringList& shortcuts) {
+    QList<QKeySequence> scs;
+
+    multiKeyShortcuts.clear();
+
+    for (int i=0; i<shortcuts.length(); i++) {
+        QKeySequence ks(shortcuts[i]);
+        if (ks.count()==1) {
+            scs.append(ks);
+        }
+        else {
+            //setShortcut(shortcuts[i]);
+            addShortcut(ks);
+        }
+    }
+
+    // only one key shortcuts are set here:
+    QAction::setShortcuts(scs);
+    initTexts();
+}
+
+QList<QKeySequence> RGuiAction::getShortcuts() const {
+    return multiKeyShortcuts + shortcuts();
 }
 
 void RGuiAction::setToolTip(const QString& tip) {
@@ -842,7 +940,17 @@ bool RGuiAction::triggerByCommand(const QString& cmd) {
     }
 }
 
-
+bool RGuiAction::triggerByShortcut(const QString& sc) {
+    QString scLower = sc.toLower();
+    if (actionsByShortcut.count(scLower)!=0 && actionsByShortcut[scLower]!=NULL) {
+        if (actionsByShortcut[scLower]->isEnabled()) {
+            actionsByShortcut[scLower]->slotTrigger();
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
 
 /**
  * Triggers the first action in the list of actions that is based
@@ -870,7 +978,12 @@ RGuiAction* RGuiAction::getByScriptFile(const QString& scriptFile) {
 
     QString relFilePath;
     if (scriptFile.startsWith(":")) {
-        relFilePath = scriptFile;
+        if (actionsByScriptFile.count(scriptFile) != 0) {
+            return actionsByScriptFile[scriptFile];
+        }
+
+        // strip : at start:
+        relFilePath = scriptFile.mid(1);
     }
     else {
         relFilePath = dir.relativeFilePath(scriptFile);
@@ -881,11 +994,18 @@ RGuiAction* RGuiAction::getByScriptFile(const QString& scriptFile) {
     }
     
     // look in scripts wrapped in plugins:
-    relFilePath = ":" + relFilePath;
-    if (actionsByScriptFile.count(relFilePath) != 0) {
-        return actionsByScriptFile[relFilePath];
+    QString pluginFilePath = ":" + relFilePath;
+    if (actionsByScriptFile.count(pluginFilePath) != 0) {
+        return actionsByScriptFile[pluginFilePath];
     }
 
+    // look in scripts wrapped in plugins:
+    pluginFilePath = ":/" + relFilePath;
+    if (actionsByScriptFile.count(pluginFilePath) != 0) {
+        return actionsByScriptFile[pluginFilePath];
+    }
+
+    qWarning() << "action not found:" << relFilePath;
     return NULL;
 }
 
@@ -975,10 +1095,13 @@ QStringList RGuiAction::getAvailableCommands(const QString& start, bool primaryO
  */
 bool RGuiAction::slotTrigger(const QString& command) {
     RMainWindow* mainWindow = RMainWindow::getMainWindow();
-    if (mainWindow != NULL && !getMainCommand().isEmpty()) {
+    if (mainWindow != NULL) {
         // display main command somewhere, e.g. in command line:
         if (command.isNull()) {
-            mainWindow->handleUserCommand(getMainCommand());
+            QString mainCommand = getMainCommand();
+            if (!mainCommand.isEmpty()) {
+                mainWindow->handleUserCommand(mainCommand);
+            }
         }
         else {
             mainWindow->handleUserCommand(command);
@@ -999,14 +1122,16 @@ bool RGuiAction::slotTrigger(const QString& command) {
 
     if (scriptFile.size() > 0) {
         // call action factory of script handler:
-        if (requiresDocument) {
+        if (requiresDocument && !forceGlobal) {
             RDocumentInterface* di;
-            if (documentInterface!=NULL) {
-                di = documentInterface;
-            }
-            else {
+//            if (documentInterface!=NULL) {
+//                di = documentInterface;
+//                //qDebug() << "got di: " << (unsigned long int)di;
+//            }
+//            else {
                 di = RMainWindow::getDocumentInterfaceStatic();
-            }
+                //qDebug() << "getting di statically: " << (unsigned long int)di;
+//            }
             if (di == NULL) {
                 qWarning() << "This action requires a document to be open: " << scriptFile;
                 return true;

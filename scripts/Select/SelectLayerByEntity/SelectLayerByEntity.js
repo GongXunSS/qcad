@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Select.js");
+include("scripts/Select/Select.js");
 
 /**
  * \class SelectLayerByEntity
@@ -65,7 +65,9 @@ SelectLayerByEntity.prototype.setState = function(state) {
     this.getDocumentInterface().setClickMode(RAction.PickEntity);
 
     var appWin = RMainWindowQt.getMainWindow();
-    this.setLeftMouseTip(qsTr("Choose entity on layer"));
+    var tr = qsTr("Choose entity on layer");
+    this.setLeftMouseTip(tr);
+    this.setCommandPrompt(tr);
     this.setRightMouseTip(EAction.trCancel);
 };
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./operations" filename="RMoveSelectionOperation.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -47,7 +47,11 @@
     
     <function_decl><type><name>virtual</name> <name>RTransaction</name></type> <name>apply</name><parameter_list>(<param><decl><type><name>RDocument</name>&amp;</type> <name>document</name></decl></param>, <param><decl><type><name>bool</name></type> <name>preview</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list>;</function_decl>
 
+<comment type="line">//protected:</comment>
+<comment type="line">//    void move(RDocument&amp; document, RTransaction&amp; transaction, REntity::Id entityId);</comment>
+
 </public><private>private:
+
     <decl_stmt><decl><type><name>RVector</name></type> <name>referencePoint</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>RVector</name></type> <name>targetPoint</name></decl>;</decl_stmt>
 </private>}</block>;</class>

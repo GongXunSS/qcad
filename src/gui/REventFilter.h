@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -37,7 +37,7 @@ public:
     REventFilter(QEvent::Type type = QEvent::None, bool forward = true);
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject* obj, QEvent* e);
 
 private:
     QEvent::Type type;

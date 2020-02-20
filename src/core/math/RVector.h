@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -123,6 +123,7 @@ public:
 
     RVector rotate(double rotation);
     RVector rotate(double rotation, const RVector& center);
+    RVector getRotated(double rotation, const RVector& center) const;
     RVector rotate3D(const RLine& axis, double rotation);
     RVector rotate3D(const QQuaternion& quaternion);
 
@@ -138,6 +139,7 @@ public:
 
     RVector scale(double factor, const RVector& center=nullVector);
     RVector scale(const RVector& factors, const RVector& center=nullVector);
+    RVector getScaled(const RVector& factors, const RVector& center) const;
 
     /**
      * \nonscriptable
@@ -150,6 +152,7 @@ public:
     static void scaleList(QList<RVector>& list, const RVector& factors, const RVector& center=nullVector);
 
     RVector mirror(const RLine& axis);
+    RVector getMirrored(const RLine& axis) const;
     RVector mirror(const RVector& axis1, const RVector& axis2);
     RVector flipHorizontal();
     RVector flipVertical();
@@ -182,8 +185,9 @@ public:
     RVector operator /(double s) const;
     RVector operator -() const;
     RVector getNegated() const;
+    RVector getAbsolute() const;
 
-    double dot(const RVector& other) {
+    double dot(const RVector& other) const {
         return RVector::getDotProduct(*this, other);
     }
 
@@ -211,6 +215,7 @@ public:
     }
 
     static bool containsFuzzy(const QList<RVector>& vectors, const RVector& v, double tol = RS::PointTolerance);
+    static int findFirstFuzzy(const QList<RVector>& vectors, const RVector& v, double tol = RS::PointTolerance);
 
     static RVector getMinimum(const QList<RVector>& vectors);
     static RVector getMaximum(const QList<RVector>& vectors);

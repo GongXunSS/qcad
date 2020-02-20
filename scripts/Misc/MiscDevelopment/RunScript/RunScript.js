@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  *
  * Copyright (c) 2014 by Robert S. All rights reserved.
  * 
@@ -66,12 +66,14 @@ RunScript.prototype.beginEvent = function() {
         //fileDialog.setLabelText(QFileDialog.FileType, qsTr("Format:"));
         if (!fileDialog.exec()) {
             fileDialog.destroy();
+            EAction.activateMainWindow();
             return;
         }
         RSettings.setValue("RunScript/Path", fileDialog.directory().absolutePath());
 
         fileNames = fileDialog.selectedFiles();
         fileDialog.destroy();
+        EAction.activateMainWindow();
 
         // show warning:
         if (RSettings.getBoolValue("RunScript/DontShowDialog", false)!==true) {
@@ -110,6 +112,7 @@ RunScript.prototype.beginEvent = function() {
         } 
         else {
             var textStream = new QTextStream(file);
+            textStream.setCodec("UTF-8");
             var contents = textStream.readAll();
             file.close();
             try {

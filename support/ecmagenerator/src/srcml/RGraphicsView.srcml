@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./core" filename="RGraphicsView.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -142,13 +142,14 @@
     <function_decl><type><name>void</name></type> <name>restoreViewport</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>zoomIn</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>zoomOut</name><parameter_list>()</parameter_list>;</function_decl>
-    <function_decl><type><name>void</name></type> <name>zoomIn</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name></decl></param>)</parameter_list>;</function_decl>
-    <function_decl><type><name>void</name></type> <name>zoomOut</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>zoomIn</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name></decl></param>, <param><decl><type><name>double</name></type> <name>factor</name>=<init><expr>1.2</expr></init></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>zoomOut</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name></decl></param>, <param><decl><type><name>double</name></type> <name>factor</name>=<init><expr>1.2</expr></init></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>virtual</name> <name>void</name></type> <name>zoom</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name></decl></param>, <param><decl><type><name>double</name></type> <name>factor</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>virtual</name> <name>void</name></type> <name>zoomTo</name><parameter_list>(<param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>window</name></decl></param>, <param><decl><type><name>int</name></type> <name>margin</name> =<init> <expr>0</expr></init></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>zoomPrevious</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>autoZoom</name><parameter_list>(<param><decl><type><name>int</name></type> <name>margin</name> =<init> <expr><name>RDEFAULT_MIN1</name></expr></init></decl></param>, <param><decl><type><name>bool</name></type> <name>ignoreEmpty</name>=<init><expr><name>false</name></expr></init></decl></param>, <param><decl><type><name>bool</name></type> <name>ignoreLineweight</name>=<init><expr><name>false</name></expr></init></decl></param>)</parameter_list>;</function_decl>
-    <function_decl><type><name>bool</name></type> <name>zoomToSelection</name><parameter_list>()</parameter_list>;</function_decl>
+    <function_decl><type><name>bool</name></type> <name>zoomToSelection</name><parameter_list>(<param><decl><type><name>int</name></type> <name>margin</name> =<init> <expr><name>RDEFAULT_MIN1</name></expr></init></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>bool</name></type> <name>zoomToEntities</name><parameter_list>(<param><decl><type><name>const</name> <name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>&amp;</type> <name>ids</name></decl></param>, <param><decl><type><name>int</name></type> <name>margin</name> =<init> <expr><name>RDEFAULT_MIN1</name></expr></init></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name>virtual</name> <name>void</name></type> <name>centerToPoint</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>point</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>virtual</name> <name>void</name></type> <name>centerToBox</name><parameter_list>(<param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>)</parameter_list>;</function_decl>
@@ -254,6 +255,11 @@
     <function_decl><type><name>int</name></type> <name>getMargin</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>setMargin</name><parameter_list>(<param><decl><type><name>int</name></type> <name>m</name></decl></param>)</parameter_list>;</function_decl>
 
+    <function_decl><type><name>void</name></type> <name>setExporting</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>on</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>bool</name></type> <name>isExporting</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+
+    <function_decl><type><name>bool</name></type> <name>isPrintingOrExporting</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+
     <function_decl><type><name>void</name></type> <name>setPrinting</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>on</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isPrinting</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>void</name></type> <name>setPrintPreview</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>on</name></decl></param>)</parameter_list>;</function_decl>
@@ -265,6 +271,9 @@
 
     <function_decl><type><name>void</name></type> <name>setHairlineMode</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>on</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>getHairlineMode</name><parameter_list>()</parameter_list>;</function_decl>
+
+    <function_decl><type><name>void</name></type> <name>setHairlineMinimumMode</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>on</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>bool</name></type> <name>getHairlineMinimumMode</name><parameter_list>()</parameter_list>;</function_decl>
 
     <function_decl><type><name>QList<argument_list>&lt;<argument><name>RTextLabel</name></argument>&gt;</argument_list></name></type> <name>getTextLabels</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>clearTextLabels</name><parameter_list>()</parameter_list>;</function_decl>
@@ -325,12 +334,14 @@
     }</block></function>
 
 </public><protected>protected:
+    <decl_stmt><decl><type><name>bool</name></type> <name>exporting</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>printing</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>printPreview</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>RVector</name></type> <name>printPointSize</name></decl>;</decl_stmt>
 
     <decl_stmt><decl><type><name>ColorMode</name></type> <name>colorMode</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>hairlineMode</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>bool</name></type> <name>hairlineMinimumMode</name></decl>;</decl_stmt>
 
     <comment type="block">/**
      * The scene this view is attached to.

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -22,6 +22,8 @@ include("map.js");
 
 function WidgetFactory() {
 }
+
+WidgetFactory.includeBasePath = includeBasePath;
 
 /**
  * Creates a dialog with the given \c parent, based on the UI file 
@@ -72,7 +74,9 @@ WidgetFactory.createWidget = function(basePath, uiFile, parent) {
 
     var fileInfo = new QFileInfo(uiFile);
     if (!fileInfo.exists() && !fileInfo.isAbsolute()) {
-        uiFile = basePath + "/" + uiFile;
+        if (basePath.length>0) {
+            uiFile = basePath + "/" + uiFile;
+        }
 
         fileInfo = new QFileInfo(uiFile);
         if (!fileInfo.exists()) {
@@ -121,6 +125,10 @@ WidgetFactory.createWidget = function(basePath, uiFile, parent) {
  */
 WidgetFactory.createDialog = function(basePath, uiFile, parent) {
     var dialog = WidgetFactory.createWidget(basePath, uiFile, parent);
+
+    var flags = dialog.windowFlags();
+    flags = new Qt.WindowFlags(flags & ~(Qt.WindowContextHelpButtonHint));
+    dialog.setWindowFlags(flags);
 
     // a global function might be defined to do additional
     // initilization for all dialogs (e.g. for testing purposes):
@@ -242,6 +250,9 @@ WidgetFactory.saveState = function(widget, group, document, map) {
         else if (isOfType(c, RMathLineEdit)) {
             //value = [c.text, c.getDefaultUnit()];
             value = c.text;
+        }
+        else if (isOfType(c, RMathComboBox)) {
+            value = c.currentText;
         }
         else if (isOfType(c, QCheckBox)) {
             value = c.checked;
@@ -486,13 +497,7 @@ WidgetFactory.restoreState = function(widget, group, signalReceiver, reset, docu
         // only process children if key delivered no value:
         if (isNull(value) || isOfType(c, QGroupBox)) {
             // never process internal children of these widgets:
-            if (!isOfType(c, QSpinBox) &&
-                !isOfType(c, QDoubleSpinBox) &&
-                !isOfType(c, QComboBox) &&
-                !isOfType(c, QFontComboBox) &&
-                !isOfType(c, QPlainTextEdit) &&
-                !isOfType(c, RMathLineEdit)) {
-
+            if (WidgetFactory.processChildren(c)) {
                 WidgetFactory.restoreState(c, group, signalReceiver, reset, document, map);
             }
         }
@@ -520,10 +525,6 @@ WidgetFactory.restoreState = function(widget, group, signalReceiver, reset, docu
 
 //        qDebug("restoring: ", c.objectName);
 //        qDebug("  value: ", value);
-
-//        if (c.objectName==="Positions") {
-//            debugger;
-//        }
 
         if (isOfType(c, QLineEdit)) {
             WidgetFactory.connect(c.textChanged, signalReceiver, c.objectName);
@@ -567,6 +568,24 @@ WidgetFactory.restoreState = function(widget, group, signalReceiver, reset, docu
                     else {
                         c.text = "%1".arg(value);
                     }
+                }
+            }
+            continue;
+        }
+        if (isOfType(c, RMathComboBox)) {
+            WidgetFactory.connect(c.valueChanged, signalReceiver, c.objectName);
+            c.valueChanged.connect(WidgetFactory.topLevelWidget, "slotSettingChanged");
+            if (isNull(c.defaultValue)) {
+                //c.defaultValue = [c.text, c.getDefaultUnit()];
+                c.defaultValue = c.currentText;
+                c.slotTextChanged(c.currentText);
+            }
+            if (!isNull(value)) {
+                if (isString(value)) {
+                    c.currentText = value;
+                }
+                else {
+                    c.currentText = "%1".arg(value);
                 }
             }
             continue;
@@ -624,7 +643,12 @@ WidgetFactory.restoreState = function(widget, group, signalReceiver, reset, docu
             else {
                 WidgetFactory.connect(c.toggled, signalReceiver, c.objectName);
                 c.toggled.connect(WidgetFactory.topLevelWidget, "slotSettingChanged");
-                c.checked = (c.objectName == value);
+                if (value==="true") {
+                    c.checked = value;
+                }
+                else {
+                    c.checked = (c.objectName == value);
+                }
             }
             continue;
         }
@@ -904,6 +928,21 @@ WidgetFactory.resetState = function(widget, group) {
     WidgetFactory.restoreState(widget, group, undefined, true);
 };
 
+WidgetFactory.processChildren = function(c) {
+    if (isOfType(c, QSpinBox) ||
+        isOfType(c, QDoubleSpinBox) ||
+        isOfType(c, QComboBox) ||
+        isOfType(c, QFontComboBox) ||
+        isOfType(c, QPlainTextEdit) ||
+        isOfType(c, RMathLineEdit) ||
+        isOfType(c, RMathComboBox)) {
+
+        return false;
+    }
+
+    return true;
+};
+
 /**
  * \internal
  */
@@ -978,10 +1017,14 @@ WidgetFactory.moveChildren = function(sourceWidget, targetWidget, settingsGroup)
                 }
             }
             // add line edit or math edit with maximum width:
-            if (isOfType(w, QLineEdit) || isOfType(w, RMathLineEdit)) {
+            if (isOfType(w, QLineEdit) || isOfType(w, RMathLineEdit) || isOfType(w, RMathComboBox)) {
                 if (w.maximumWidth>=1024) {
                     w.maximumWidth = 75;
                 }
+            }
+
+            if (isOfType(w, RMathLineEdit) || isOfType(w, RMathComboBox)) {
+                WidgetFactory.initLineEditInfoTools(w);
             }
 
             a = targetWidget.addWidget(w);
@@ -991,7 +1034,7 @@ WidgetFactory.moveChildren = function(sourceWidget, targetWidget, settingsGroup)
 
         // automatically set tool tip and icon for reset button:
         if (w.objectName==="Reset") {
-            w.icon = new QIcon("scripts/ResetToDefaults.svg");
+            w.icon = new QIcon(WidgetFactory.includeBasePath + "/ResetToDefaults.svg");
             w.toolTip = qsTr("Restore defaults");
         }
     }
@@ -1024,6 +1067,9 @@ WidgetFactory.adjustIcons = function(includeBasePath, widget) {
         }
 
     }
+};
+
+WidgetFactory.initLineEditInfoTools = function(mathLineEdit) {
 };
 
 /**
@@ -1130,13 +1176,14 @@ WidgetFactory.initLayerCombo = function(comboBox, doc) {
     }
 
     comboBox.clear();
-    comboBox.iconSize = new QSize(32, 16);
+    comboBox.iconSize = new QSize(16, 10);
     var names = doc.getLayerNames();
+    //names = RS.sortAlphanumerical(names);
     names.sort(Array.alphaNumericalSorter);
     for (var i=0; i<names.length; i++) {
         var name = names[i];
         var layer = doc.queryLayer(name);
-        var icon = RColor.getIcon(layer.getColor());
+        var icon = RColor.getIcon(layer.getColor(), new QSize(comboBox.iconSize.width(),10));
         comboBox.addItem(icon, layer.getName());
     }
 };
@@ -1152,6 +1199,7 @@ WidgetFactory.initBlockCombo = function(comboBox, doc, showSpaces) {
     comboBox.clear();
     var names = doc.getBlockNames();
     names.sort(Array.alphaNumericalSorter);
+    //names = RS.sortAlphanumerical(names);
     for (var i=0; i<names.length; i++) {
         var name = names[i];
         if (showSpaces || !name.startsWith("*")) {
@@ -1193,6 +1241,27 @@ WidgetFactory.initVAlignCombo = function(comboBox) {
     comboBox.addItem(qsTr("Middle"), RS.VAlignMiddle);
     comboBox.addItem(qsTr("Base"), RS.VAlignBase);
     comboBox.addItem(qsTr("Bottom"), RS.VAlignBottom);
+};
+
+WidgetFactory.initOrientationCombo = function(comboBox) {
+    comboBox.clear();
+
+    if (RSettings.isQt(5)) {
+        comboBox.addItem("↻ " + qsTr("Clockwise"), RS.CW);
+        comboBox.addItem("↺ " + qsTr("Counterclockwise"), RS.CCW);
+    }
+    else {
+        comboBox.addItem(qsTr("Clockwise"), RS.CW);
+        comboBox.addItem(qsTr("Counterclockwise"), RS.CCW);
+    }
+};
+
+WidgetFactory.initArcSymbolTypeCombo = function(comboBox) {
+    comboBox.clear();
+
+    comboBox.addItem(qsTr("Preceding"), 0);
+    comboBox.addItem(qsTr("Above"), 1);
+    comboBox.addItem(qsTr("None"), 2);
 };
 
 WidgetFactory.installComboBoxEventFilter = function(widget) {

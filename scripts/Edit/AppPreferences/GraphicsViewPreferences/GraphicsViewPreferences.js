@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -30,12 +30,22 @@ GraphicsViewPreferences.initPreferences = function(pageWidget, calledByPrefDialo
     widgets["ZeroWeightWeight"].removeItem(0);
     // remove item "0.00":
     widgets["ZeroWeightWeight"].removeItem(0);
+
+    var cbCapStyle = widgets["PenCapStyle"];
+    cbCapStyle.visible = false;
+    var lCapStyle = widgets["PenCapStyle_Label"];
+    lCapStyle.visible = false;
+//    cbCapStyle.addItem(qsTr("Round Cap"), Qt.RoundCap.valueOf());
+//    cbCapStyle.addItem(qsTr("Flat Cap"), Qt.FlatCap.valueOf());
+//    cbCapStyle.addItem(qsTr("Square Cap"), Qt.SquareCap.valueOf());
 };
 
 GraphicsViewPreferences.applyPreferences = function(doc, mdiChild) {
     if (isNull(doc) || isNull(mdiChild)) {
         return;
     }
+
+    var mt = RSettings.getBoolValue("GraphicsView/Multithreading", true);
 
     var di = mdiChild.getDocumentInterface();
     var scenes = di.getGraphicsScenes();
@@ -48,6 +58,12 @@ GraphicsViewPreferences.applyPreferences = function(doc, mdiChild) {
             // setting bg color to invalid will automatically update it:
             if (!view.isPrintPreview()) {
                 view.setBackgroundColor(new QColor());
+            }
+            if (mt) {
+                view.setNumThreads(RS.getIdealThreadCount());
+            }
+            else {
+                view.setNumThreads(1);
             }
             view.regenerate(false);
         }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -48,7 +48,9 @@ Zoom.prototype.beginEvent = function() {
 };
 
 Zoom.getMenu = function() {
-    return EAction.getSubMenu(View.getMenu(), 3300, 100, qsTr("Zoom"), "ZoomMenu");
+    var menu = EAction.getSubMenu(View.getMenu(), 3300, 100, qsTr("Zoom"), "ZoomMenu");
+    menu.setProperty("scriptFile", Zoom.includeBasePath + "/Zoom.js");
+    return menu;
 };
 
 Zoom.getToolBar = function() {
@@ -65,7 +67,7 @@ Zoom.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(false);
         action.setIcon(Zoom.includeBasePath + "/Zoom.svg");
-        action.setStatusTip(qsTr("Show zoom tools"));
+        //action.setStatusTip(qsTr("Show zoom tools"));
         action.setDefaultShortcut(new QKeySequence("w,z"));
         action.setNoState();
         action.setDefaultCommands(["zoommenu"]);

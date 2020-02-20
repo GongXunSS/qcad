@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -79,12 +79,12 @@ void RLineEntity::init() {
     RLineEntity::PropertyDisplayedColor.generateId(typeid(RLineEntity), REntity::PropertyDisplayedColor);
     RLineEntity::PropertyDrawOrder.generateId(typeid(RLineEntity), REntity::PropertyDrawOrder);
 
-    RLineEntity::PropertyStartPointX.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "Start Point"), QT_TRANSLATE_NOOP("REntity", "X"));
-    RLineEntity::PropertyStartPointY.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "Start Point"), QT_TRANSLATE_NOOP("REntity", "Y"));
-    RLineEntity::PropertyStartPointZ.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "Start Point"), QT_TRANSLATE_NOOP("REntity", "Z"));
-    RLineEntity::PropertyEndPointX.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "End Point"), QT_TRANSLATE_NOOP("REntity", "X"));
-    RLineEntity::PropertyEndPointY.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "End Point"), QT_TRANSLATE_NOOP("REntity", "Y"));
-    RLineEntity::PropertyEndPointZ.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "End Point"), QT_TRANSLATE_NOOP("REntity", "Z"));
+    RLineEntity::PropertyStartPointX.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "Start Point"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RLineEntity::PropertyStartPointY.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "Start Point"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RLineEntity::PropertyStartPointZ.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "Start Point"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
+    RLineEntity::PropertyEndPointX.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "End Point"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RLineEntity::PropertyEndPointY.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "End Point"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RLineEntity::PropertyEndPointZ.generateId(typeid(RLineEntity), QT_TRANSLATE_NOOP("REntity", "End Point"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
 
     RLineEntity::PropertyAngle.generateId(typeid(RLineEntity), "", QT_TRANSLATE_NOOP("REntity", "Angle"));
     RLineEntity::PropertyLength.generateId(typeid(RLineEntity), "", QT_TRANSLATE_NOOP("REntity", "Length"));
@@ -116,7 +116,7 @@ bool RLineEntity::setProperty(RPropertyTypeId propertyTypeId,
 
 QPair<QVariant, RPropertyAttributes> RLineEntity::getProperty(
         RPropertyTypeId& propertyTypeId, bool humanReadable,
-        bool noAttributes) {
+        bool noAttributes, bool showOnRequest) {
 
     if (propertyTypeId == PropertyStartPointX) {
         return qMakePair(QVariant(data.startPoint.x), RPropertyAttributes());
@@ -138,7 +138,7 @@ QPair<QVariant, RPropertyAttributes> RLineEntity::getProperty(
         return qMakePair(QVariant(data.getLength()), RPropertyAttributes(RPropertyAttributes::Sum));
     }
 
-    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 

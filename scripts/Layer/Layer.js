@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,7 @@
  * \brief This module contains ECMAScript implementations of various
  * layer related tools.
  */
-include("../EAction.js");
+include("scripts/EAction.js");
 
 /**
  * \class Layer
@@ -36,9 +36,9 @@ function Layer(guiAction) {
 
     this.documentInterface = undefined;
 
-    if (!isNull(guiAction) && !isNull(guiAction.getDocumentInterface())) {
-        this.setDocumentInterface(guiAction.getDocumentInterface());
-    }
+//    if (!isNull(guiAction) && !isNull(guiAction.getDocumentInterface())) {
+//        this.setDocumentInterface(guiAction.getDocumentInterface());
+//    }
 }
 
 Layer.prototype = new EAction();
@@ -99,7 +99,7 @@ Layer.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         action.setIcon(Layer.includeBasePath + "/Layer.svg");
-        action.setStatusTip(qsTr("Show layer tools"));
+        //action.setStatusTip(qsTr("Show layer tools"));
         action.setDefaultShortcut(new QKeySequence("w,y"));
         action.setNoState();
         action.setDefaultCommands(["layermenu"]);
@@ -284,6 +284,6 @@ Layer.lockUnlock = function(lock, di, showProgress) {
 /**
  * Can be reimplemented in derived classes to provide an advanced dialog.
  */
-Layer.prototype.createLayerDialog = function(doc, layer) {
-    return new LayerDialog(doc, layer);
+Layer.prototype.createLayerDialog = function(di, layer) {
+    return new LayerDialog(di, layer);
 };

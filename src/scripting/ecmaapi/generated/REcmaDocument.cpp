@@ -93,6 +93,8 @@
             
             REcmaHelper::registerFunction(&engine, proto, queryAllObjects, "queryAllObjects");
             
+            REcmaHelper::registerFunction(&engine, proto, querySelectedLayers, "querySelectedLayers");
+            
             REcmaHelper::registerFunction(&engine, proto, queryAllVisibleEntities, "queryAllVisibleEntities");
             
             REcmaHelper::registerFunction(&engine, proto, queryAllEntities, "queryAllEntities");
@@ -100,6 +102,8 @@
             REcmaHelper::registerFunction(&engine, proto, queryAllUcs, "queryAllUcs");
             
             REcmaHelper::registerFunction(&engine, proto, queryAllLayers, "queryAllLayers");
+            
+            REcmaHelper::registerFunction(&engine, proto, queryAllLayerStates, "queryAllLayerStates");
             
             REcmaHelper::registerFunction(&engine, proto, queryAllBlocks, "queryAllBlocks");
             
@@ -131,6 +135,10 @@
             
             REcmaHelper::registerFunction(&engine, proto, queryInfiniteEntities, "queryInfiniteEntities");
             
+            REcmaHelper::registerFunction(&engine, proto, queryIntersectedEntitiesXYFast, "queryIntersectedEntitiesXYFast");
+            
+            REcmaHelper::registerFunction(&engine, proto, queryIntersectedShapesXYFast, "queryIntersectedShapesXYFast");
+            
             REcmaHelper::registerFunction(&engine, proto, queryIntersectedEntitiesXY, "queryIntersectedEntitiesXY");
             
             REcmaHelper::registerFunction(&engine, proto, queryIntersectedShapesXY, "queryIntersectedShapesXY");
@@ -157,11 +165,17 @@
             
             REcmaHelper::registerFunction(&engine, proto, queryEntityDirect, "queryEntityDirect");
             
+            REcmaHelper::registerFunction(&engine, proto, queryVisibleEntityDirect, "queryVisibleEntityDirect");
+            
             REcmaHelper::registerFunction(&engine, proto, queryUcs, "queryUcs");
             
             REcmaHelper::registerFunction(&engine, proto, queryLayer, "queryLayer");
             
             REcmaHelper::registerFunction(&engine, proto, queryLayerDirect, "queryLayerDirect");
+            
+            REcmaHelper::registerFunction(&engine, proto, queryLayerState, "queryLayerState");
+            
+            REcmaHelper::registerFunction(&engine, proto, queryLayerStateDirect, "queryLayerStateDirect");
             
             REcmaHelper::registerFunction(&engine, proto, queryLayout, "queryLayout");
             
@@ -179,7 +193,7 @@
             
             REcmaHelper::registerFunction(&engine, proto, clearSelection, "clearSelection");
             
-            REcmaHelper::registerFunction(&engine, proto, selectAllEntites, "selectAllEntites");
+            REcmaHelper::registerFunction(&engine, proto, selectAllEntities, "selectAllEntities");
             
             REcmaHelper::registerFunction(&engine, proto, selectEntity, "selectEntity");
             
@@ -203,6 +217,8 @@
             
             REcmaHelper::registerFunction(&engine, proto, isLayerFrozen, "isLayerFrozen");
             
+            REcmaHelper::registerFunction(&engine, proto, isLayerPlottable, "isLayerPlottable");
+            
             REcmaHelper::registerFunction(&engine, proto, isParentLayerFrozen, "isParentLayerFrozen");
             
             REcmaHelper::registerFunction(&engine, proto, isBlockFrozen, "isBlockFrozen");
@@ -210,6 +226,8 @@
             REcmaHelper::registerFunction(&engine, proto, isLayoutBlock, "isLayoutBlock");
             
             REcmaHelper::registerFunction(&engine, proto, isEntityLayerFrozen, "isEntityLayerFrozen");
+            
+            REcmaHelper::registerFunction(&engine, proto, isEntityVisible, "isEntityVisible");
             
             REcmaHelper::registerFunction(&engine, proto, isParentLayerSnappable, "isParentLayerSnappable");
             
@@ -220,6 +238,8 @@
             REcmaHelper::registerFunction(&engine, proto, getBoundingBox, "getBoundingBox");
             
             REcmaHelper::registerFunction(&engine, proto, getSelectionBox, "getSelectionBox");
+            
+            REcmaHelper::registerFunction(&engine, proto, getEntitiesBox, "getEntitiesBox");
             
             REcmaHelper::registerFunction(&engine, proto, clearSpatialIndices, "clearSpatialIndices");
             
@@ -248,6 +268,10 @@
             REcmaHelper::registerFunction(&engine, proto, startTransactionGroup, "startTransactionGroup");
             
             REcmaHelper::registerFunction(&engine, proto, getTransactionGroup, "getTransactionGroup");
+            
+            REcmaHelper::registerFunction(&engine, proto, setAutoTransactionGroup, "setAutoTransactionGroup");
+            
+            REcmaHelper::registerFunction(&engine, proto, getAutoTransactionGroup, "getAutoTransactionGroup");
             
             REcmaHelper::registerFunction(&engine, proto, resetTransactionStack, "resetTransactionStack");
             
@@ -309,6 +333,8 @@
             
             REcmaHelper::registerFunction(&engine, proto, getBlockName, "getBlockName");
             
+            REcmaHelper::registerFunction(&engine, proto, getBlockNameFromLayout, "getBlockNameFromLayout");
+            
             REcmaHelper::registerFunction(&engine, proto, getBlockNames, "getBlockNames");
             
             REcmaHelper::registerFunction(&engine, proto, sortBlocks, "sortBlocks");
@@ -317,11 +343,19 @@
             
             REcmaHelper::registerFunction(&engine, proto, getLayerNames, "getLayerNames");
             
+            REcmaHelper::registerFunction(&engine, proto, getLayerStateName, "getLayerStateName");
+            
+            REcmaHelper::registerFunction(&engine, proto, getLayerStateNames, "getLayerStateNames");
+            
             REcmaHelper::registerFunction(&engine, proto, getLayoutName, "getLayoutName");
             
             REcmaHelper::registerFunction(&engine, proto, getViewNames, "getViewNames");
             
             REcmaHelper::registerFunction(&engine, proto, hasLayer, "hasLayer");
+            
+            REcmaHelper::registerFunction(&engine, proto, hasLayerStates, "hasLayerStates");
+            
+            REcmaHelper::registerFunction(&engine, proto, hasLayerState, "hasLayerState");
             
             REcmaHelper::registerFunction(&engine, proto, hasBlock, "hasBlock");
             
@@ -335,7 +369,11 @@
             
             REcmaHelper::registerFunction(&engine, proto, getLayer0Id, "getLayer0Id");
             
+            REcmaHelper::registerFunction(&engine, proto, getLayerStateId, "getLayerStateId");
+            
             REcmaHelper::registerFunction(&engine, proto, getBlockId, "getBlockId");
+            
+            REcmaHelper::registerFunction(&engine, proto, getBlockIdAuto, "getBlockIdAuto");
             
             REcmaHelper::registerFunction(&engine, proto, getModelSpaceBlockId, "getModelSpaceBlockId");
             
@@ -426,6 +464,14 @@
             REcmaHelper::registerFunction(&engine, proto, setModified, "setModified");
             
             REcmaHelper::registerFunction(&engine, proto, copyVariablesFrom, "copyVariablesFrom");
+            
+            REcmaHelper::registerFunction(&engine, proto, addAutoVariable, "addAutoVariable");
+            
+            REcmaHelper::registerFunction(&engine, proto, getAutoVariables, "getAutoVariables");
+            
+            REcmaHelper::registerFunction(&engine, proto, substituteAutoVariables, "substituteAutoVariables");
+            
+            REcmaHelper::registerFunction(&engine, proto, eval, "eval");
             
             REcmaHelper::registerFunction(&engine, proto, dump, "dump");
             
@@ -645,6 +691,33 @@
     // return type 'void'
     
                self->init();
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    bool
+                    a0 =
+                    (bool)
+                    
+                    context->argument( 0 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->init(a0);
     } else
 
 
@@ -898,6 +971,28 @@
 
 
         
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'const RSpatialIndex &'
+    const RSpatialIndex & cppResult =
+        
+               self->getSpatialIndex();
+        // return type: const RSpatialIndex &
+                // reference
+                result = engine->newVariant(
+                QVariant::fromValue(&cppResult));
+            
+    } else
+
+
+        
             {
                return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getSpatialIndex().",
                    context);
@@ -1097,6 +1192,33 @@
     // return type 'void'
     
                self->clear();
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    bool
+                    a0 =
+                    (bool)
+                    
+                    context->argument( 0 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->clear(a0);
     } else
 
 
@@ -1726,6 +1848,56 @@
             return result;
         }
          QScriptValue
+        REcmaDocument::querySelectedLayers
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::querySelectedLayers", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::querySelectedLayers";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("querySelectedLayers", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSet < RObject::Id >'
+    QSet < RObject::Id > cppResult =
+        
+               self->querySelectedLayers();
+        // return type: QSet < RObject::Id >
+                // QSet (convert to QVariantList):
+                result = REcmaHelper::setToScriptValue(engine, cppResult);
+
+                
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.querySelectedLayers().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::querySelectedLayers", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaDocument::queryAllVisibleEntities
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -2121,6 +2293,56 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::queryAllLayers", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::queryAllLayerStates
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::queryAllLayerStates", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::queryAllLayerStates";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("queryAllLayerStates", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSet < RLayerState::Id >'
+    QSet < RLayerState::Id > cppResult =
+        
+               self->queryAllLayerStates();
+        // return type: QSet < RLayerState::Id >
+                // QSet (convert to QVariantList):
+                result = REcmaHelper::setToScriptValue(engine, cppResult);
+
+                
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.queryAllLayerStates().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::queryAllLayerStates", context, engine);
             return result;
         }
          QScriptValue
@@ -3107,6 +3329,210 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::queryInfiniteEntities", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::queryIntersectedEntitiesXYFast
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::queryIntersectedEntitiesXYFast", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::queryIntersectedEntitiesXYFast";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("queryIntersectedEntitiesXYFast", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RBox */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RBox*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RBox*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RDocument: Argument 0 is not of type RBox.",
+                               context);                    
+                    }
+                    RBox 
+                    a0 = 
+                    *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSet < REntity::Id >'
+    QSet < REntity::Id > cppResult =
+        
+               self->queryIntersectedEntitiesXYFast(a0);
+        // return type: QSet < REntity::Id >
+                // QSet (convert to QVariantList):
+                result = REcmaHelper::setToScriptValue(engine, cppResult);
+
+                
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.queryIntersectedEntitiesXYFast().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::queryIntersectedEntitiesXYFast", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::queryIntersectedShapesXYFast
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::queryIntersectedShapesXYFast", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::queryIntersectedShapesXYFast";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("queryIntersectedShapesXYFast", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RBox */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RBox*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RBox*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RDocument: Argument 0 is not of type RBox.",
+                               context);                    
+                    }
+                    RBox 
+                    a0 = 
+                    *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSet < REntity::Id >'
+    QSet < REntity::Id > cppResult =
+        
+               self->queryIntersectedShapesXYFast(a0);
+        // return type: QSet < REntity::Id >
+                // QSet (convert to QVariantList):
+                result = REcmaHelper::setToScriptValue(engine, cppResult);
+
+                
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    2 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RBox */
+     && (
+            context->argument(1).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RBox*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RBox*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RDocument: Argument 0 is not of type RBox.",
+                               context);                    
+                    }
+                    RBox 
+                    a0 = 
+                    *ap0;
+                
+                    // argument isStandardType
+                    bool
+                    a1 =
+                    (bool)
+                    
+                    context->argument( 1 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSet < REntity::Id >'
+    QSet < REntity::Id > cppResult =
+        
+               self->queryIntersectedShapesXYFast(a0
+        ,
+    a1);
+        // return type: QSet < REntity::Id >
+                // QSet (convert to QVariantList):
+                result = REcmaHelper::setToScriptValue(engine, cppResult);
+
+                
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.queryIntersectedShapesXYFast().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::queryIntersectedShapesXYFast", context, engine);
             return result;
         }
          QScriptValue
@@ -4772,6 +5198,66 @@
             return result;
         }
          QScriptValue
+        REcmaDocument::queryVisibleEntityDirect
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::queryVisibleEntityDirect", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::queryVisibleEntityDirect";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("queryVisibleEntityDirect", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isNumber()
+        ) /* type: REntity::Id */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    REntity::Id
+                    a0 =
+                    (REntity::Id)
+                    (int)
+                    context->argument( 0 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSharedPointer < REntity >'
+    QSharedPointer < REntity > cppResult =
+        
+               self->queryVisibleEntityDirect(a0);
+        // return type: QSharedPointer < REntity >
+                // Shared pointer to entity, cast to best match:
+                result = REcmaHelper::toScriptValue(engine, cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.queryVisibleEntityDirect().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::queryVisibleEntityDirect", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaDocument::queryUcs
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -5013,6 +5499,158 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::queryLayerDirect", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::queryLayerState
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::queryLayerState", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::queryLayerState";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("queryLayerState", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isNumber()
+        ) /* type: RLayerState::Id */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    RLayerState::Id
+                    a0 =
+                    (RLayerState::Id)
+                    (int)
+                    context->argument( 0 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSharedPointer < RLayerState >'
+    QSharedPointer < RLayerState > cppResult =
+        
+               self->queryLayerState(a0);
+        // return type: QSharedPointer < RLayerState >
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSharedPointer < RLayerState >'
+    QSharedPointer < RLayerState > cppResult =
+        
+               self->queryLayerState(a0);
+        // return type: QSharedPointer < RLayerState >
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.queryLayerState().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::queryLayerState", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::queryLayerStateDirect
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::queryLayerStateDirect", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::queryLayerStateDirect";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("queryLayerStateDirect", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isNumber()
+        ) /* type: RLayerState::Id */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    RLayerState::Id
+                    a0 =
+                    (RLayerState::Id)
+                    (int)
+                    context->argument( 0 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSharedPointer < RLayerState >'
+    QSharedPointer < RLayerState > cppResult =
+        
+               self->queryLayerStateDirect(a0);
+        // return type: QSharedPointer < RLayerState >
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.queryLayerStateDirect().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::queryLayerStateDirect", context, engine);
             return result;
         }
          QScriptValue
@@ -5661,19 +6299,19 @@
             return result;
         }
          QScriptValue
-        REcmaDocument::selectAllEntites
+        REcmaDocument::selectAllEntities
         (QScriptContext* context, QScriptEngine* engine) 
         
         {
-            //REcmaHelper::functionStart("REcmaDocument::selectAllEntites", context, engine);
-            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::selectAllEntites";
+            //REcmaHelper::functionStart("REcmaDocument::selectAllEntities", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::selectAllEntities";
             //QCoreApplication::processEvents();
 
             QScriptValue result = engine->undefinedValue();
             
                     // public function: can be called from ECMA wrapper of ECMA shell:
                     RDocument* self = 
-                        getSelf("selectAllEntites", context);
+                        getSelf("selectAllEntities", context);
                   
 
                 //Q_ASSERT(self!=NULL);
@@ -5692,7 +6330,7 @@
     // call C++ function:
     // return type 'void'
     
-               self->selectAllEntites();
+               self->selectAllEntities();
     } else
 
 
@@ -5724,16 +6362,16 @@
     // call C++ function:
     // return type 'void'
     
-               self->selectAllEntites(a0);
+               self->selectAllEntities(a0);
     } else
 
 
         
             {
-               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.selectAllEntites().",
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.selectAllEntities().",
                    context);
             }
-            //REcmaHelper::functionEnd("REcmaDocument::selectAllEntites", context, engine);
+            //REcmaHelper::functionEnd("REcmaDocument::selectAllEntities", context, engine);
             return result;
         }
          QScriptValue
@@ -6031,9 +6669,14 @@
     // end of arguments
 
     // call C++ function:
-    // return type 'void'
-    
+    // return type 'int'
+    int cppResult =
+        
                self->selectEntities(a0);
+        // return type: int
+                // standard Type
+                result = QScriptValue(cppResult);
+            
     } else
 
 
@@ -6070,11 +6713,16 @@
     // end of arguments
 
     // call C++ function:
-    // return type 'void'
-    
+    // return type 'int'
+    int cppResult =
+        
                self->selectEntities(a0
         ,
     a1);
+        // return type: int
+                // standard Type
+                result = QScriptValue(cppResult);
+            
     } else
 
 
@@ -6127,13 +6775,18 @@
     // end of arguments
 
     // call C++ function:
-    // return type 'void'
-    
+    // return type 'int'
+    int cppResult =
+        
                self->selectEntities(a0
         ,
     a1
         ,
     a2);
+        // return type: int
+                // standard Type
+                result = QScriptValue(cppResult);
+            
     } else
 
 
@@ -6187,11 +6840,11 @@
     // end of arguments
 
     // call C++ function:
-    // return type 'bool'
-    bool cppResult =
+    // return type 'int'
+    int cppResult =
         
                self->deselectEntities(a0);
-        // return type: bool
+        // return type: int
                 // standard Type
                 result = QScriptValue(cppResult);
             
@@ -6236,13 +6889,13 @@
     // end of arguments
 
     // call C++ function:
-    // return type 'bool'
-    bool cppResult =
+    // return type 'int'
+    int cppResult =
         
                self->deselectEntities(a0
         ,
     a1);
-        // return type: bool
+        // return type: int
                 // standard Type
                 result = QScriptValue(cppResult);
             
@@ -6888,6 +7541,108 @@
             return result;
         }
          QScriptValue
+        REcmaDocument::isLayerPlottable
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::isLayerPlottable", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::isLayerPlottable";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("isLayerPlottable", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isNumber()
+        ) /* type: RLayer::Id */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    RLayer::Id
+                    a0 =
+                    (RLayer::Id)
+                    (int)
+                    context->argument( 0 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isLayerPlottable(a0);
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RLayer */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is reference
+                    RLayer*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RLayer*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if( ap0 == NULL ){
+                           return REcmaHelper::throwError("RDocument: Argument 0 is not of type RLayer*.",
+                               context);                    
+                    }
+                    RLayer& a0 = *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isLayerPlottable(a0);
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.isLayerPlottable().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::isLayerPlottable", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaDocument::isParentLayerFrozen
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -7167,6 +7922,131 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::isEntityLayerFrozen", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::isEntityVisible
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::isEntityVisible", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::isEntityVisible";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("isEntityVisible", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: REntity */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is reference
+                    REntity*
+                    ap0 =
+                    qscriptvalue_cast<
+                    REntity*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if( ap0 == NULL ){
+                           return REcmaHelper::throwError("RDocument: Argument 0 is not of type REntity*.",
+                               context);                    
+                    }
+                    REntity& a0 = *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isEntityVisible(a0);
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    2 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: REntity */
+     && (
+            context->argument(1).isNumber()
+        ) /* type: RBlock::Id */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is reference
+                    REntity*
+                    ap0 =
+                    qscriptvalue_cast<
+                    REntity*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if( ap0 == NULL ){
+                           return REcmaHelper::throwError("RDocument: Argument 0 is not of type REntity*.",
+                               context);                    
+                    }
+                    REntity& a0 = *ap0;
+                
+                    // argument isStandardType
+                    RBlock::Id
+                    a1 =
+                    (RBlock::Id)
+                    (int)
+                    context->argument( 1 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isEntityVisible(a0
+        ,
+    a1);
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.isEntityVisible().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::isEntityVisible", context, engine);
             return result;
         }
          QScriptValue
@@ -7595,6 +8475,67 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::getSelectionBox", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::getEntitiesBox
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::getEntitiesBox", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::getEntitiesBox";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("getEntitiesBox", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isArray()
+        ) /* type: QSet < REntity::Id > */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isArray
+                    QSet < REntity::Id >
+                    a0;
+                    REcmaHelper::fromScriptValue(
+                        engine,
+                        context->argument(0),
+                        a0
+                    );
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'RBox'
+    RBox cppResult =
+        
+               self->getEntitiesBox(a0);
+        // return type: RBox
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getEntitiesBox().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::getEntitiesBox", context, engine);
             return result;
         }
          QScriptValue
@@ -8461,6 +9402,110 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::getTransactionGroup", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::setAutoTransactionGroup
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::setAutoTransactionGroup", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::setAutoTransactionGroup";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("setAutoTransactionGroup", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    bool
+                    a0 =
+                    (bool)
+                    
+                    context->argument( 0 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->setAutoTransactionGroup(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.setAutoTransactionGroup().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::setAutoTransactionGroup", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::getAutoTransactionGroup
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::getAutoTransactionGroup", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::getAutoTransactionGroup";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("getAutoTransactionGroup", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->getAutoTransactionGroup();
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getAutoTransactionGroup().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::getAutoTransactionGroup", context, engine);
             return result;
         }
          QScriptValue
@@ -10221,6 +11266,98 @@
             return result;
         }
          QScriptValue
+        REcmaDocument::getBlockNameFromLayout
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::getBlockNameFromLayout", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::getBlockNameFromLayout";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("getBlockNameFromLayout", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QString'
+    QString cppResult =
+        
+               self->getBlockNameFromLayout(a0);
+        // return type: QString
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isNumber()
+        ) /* type: RLayout::Id */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    RLayout::Id
+                    a0 =
+                    (RLayout::Id)
+                    (int)
+                    context->argument( 0 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QString'
+    QString cppResult =
+        
+               self->getBlockNameFromLayout(a0);
+        // return type: QString
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getBlockNameFromLayout().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::getBlockNameFromLayout", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaDocument::getBlockNames
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -10508,6 +11645,149 @@
             return result;
         }
          QScriptValue
+        REcmaDocument::getLayerStateName
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::getLayerStateName", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::getLayerStateName";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("getLayerStateName", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isNumber()
+        ) /* type: RLayerState::Id */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    RLayerState::Id
+                    a0 =
+                    (RLayerState::Id)
+                    (int)
+                    context->argument( 0 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QString'
+    QString cppResult =
+        
+               self->getLayerStateName(a0);
+        // return type: QString
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getLayerStateName().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::getLayerStateName", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::getLayerStateNames
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::getLayerStateNames", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::getLayerStateNames";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("getLayerStateNames", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSet < QString >'
+    QSet < QString > cppResult =
+        
+               self->getLayerStateNames();
+        // return type: QSet < QString >
+                // QSet (convert to QVariantList):
+                result = REcmaHelper::setToScriptValue(engine, cppResult);
+
+                
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSet < QString >'
+    QSet < QString > cppResult =
+        
+               self->getLayerStateNames(a0);
+        // return type: QSet < QString >
+                // QSet (convert to QVariantList):
+                result = REcmaHelper::setToScriptValue(engine, cppResult);
+
+                
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getLayerStateNames().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::getLayerStateNames", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaDocument::getLayoutName
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -10675,6 +11955,115 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::hasLayer", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::hasLayerStates
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::hasLayerStates", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::hasLayerStates";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("hasLayerStates", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->hasLayerStates();
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.hasLayerStates().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::hasLayerStates", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::hasLayerState
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::hasLayerState", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::hasLayerState";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("hasLayerState", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->hasLayerState(a0);
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.hasLayerState().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::hasLayerState", context, engine);
             return result;
         }
          QScriptValue
@@ -11027,6 +12416,66 @@
             return result;
         }
          QScriptValue
+        REcmaDocument::getLayerStateId
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::getLayerStateId", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::getLayerStateId";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("getLayerStateId", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'RLayerState::Id'
+    RLayerState::Id cppResult =
+        
+               self->getLayerStateId(a0);
+        // return type: RLayerState::Id
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getLayerStateId().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::getLayerStateId", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaDocument::getBlockId
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -11084,6 +12533,66 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::getBlockId", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::getBlockIdAuto
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::getBlockIdAuto", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::getBlockIdAuto";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("getBlockIdAuto", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'RBlock::Id'
+    RBlock::Id cppResult =
+        
+               self->getBlockIdAuto(a0);
+        // return type: RBlock::Id
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getBlockIdAuto().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::getBlockIdAuto", context, engine);
             return result;
         }
          QScriptValue
@@ -14150,6 +15659,280 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaDocument::copyVariablesFrom", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::addAutoVariable
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::addAutoVariable", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::addAutoVariable";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("addAutoVariable", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isNumber()
+        ) /* type: double */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    double
+                    a0 =
+                    (double)
+                    
+                    context->argument( 0 ).
+                    toNumber();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QString'
+    QString cppResult =
+        
+               self->addAutoVariable(a0);
+        // return type: QString
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.addAutoVariable().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::addAutoVariable", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::getAutoVariables
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::getAutoVariables", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::getAutoVariables";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("getAutoVariables", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QStringList'
+    QStringList cppResult =
+        
+               self->getAutoVariables();
+        // return type: QStringList
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.getAutoVariables().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::getAutoVariables", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::substituteAutoVariables
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::substituteAutoVariables", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::substituteAutoVariables";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("substituteAutoVariables", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QString'
+    QString cppResult =
+        
+               self->substituteAutoVariables(a0);
+        // return type: QString
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.substituteAutoVariables().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::substituteAutoVariables", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaDocument::eval
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaDocument::eval", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaDocument::eval";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RDocument* self = 
+                        getSelf("eval", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'double'
+    double cppResult =
+        
+               self->eval(a0);
+        // return type: double
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    2 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+     && (
+            context->argument(1).isBool()
+        ) /* type: bool * */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+                    // argument isStandardType
+                    bool *
+                    a1 =
+                    (bool *)
+                    
+                    context->argument( 1 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'double'
+    double cppResult =
+        
+               self->eval(a0
+        ,
+    a1);
+        // return type: double
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RDocument.eval().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaDocument::eval", context, engine);
             return result;
         }
          QScriptValue

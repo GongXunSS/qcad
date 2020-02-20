@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./core" filename="RGuiAction.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -86,9 +86,10 @@
     <function_decl><type><name>static</name> <name>QString</name></type> <name>formatToolTip</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>oriText</name></decl></param>, <param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>shortcut</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>QString</name></type> <name>getToolTip</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>oriText</name></decl></param>, <param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>shortcut</name></decl></param>)</parameter_list>;</function_decl>
 
-    <function_decl><type><name>void</name></type> <name>setDocumentInterface</name><parameter_list>(<param><decl><type><name>RDocumentInterface</name>*</type> <name>di</name></decl></param>)</parameter_list>;</function_decl>
-    <function_decl><type><name>RDocumentInterface</name>*</type> <name>getDocumentInterface</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <comment type="line">//void setDocumentInterface(RDocumentInterface* di);</comment>
+    <comment type="line">//RDocumentInterface* getDocumentInterface() const;</comment>
 
+    <function_decl><type><name>void</name></type> <name>addShortcut</name><parameter_list>(<param><decl><type><name>const</name> <name>QKeySequence</name>&amp;</type> <name>shortcut</name></decl></param>)</parameter_list>;</function_decl>
     <comment type="block">/**
      * Sets the shortcut(s) for this action.
      *
@@ -97,10 +98,13 @@
     <function_decl><type><name>void</name></type> <name>setShortcut</name><parameter_list>(<param><decl><type><name>const</name> <name>QKeySequence</name>&amp;</type> <name>shortcut</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>setDefaultShortcut</name><parameter_list>(<param><decl><type><name>const</name> <name>QKeySequence</name>&amp;</type> <name>shortcut</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>setShortcuts</name><parameter_list>(<param><decl><type><name>const</name> <name>QList<argument_list>&lt;<argument><name>QKeySequence</name></argument>&gt;</argument_list></name>&amp;</type> <name>shortcuts</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>setShortcutsFromStrings</name><parameter_list>(<param><decl><type><name>const</name> <name>QStringList</name>&amp;</type> <name>shortcuts</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>QList<argument_list>&lt;<argument><name>QKeySequence</name></argument>&gt;</argument_list></name></type> <name>getShortcuts</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>void</name></type> <name>setDefaultShortcuts</name><parameter_list>(<param><decl><type><name>const</name> <name>QList<argument_list>&lt;<argument><name>QKeySequence</name></argument>&gt;</argument_list></name>&amp;</type> <name>shortcuts</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>QList<argument_list>&lt;<argument><name>QKeySequence</name></argument>&gt;</argument_list></name></type> <name>getDefaultShortcuts</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>setShortcutText</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>oriText</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>QString</name></type> <name>getShortcutText</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QString</name></type> <name>getShortcutsString</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>separator</name> =<init> <expr>","</expr></init></decl></param>, <param><decl><type><name><name>QKeySequence</name>::<name>SequenceFormat</name></name></type> <name>format</name> =<init> <expr><name><name>QKeySequence</name>::<name>PortableText</name></name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <function_decl><type><name>static</name> <name>void</name></type> <name>setGroupSortOrderStatic</name><parameter_list>(<param><decl><type><name>QAction</name>*</type> <name>a</name></decl></param>, <param><decl><type><name>int</name></type> <name>sortOrder</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>static</name> <name>void</name></type> <name>setGroupSortOrderOverrideStatic</name><parameter_list>(<param><decl><type><name>QAction</name>*</type> <name>a</name></decl></param>, <param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>widgetName</name></decl></param>, <param><decl><type><name>int</name></type> <name>sortOrder</name></decl></param>)</parameter_list>;</function_decl>
@@ -169,6 +173,18 @@
      */</comment>
     <function_decl><type><name>virtual</name> <name>bool</name></type> <name>isChecked</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     
+    <comment type="block">/**
+     * If \c on is true, this action runs in the global script context (default for
+     * actions that don't require a document).
+     */</comment>
+    <function><type><name>void</name></type> <name>setForceGlobal</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>on</name></decl></param>)</parameter_list> <block>{
+        <expr_stmt><expr><name>forceGlobal</name> = <name>on</name></expr>;</expr_stmt>
+    }</block></function>
+
+    <function><type><name>bool</name></type> <name>getForceGlobal</name><parameter_list>()</parameter_list> <specifier>const</specifier> <block>{
+        <return>return <expr><name>forceGlobal</name></expr>;</return>
+    }</block></function>
+
     <comment type="block">/**
      * If \c on is true, this action requires a document to be open. The GUI element(s)
      * can for example be grayed out if no document is open.
@@ -321,6 +337,7 @@
     }</block></function>
 
     <function_decl><type><name>static</name> <name>bool</name></type> <name>triggerByCommand</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>cmd</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>static</name> <name>bool</name></type> <name>triggerByShortcut</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>sc</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>static</name> <name>RGuiAction</name>*</type> <name>getByScriptFile</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>scriptFile</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>static</name> <name>RGuiAction</name>*</type> <name>getByClassName</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>className</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>static</name> <name>RGuiAction</name>*</type> <name>getByCommand</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>command</name></decl></param>)</parameter_list>;</function_decl>
@@ -356,6 +373,7 @@
 
 </public><protected>protected:
     <decl_stmt><decl><type><name>static</name> <name>QMap<argument_list>&lt;<argument><name>QString</name></argument>, <argument><name>RGuiAction</name>*</argument>&gt;</argument_list></name></type> <name>actionsByCommand</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>static</name> <name>QMap<argument_list>&lt;<argument><name>QString</name></argument>, <argument><name>RGuiAction</name>*</argument>&gt;</argument_list></name></type> <name>actionsByShortcut</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>static</name> <name>QMap<argument_list>&lt;<argument><name>QString</name></argument>, <argument><name>RGuiAction</name>*</argument>&gt;</argument_list></name></type> <name>actionsByPrimaryCommand</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>static</name> <name>QMap<argument_list>&lt;<argument><name>QString</name></argument>, <argument><name>RGuiAction</name>*</argument>&gt;</argument_list></name></type> <name>actionsByScriptFile</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>static</name> <name>QMultiMap<argument_list>&lt;<argument><name>QString</name></argument>, <argument><name>RGuiAction</name>*</argument>&gt;</argument_list></name></type> <name>actionsByGroup</name></decl>;</decl_stmt>
@@ -371,6 +389,7 @@
     <decl_stmt><decl><type><name>bool</name></type> <name>groupDefault</name></decl>;</decl_stmt>
     
     <comment type="line">// TODO: refactor to use flags:</comment>
+    <decl_stmt><decl><type><name>bool</name></type> <name>forceGlobal</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>requiresDocument</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>requiresSelection</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>requiresUndoableTransaction</name></decl>;</decl_stmt>
@@ -383,11 +402,12 @@
     <decl_stmt><decl><type><name>QStringList</name></type> <name>arguments</name></decl>;</decl_stmt>
 
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>QKeySequence</name></argument>&gt;</argument_list></name></type> <name>defaultShortcuts</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>QKeySequence</name></argument>&gt;</argument_list></name></type> <name>multiKeyShortcuts</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QString</name></type> <name>shortcutText</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QString</name></type> <name>toolTip</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>iconDisabled</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>int</name></type> <name>enabledOverride</name></decl>;</decl_stmt>
-    <decl_stmt><decl><type><name>RDocumentInterface</name>*</type> <name>documentInterface</name></decl>;</decl_stmt>
+    <comment type="line">//RDocumentInterface* documentInterface;</comment>
 </protected>}</block>;</class>
 
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>RGuiAction*</argument>)</argument_list></macro>

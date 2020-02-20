@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -36,12 +36,12 @@ public:
     RLayerListenerAdapter(QObject* parent=NULL) : QObject(parent) { }
     virtual ~RLayerListenerAdapter() { }
 
-    virtual void updateLayers(RDocumentInterface* documentInterface) {
-        emit layersUpdated(documentInterface);
+    virtual void updateLayers(RDocumentInterface* documentInterface, QList<RLayer::Id>& layerIds) {
+        emit layersUpdated(documentInterface, layerIds);
     }
 
-    virtual void setCurrentLayer(RDocumentInterface* documentInterface) {
-        emit currentLayerSet(documentInterface);
+    virtual void setCurrentLayer(RDocumentInterface* documentInterface, RLayer::Id previousLayerId) {
+        emit currentLayerSet(documentInterface, previousLayerId);
     }
 
     virtual void clearLayers() {
@@ -49,8 +49,8 @@ public:
     }
 
 signals:
-    void layersUpdated(RDocumentInterface* documentInterface);
-    void currentLayerSet(RDocumentInterface* documentInterface);
+    void layersUpdated(RDocumentInterface* documentInterface, QList<int> layerIds);
+    void currentLayerSet(RDocumentInterface* documentInterface, int previousLayerId);
     void layersCleared();
 };
 

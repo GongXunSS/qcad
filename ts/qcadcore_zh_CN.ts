@@ -112,7 +112,7 @@
 <context>
     <name>RColor</name>
     <message>
-        <location filename="../src/core/RColor.cpp" line="+287"/>
+        <location filename="../src/core/RColor.cpp" line="+288"/>
         <source>By Layer</source>
         <translation>按图层</translation>
     </message>
@@ -253,7 +253,12 @@
         <translation>位置</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="+62"/>
+        <location filename="../src/core/RBlock.cpp" line="+65"/>
+        <source>Pixel Unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <location filename="../src/core/RBlockReferenceEntity.cpp" line="-2"/>
         <location line="+3"/>
         <location filename="../src/core/RLayout.cpp" line="+82"/>
@@ -345,8 +350,13 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/REntity.cpp" line="+86"/>
-        <location filename="../src/core/RObject.cpp" line="+61"/>
+        <location line="+3"/>
+        <source>Attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/REntity.cpp" line="+91"/>
+        <location filename="../src/core/RObject.cpp" line="+68"/>
         <source>Type</source>
         <translation>类型</translation>
     </message>
@@ -362,7 +372,7 @@
     </message>
     <message>
         <location line="+1"/>
-        <location filename="../src/core/RLayer.cpp" line="+99"/>
+        <location filename="../src/core/RLayer.cpp" line="+102"/>
         <source>Linetype</source>
         <translation>线型</translation>
     </message>
@@ -427,7 +437,7 @@
     </message>
     <message>
         <location filename="../src/core/RObject.cpp" line="-1"/>
-        <location filename="../src/core/RPropertyTypeId.cpp" line="+108"/>
+        <location filename="../src/core/RPropertyTypeId.cpp" line="+151"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
@@ -440,6 +450,16 @@
         <location line="+1"/>
         <source>Protected</source>
         <translation type="unfinished">受保护的</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Invisible</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/core/REntity.cpp" line="+2"/>
@@ -563,8 +583,9 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="-5"/>
+        <location filename="../src/core/RBlock.cpp" line="-6"/>
         <location filename="../src/core/RLayer.cpp" line="-8"/>
+        <location filename="../src/core/RLayerState.cpp" line="+46"/>
         <location filename="../src/core/RLayout.cpp" line="-24"/>
         <source>Name</source>
         <translation type="unfinished">名字</translation>
@@ -650,7 +671,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/RBlockReferenceData.cpp" line="+571"/>
+        <location filename="../src/core/RBlockReferenceData.cpp" line="+852"/>
         <source>Circular (recursive) block referencing detected:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -663,7 +684,7 @@
 <context>
     <name>RGuiAction</name>
     <message>
-        <location filename="../src/core/RGuiAction.cpp" line="+180"/>
+        <location filename="../src/core/RGuiAction.cpp" line="+186"/>
         <source>Requires selection</source>
         <translation>需要选择</translation>
     </message>
@@ -786,7 +807,7 @@
         <translation type="vanished">边界（大）</translation>
     </message>
     <message>
-        <location filename="../src/core/RLinetype.cpp" line="+48"/>
+        <location filename="../src/core/RLinetype.cpp" line="+52"/>
         <source>Name</source>
         <translation type="unfinished">名字</translation>
     </message>
@@ -809,7 +830,7 @@
 <context>
     <name>RLinetypePattern</name>
     <message>
-        <location filename="../src/core/RLinetypePattern.cpp" line="+856"/>
+        <location filename="../src/core/RLinetypePattern.cpp" line="+869"/>
         <source>By Layer</source>
         <translation type="unfinished">按图层</translation>
     </message>

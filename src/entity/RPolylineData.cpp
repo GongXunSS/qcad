@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -68,18 +68,24 @@ QList<RRefPoint> RPolylineData::getReferencePoints(RS::ProjectionRenderingHint h
         ret.last().setEnd(true);
     }
     for (int i=0; i<countSegments(); i++) {
-        if (isArcSegmentAt(i)) {
-            QSharedPointer<RArc> arc = getSegmentAt(i).dynamicCast<RArc>();
-            if (!arc.isNull()) {
-                ret.append(RRefPoint(arc->getMiddlePoint(), RRefPoint::Secondary));
-            }
-        }
+        QSharedPointer<RShape> segment = getSegmentAt(i);
+        //if (isArcSegmentAt(i)) {
+            //QSharedPointer<RArc> arc = getSegmentAt(i).dynamicCast<RArc>();
+            //if (!arc.isNull()) {
+                ret.append(RRefPoint(segment->getMiddlePoint(), RRefPoint::Secondary));
+            //}
+        //}
+    }
+    // make sure start point is on top of end point for closed polyline:
+    if (!ret.isEmpty()) {
+        ret.append(ret.takeFirst());
     }
     return ret;
 }
 
-bool RPolylineData::moveReferencePoint(const RVector& referencePoint,
-        const RVector& targetPoint) {
+bool RPolylineData::moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers) {
+    Q_UNUSED(modifiers)
+
     bool ret = false;
 
     QList<RVector>::iterator it;
@@ -91,15 +97,25 @@ bool RPolylineData::moveReferencePoint(const RVector& referencePoint,
     }
 
     for (int i=0; i<countSegments(); i++) {
+        QSharedPointer<RShape> segment = getSegmentAt(i);
+        if (segment.isNull()) {
+            continue;
+        }
+        if (!referencePoint.equalsFuzzy(segment->getMiddlePoint())) {
+            continue;
+        }
+
         if (isArcSegmentAt(i)) {
-            QSharedPointer<RArc> arc = getSegmentAt(i).dynamicCast<RArc>();
+            QSharedPointer<RArc> arc = segment.dynamicCast<RArc>();
             if (!arc.isNull()) {
-                if (referencePoint.equalsFuzzy(arc->getMiddlePoint())) {
-                    RArc a = RArc::createFrom3Points(arc->getStartPoint(), targetPoint, arc->getEndPoint());
-                    setBulgeAt(i, a.getBulge());
-                    ret = true;
-                }
+                RArc a = RArc::createFrom3Points(arc->getStartPoint(), targetPoint, arc->getEndPoint());
+                setBulgeAt(i, a.getBulge());
+                ret = true;
             }
+        }
+        else {
+            moveSegmentAt(i, targetPoint-referencePoint);
+            ret = true;
         }
     }
 
@@ -200,4 +216,21 @@ QList<QSharedPointer<RShape> > RPolylineData::getShapes(const RBox& queryBox, bo
         }
         return ret;
     }
+}
+
+void RPolylineData::setElevation(double v) {
+    for (int i=0; i<countVertices(); i++) {
+        RVector ver = getVertexAt(i);
+        ver.z = v;
+        setVertexAt(i, ver);
+    }
+}
+
+double RPolylineData::getElevation() const {
+    if (isFlat()) {
+        if (countVertices()>0) {
+            return getVertexAt(0).z;
+        }
+    }
+    return 0.0;
 }

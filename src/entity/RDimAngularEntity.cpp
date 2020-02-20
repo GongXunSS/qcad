@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -39,19 +39,24 @@ RPropertyTypeId RDimAngularEntity::PropertyText;
 RPropertyTypeId RDimAngularEntity::PropertyUpperTolerance;
 RPropertyTypeId RDimAngularEntity::PropertyLowerTolerance;
 RPropertyTypeId RDimAngularEntity::PropertyMeasuredValue;
-RPropertyTypeId RDimAngularEntity::PropertyFontName;
 
-RPropertyTypeId RDimAngularEntity::PropertyExtensionLine1StartX;
-RPropertyTypeId RDimAngularEntity::PropertyExtensionLine1StartY;
-RPropertyTypeId RDimAngularEntity::PropertyExtensionLine1StartZ;
+RPropertyTypeId RDimAngularEntity::PropertyDimScale;
+RPropertyTypeId RDimAngularEntity::PropertyDimBlockName;
+RPropertyTypeId RDimAngularEntity::PropertyAutoTextPos;
+RPropertyTypeId RDimAngularEntity::PropertyFontName;
+RPropertyTypeId RDimAngularEntity::PropertyArrow1Flipped;
+RPropertyTypeId RDimAngularEntity::PropertyArrow2Flipped;
+
+RPropertyTypeId RDimAngularEntity::PropertyExtLineFix;
+RPropertyTypeId RDimAngularEntity::PropertyExtLineFixLength;
+
+RPropertyTypeId RDimAngularEntity::PropertyCenterX;
+RPropertyTypeId RDimAngularEntity::PropertyCenterY;
+RPropertyTypeId RDimAngularEntity::PropertyCenterZ;
 
 RPropertyTypeId RDimAngularEntity::PropertyExtensionLine1EndX;
 RPropertyTypeId RDimAngularEntity::PropertyExtensionLine1EndY;
 RPropertyTypeId RDimAngularEntity::PropertyExtensionLine1EndZ;
-
-RPropertyTypeId RDimAngularEntity::PropertyExtensionLine2StartX;
-RPropertyTypeId RDimAngularEntity::PropertyExtensionLine2StartY;
-RPropertyTypeId RDimAngularEntity::PropertyExtensionLine2StartZ;
 
 RPropertyTypeId RDimAngularEntity::PropertyExtensionLine2EndX;
 RPropertyTypeId RDimAngularEntity::PropertyExtensionLine2EndY;
@@ -63,8 +68,8 @@ RPropertyTypeId RDimAngularEntity::PropertyDimArcPositionZ;
 
 
 
-RDimAngularEntity::RDimAngularEntity(RDocument* document, const RDimAngularData& data) :
-    RDimensionEntity(document), data(document, data) {
+RDimAngularEntity::RDimAngularEntity(RDocument* document) :
+    RDimensionEntity(document) {
 }
 
 RDimAngularEntity::~RDimAngularEntity() {
@@ -93,113 +98,35 @@ void RDimAngularEntity::init() {
     RDimAngularEntity::PropertyLowerTolerance.generateId(typeid(RDimAngularEntity), RDimensionEntity::PropertyLowerTolerance);
     RDimAngularEntity::PropertyMeasuredValue.generateId(typeid(RDimAngularEntity), RDimensionEntity::PropertyMeasuredValue);
     RDimAngularEntity::PropertyFontName.generateId(typeid(RDimAngularEntity), RDimensionEntity::PropertyFontName);
+    RDimAngularEntity::PropertyArrow1Flipped.generateId(typeid(RDimAngularEntity), RDimensionEntity::PropertyArrow1Flipped);
+    RDimAngularEntity::PropertyArrow2Flipped.generateId(typeid(RDimAngularEntity), RDimensionEntity::PropertyArrow2Flipped);
 
-    RDimAngularEntity::PropertyExtensionLine1StartX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 Start"), QT_TRANSLATE_NOOP("REntity", "X"), true);
-    RDimAngularEntity::PropertyExtensionLine1StartY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 Start"), QT_TRANSLATE_NOOP("REntity", "Y"), true);
-    RDimAngularEntity::PropertyExtensionLine1StartZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 Start"), QT_TRANSLATE_NOOP("REntity", "Z"), true);
+    RDimAngularEntity::PropertyExtLineFix.generateId(typeid(RDimAngularEntity), RDimensionEntity::PropertyExtLineFix);
+    RDimAngularEntity::PropertyExtLineFixLength.generateId(typeid(RDimAngularEntity), RDimensionEntity::PropertyExtLineFixLength);
 
-    RDimAngularEntity::PropertyExtensionLine1EndX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 End"), QT_TRANSLATE_NOOP("REntity", "X"), true);
-    RDimAngularEntity::PropertyExtensionLine1EndY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 End"), QT_TRANSLATE_NOOP("REntity", "Y"), true);
-    RDimAngularEntity::PropertyExtensionLine1EndZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 End"), QT_TRANSLATE_NOOP("REntity", "Z"), true);
+    RDimAngularEntity::PropertyCenterX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "X"), true, RPropertyAttributes::Geometry);
+    RDimAngularEntity::PropertyCenterY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "Y"), true, RPropertyAttributes::Geometry);
+    RDimAngularEntity::PropertyCenterZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Center"), QT_TRANSLATE_NOOP("REntity", "Z"), true, RPropertyAttributes::Geometry);
 
-    RDimAngularEntity::PropertyExtensionLine2StartX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 Start"), QT_TRANSLATE_NOOP("REntity", "X"), true);
-    RDimAngularEntity::PropertyExtensionLine2StartY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 Start"), QT_TRANSLATE_NOOP("REntity", "Y"), true);
-    RDimAngularEntity::PropertyExtensionLine2StartZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 Start"), QT_TRANSLATE_NOOP("REntity", "Z"), true);
+    RDimAngularEntity::PropertyExtensionLine1EndX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 End"), QT_TRANSLATE_NOOP("REntity", "X"), true, RPropertyAttributes::Geometry);
+    RDimAngularEntity::PropertyExtensionLine1EndY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 End"), QT_TRANSLATE_NOOP("REntity", "Y"), true, RPropertyAttributes::Geometry);
+    RDimAngularEntity::PropertyExtensionLine1EndZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 1 End"), QT_TRANSLATE_NOOP("REntity", "Z"), true, RPropertyAttributes::Geometry);
 
-    RDimAngularEntity::PropertyExtensionLine2EndX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 End"), QT_TRANSLATE_NOOP("REntity", "X"), true);
-    RDimAngularEntity::PropertyExtensionLine2EndY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 End"), QT_TRANSLATE_NOOP("REntity", "Y"), true);
-    RDimAngularEntity::PropertyExtensionLine2EndZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 End"), QT_TRANSLATE_NOOP("REntity", "Z"), true);
+    RDimAngularEntity::PropertyExtensionLine2EndX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 End"), QT_TRANSLATE_NOOP("REntity", "X"), true, RPropertyAttributes::Geometry);
+    RDimAngularEntity::PropertyExtensionLine2EndY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 End"), QT_TRANSLATE_NOOP("REntity", "Y"), true, RPropertyAttributes::Geometry);
+    RDimAngularEntity::PropertyExtensionLine2EndZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Line 2 End"), QT_TRANSLATE_NOOP("REntity", "Z"), true, RPropertyAttributes::Geometry);
 
-    RDimAngularEntity::PropertyDimArcPositionX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Dimension Arc"), QT_TRANSLATE_NOOP("REntity", "X"), true);
-    RDimAngularEntity::PropertyDimArcPositionY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Dimension Arc"), QT_TRANSLATE_NOOP("REntity", "Y"), true);
-    RDimAngularEntity::PropertyDimArcPositionZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Dimension Arc"), QT_TRANSLATE_NOOP("REntity", "Z"), true);
-}
-
-bool RDimAngularEntity::setProperty(RPropertyTypeId propertyTypeId,
-        const QVariant& value, RTransaction* transaction) {
-    bool ret = RDimensionEntity::setProperty(propertyTypeId, value, transaction);
-
-    ret = ret || RObject::setMember(data.extensionLine1Start.x, value, PropertyExtensionLine1StartX == propertyTypeId);
-    ret = ret || RObject::setMember(data.extensionLine1Start.y, value, PropertyExtensionLine1StartY == propertyTypeId);
-    ret = ret || RObject::setMember(data.extensionLine1Start.z, value, PropertyExtensionLine1StartZ == propertyTypeId);
-
-    ret = ret || RObject::setMember(data.extensionLine1End.x, value, PropertyExtensionLine1EndX == propertyTypeId);
-    ret = ret || RObject::setMember(data.extensionLine1End.y, value, PropertyExtensionLine1EndY == propertyTypeId);
-    ret = ret || RObject::setMember(data.extensionLine1End.z, value, PropertyExtensionLine1EndZ == propertyTypeId);
-
-    ret = ret || RObject::setMember(data.extensionLine2Start.x, value, PropertyExtensionLine2StartX == propertyTypeId);
-    ret = ret || RObject::setMember(data.extensionLine2Start.y, value, PropertyExtensionLine2StartY == propertyTypeId);
-    ret = ret || RObject::setMember(data.extensionLine2Start.z, value, PropertyExtensionLine2StartZ == propertyTypeId);
-
-    ret = ret || RObject::setMember(data.definitionPoint.x, value, PropertyExtensionLine2EndX == propertyTypeId);
-    ret = ret || RObject::setMember(data.definitionPoint.y, value, PropertyExtensionLine2EndY == propertyTypeId);
-    ret = ret || RObject::setMember(data.definitionPoint.z, value, PropertyExtensionLine2EndZ == propertyTypeId);
-
-    ret = ret || RObject::setMember(data.dimArcPosition.x, value, PropertyDimArcPositionX == propertyTypeId);
-    ret = ret || RObject::setMember(data.dimArcPosition.y, value, PropertyDimArcPositionY == propertyTypeId);
-    ret = ret || RObject::setMember(data.dimArcPosition.z, value, PropertyDimArcPositionZ == propertyTypeId);
-
-    if (ret) {
-        data.update();
-    }
-
-    return ret;
-}
-
-QPair<QVariant, RPropertyAttributes> RDimAngularEntity::getProperty(
-        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes) {
-
-    if (propertyTypeId == PropertyExtensionLine1StartX) {
-        return qMakePair(QVariant(data.extensionLine1Start.x), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyExtensionLine1StartY) {
-        return qMakePair(QVariant(data.extensionLine1Start.y), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyExtensionLine1StartZ) {
-        return qMakePair(QVariant(data.extensionLine1Start.z), RPropertyAttributes());
-    }
-
-      else if (propertyTypeId == PropertyExtensionLine1EndX) {
-        return qMakePair(QVariant(data.extensionLine1End.x), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyExtensionLine1EndY) {
-        return qMakePair(QVariant(data.extensionLine1End.y), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyExtensionLine1EndZ) {
-        return qMakePair(QVariant(data.extensionLine1End.z), RPropertyAttributes());
-    }
-
-      else if (propertyTypeId == PropertyExtensionLine2StartX) {
-        return qMakePair(QVariant(data.extensionLine2Start.x), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyExtensionLine2StartY) {
-        return qMakePair(QVariant(data.extensionLine2Start.y), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyExtensionLine2StartZ) {
-        return qMakePair(QVariant(data.extensionLine2Start.z), RPropertyAttributes());
-    }
-
-      else if (propertyTypeId == PropertyExtensionLine2EndX) {
-        return qMakePair(QVariant(data.definitionPoint.x), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyExtensionLine2EndY) {
-        return qMakePair(QVariant(data.definitionPoint.y), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyExtensionLine2EndZ) {
-        return qMakePair(QVariant(data.definitionPoint.z), RPropertyAttributes());
-    }
-
-      else if (propertyTypeId == PropertyDimArcPositionX) {
-        return qMakePair(QVariant(data.dimArcPosition.x), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyDimArcPositionY) {
-        return qMakePair(QVariant(data.dimArcPosition.y), RPropertyAttributes());
-    } else if (propertyTypeId == PropertyDimArcPositionZ) {
-        return qMakePair(QVariant(data.dimArcPosition.z), RPropertyAttributes());
-    }
-
-    return RDimensionEntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    RDimAngularEntity::PropertyDimArcPositionX.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Dimension Arc"), QT_TRANSLATE_NOOP("REntity", "X"), true, RPropertyAttributes::Geometry);
+    RDimAngularEntity::PropertyDimArcPositionY.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Dimension Arc"), QT_TRANSLATE_NOOP("REntity", "Y"), true, RPropertyAttributes::Geometry);
+    RDimAngularEntity::PropertyDimArcPositionZ.generateId(typeid(RDimAngularEntity), QT_TRANSLATE_NOOP("REntity", "Dimension Arc"), QT_TRANSLATE_NOOP("REntity", "Z"), true, RPropertyAttributes::Geometry);
 }
 
 void RDimAngularEntity::print(QDebug dbg) const {
     dbg.nospace() << "RDimAngularEntity(";
     RDimensionEntity::print(dbg);
-    dbg.nospace() << ", extensionLine1Start: " << getData().extensionLine1Start
-                  << ", extensionLine1End: " << getData().extensionLine1End
-                  << ", extensionLine2Start: " << getData().extensionLine2Start
-                  << ", extensionLine2End: " << getData().definitionPoint
-                  << ", dimArcPosition: " << getData().dimArcPosition
+    dbg.nospace() << ", extensionLine1End: " << getData().getExtensionLine1End()
+                  << ", extensionLine2End: " << getData().getExtensionLine2End()
+                  << ", dimArcPosition: " << getData().getDimArcPosition()
                   << ", text: " << getData().textData.getText()
                   << ")";
 }

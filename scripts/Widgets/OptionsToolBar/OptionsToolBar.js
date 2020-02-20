@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -73,11 +73,12 @@ OptionsToolBar.init = function(basePath) {
 
 OptionsToolBar.postInit = function(basePath) {
     var optionsToolBar = EAction.getOptionsToolBar();
-    var sh = EAction.getMainWindow().findChild("FileToolBar").sizeHint;
 
     // fixed height to prevent FS#652 (can happen at least on Windows and Linux):
-    var h = RSettings.getIntValue("ToolBar/IconSize", 38);
-    optionsToolBar.setFixedHeight(h+6);
+    var ftb = EAction.getMainWindow().findChild("FileToolBar");
+    if (!isNull(ftb)) {
+        optionsToolBar.setFixedHeight(Math.min(ftb.sizeHint.height(), ftb.sizeHint.width()));
+    }
 
     var flags = new Qt.ToolBarAreas(Qt.TopToolBarArea | Qt.BottomToolBarArea);
     optionsToolBar.setAllowedAreas(flags);
@@ -90,22 +91,41 @@ OptionsToolBar.postInit = function(basePath) {
     iconLabel.alignment = Qt.AlignCenter;
     iconLabel.setContentsMargins(6, 0, 6, 0);
 
+    // style of laber with current tool icon:
     if (!RSettings.hasCustomStyleSheet()) {
         var w = optionsToolBar.iconSize.width() < 20 ? 1 : 2;
-        iconLabel.styleSheet =
-            "QLabel {"
-            + "border-radius: %1px; ".arg(w*3)
-            + "background-color: "
-            + "    qlineargradient(spread:pad, "
-            + "        x1: 0, y1: 0, "
-            + "        x2: 0, y2: 1, "
-            + "        stop: 0 rgba(255,255,255,0), "
-            + "        stop: 0.5 rgba(255,255,255,192), "
-            + "        stop: 1 rgba(255,255,255,0) "
-            + "    ); "
-            + "border: %1px solid #8f8f8f;".arg(w)
-            + "margin: %1px %1px %1px %1px;".arg(w)
-            + "}";
+        if (RSettings.hasDarkGuiBackground()) {
+            iconLabel.styleSheet =
+                "QLabel {"
+                + "border-radius: %1px; ".arg(w*3)
+                + "background-color: "
+                + "    qlineargradient(spread:pad, "
+                + "        x1: 0, y1: 0, "
+                + "        x2: 0, y2: 1, "
+                + "        stop: 0 #555555, "
+                + "        stop: 0.5 #606060, "
+                + "        stop: 1 #555555"
+                + "    ); "
+                + "border: %1px solid #a0a0a0;".arg(w)
+                + "margin: %1px %1px %1px %1px;".arg(w)
+                + "}";
+        }
+        else {
+            iconLabel.styleSheet =
+                "QLabel {"
+                + "border-radius: %1px; ".arg(w*3)
+                + "background-color: "
+                + "    qlineargradient(spread:pad, "
+                + "        x1: 0, y1: 0, "
+                + "        x2: 0, y2: 1, "
+                + "        stop: 0 rgba(255,255,255,0), "
+                + "        stop: 0.5 rgba(255,255,255,192), "
+                + "        stop: 1 rgba(255,255,255,0) "
+                + "    ); "
+                + "border: %1px solid #8f8f8f;".arg(w)
+                + "margin: %1px %1px %1px %1px;".arg(w)
+                + "}";
+        }
     }
 
     // avoid empty label after startup, before initializing new document:

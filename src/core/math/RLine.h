@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -44,7 +44,6 @@ public:
     RLine(double x1, double y1, double x2, double y2);
     RLine(const RVector& startPoint, const RVector& endPoint);
     RLine(const RVector& startPoint, double angle, double distance);
-    virtual ~RLine();
 
     virtual RShape::Type getShapeType() const {
         return Line;
@@ -58,7 +57,7 @@ public:
         return true;
     }
 
-    virtual void to2D();
+    virtual void setZ(double z);
 
     virtual QList<RVector> getVectorProperties() const;
 
@@ -71,6 +70,7 @@ public:
     virtual QList<RVector> getCenterPoints() const;
     virtual QList<RVector> getPointsWithDistanceToEnd(
         double distance, int from = RS::FromAny) const;
+    virtual QList<RVector> getPointCloud(double segmentLength) const;
 
     virtual double getAngleAt(double distance, RS::From from = RS::FromStart) const;
 
@@ -87,8 +87,10 @@ public:
     double getLength() const;
     double getAngle() const;
 
-    void setLength(double l);
+    void setLength(double l, bool fromStart = true);
     void setAngle(double a);
+
+    bool isParallel(const RLine& line) const;
 
     bool isVertical(double tolerance = RS::PointTolerance) const;
     bool isHorizontal(double tolerance = RS::PointTolerance) const;

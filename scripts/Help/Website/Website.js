@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Help.js");
+include("scripts/Help/Help.js");
 
 function Website(guiAction) {
     Help.call(this, guiAction);
@@ -27,6 +27,6 @@ Website.prototype = new Help();
 
 Website.prototype.beginEvent = function() {
     Help.prototype.beginEvent.call(this);
-    Help.openUrl("http://www.qcad.org");
+    Help.openUrl("https://qcad.org");
 };
 

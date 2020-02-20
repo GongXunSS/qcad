@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -23,9 +23,9 @@ QList<RVector> RSnapReference::snapEntity(QSharedPointer<REntity> entity,
                                           const RVector& point,
                                           const RBox& queryBox,
                                           RGraphicsView& view) {
-    Q_UNUSED(point);
-    Q_UNUSED(queryBox);
-    Q_UNUSED(view);
+    Q_UNUSED(point)
+    Q_UNUSED(queryBox)
+    Q_UNUSED(view)
 
     QList<RRefPoint> ret = entity->getInternalReferencePoints();
     QSharedPointer<RBlockReferenceEntity> blockRef = entity.dynamicCast<RBlockReferenceEntity>();

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Layer.js");
+include("scripts/Layer/Layer.js");
 include("../LayerDialog.js");
 
 /**
@@ -38,7 +38,7 @@ AddLayer.getPreferencesCategory = function() {
 AddLayer.prototype.beginEvent = function() {
     Layer.prototype.beginEvent.call(this);
 
-    var dlg = this.createLayerDialog(this.getDocument());
+    var dlg = this.createLayerDialog(this.getDocumentInterface());
     this.layer = dlg.show();
     if (isNull(this.layer)) {
         this.terminate();

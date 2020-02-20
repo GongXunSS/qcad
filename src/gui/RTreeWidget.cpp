@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -16,8 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QCAD.
  */
+#include "REventFilter.h"
+#include "RSettings.h"
 #include "RTreeWidget.h"
-#include "RDebug.h"
 
 #include <QContextMenuEvent>
 #include <QHeaderView>
@@ -32,12 +33,30 @@ RTreeWidget::RTreeWidget(QWidget* parent) :
 //#else
 //    iconOffset = 0;
 //#endif
+
+    if (RSettings::getBoolValue("Keyboard/EnableKeyboardNavigationInLists", false)!=true) {
+        installEventFilter(new REventFilter(QEvent::KeyPress, true));
+        installEventFilter(new REventFilter(QEvent::KeyRelease, true));
+    }
 }
 
 /**
  * Destructor
  */
 RTreeWidget::~RTreeWidget() {
+}
+
+/**
+ * \return The active item. Either the selected or current item.
+ * This is the item an action is applied for.
+ */
+QTreeWidgetItem* RTreeWidget::getActiveItem() {
+    QList<QTreeWidgetItem*> sel = selectedItems();
+    if (!sel.isEmpty()) {
+        return sel[0];
+    }
+
+    return currentItem();
 }
 
 void RTreeWidget::contextMenuEvent(QContextMenuEvent* e) {
@@ -60,10 +79,6 @@ void RTreeWidget::mousePressEvent(QMouseEvent* e) {
 
     if (item!=NULL) {
         itemPressedData = item->data(0, Qt::UserRole);
-//        if (index==0) {
-//            qDebug() << "emit 1";
-//            emit itemColumnClicked(item, index);
-//        }
     }
     indexPressed = index;
 

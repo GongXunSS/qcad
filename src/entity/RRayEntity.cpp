@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -132,7 +132,7 @@ bool RRayEntity::setProperty(RPropertyTypeId propertyTypeId,
 
 QPair<QVariant, RPropertyAttributes> RRayEntity::getProperty(
         RPropertyTypeId& propertyTypeId, bool humanReadable,
-        bool noAttributes) {
+        bool noAttributes, bool showOnRequest) {
 
     RPropertyAttributes attFixedAngle;
     attFixedAngle.setReadOnly(data.fixedAngle);
@@ -171,7 +171,7 @@ QPair<QVariant, RPropertyAttributes> RRayEntity::getProperty(
         return qMakePair(QVariant(data.fixedAngle), RPropertyAttributes());
     }
 
-    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 

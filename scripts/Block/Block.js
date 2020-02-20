@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -69,7 +69,7 @@ Block.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         action.setIcon(Block.includeBasePath + "/Block.svg");
-        action.setStatusTip(qsTr("Show block tools"));
+        //action.setStatusTip(qsTr("Show block tools"));
         action.setDefaultShortcut(new QKeySequence("w,b"));
         action.setNoState();
         action.setDefaultCommands(["blockmenu"]);

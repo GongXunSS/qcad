@@ -75,6 +75,12 @@
         setAnonymous
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isPixelUnit
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setPixelUnit
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         setOrigin
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -102,7 +108,7 @@
         setProperty
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        isSelectedForPropertyEditing
+        setCustomProperty
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue toString
     (QScriptContext *context, QScriptEngine *engine)

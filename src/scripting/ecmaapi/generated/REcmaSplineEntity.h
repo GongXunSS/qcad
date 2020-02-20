@@ -161,6 +161,9 @@
         countControlPoints
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getControlPointAt
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getFitPoints
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -168,6 +171,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         countFitPoints
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getFitPointAt
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getKnotVector
@@ -222,6 +228,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         simplify
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getBezierSegments
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue toString
     (QScriptContext *context, QScriptEngine *engine)

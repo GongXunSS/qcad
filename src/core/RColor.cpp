@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,6 +24,7 @@
 #include "RCircle.h"
 #include "RDebug.h"
 #include "RMath.h"
+#include "RSettings.h"
 
 QColor RColor::CompatByLayer = QColor(1,1,1);
 QColor RColor::CompatByBlock = QColor(2,2,2);
@@ -320,6 +321,10 @@ void RColor::removeColor(const QString& cn) {
     }
 }
 
+void RColor::addColor(const QString& cn, const RColor& c) {
+    list.append(QPair<QString, RColor> (cn, c));
+}
+
 QIcon RColor::getIcon(const RColor& color, const QSize& size) {
     init();
 
@@ -364,7 +369,12 @@ QIcon RColor::getIcon(const RColor& color, const QSize& size) {
         opaqueBrush.setColor(col);
         painter.fillRect(w / 4, h / 4, w / 2, h / 2, opaqueBrush);
     }
-    painter.setPen(Qt::black);
+    if (RSettings::hasDarkGuiBackground()) {
+        painter.setPen(Qt::gray);
+    }
+    else {
+        painter.setPen(Qt::black);
+    }
     painter.drawRect(0, 0, w - 1, h - 1);
     painter.end();
     QIcon ret(QPixmap::fromImage(img));

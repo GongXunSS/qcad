@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -47,10 +47,10 @@ public:
     }
 
 protected:
-    void contextMenuEvent(QContextMenuEvent* e);
-    void mousePressEvent(QMouseEvent* e);
-    void mouseReleaseEvent(QMouseEvent* e);
-    void mouseMoveEvent(QMouseEvent* e);
+    virtual void contextMenuEvent(QContextMenuEvent* e);
+    virtual void mousePressEvent(QMouseEvent* e);
+    virtual void mouseReleaseEvent(QMouseEvent* e);
+    virtual void mouseMoveEvent(QMouseEvent* e);
 
 signals:
     void iconClicked(int x, QListWidgetItem* item);

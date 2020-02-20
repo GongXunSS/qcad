@@ -271,6 +271,8 @@ xmlns:rs="http://www.ribbonsoft.com">
       <variant returnType="void" isPureVirtual="false">
         <arg type="RVector &amp;" typeName="RVector" name="center"
         isConst="true" />
+        <arg type="double" typeName="double" name="factor"
+        hasDefault="true" default="1.2" isConst="false" />
       </variant>
     </method>
     <method name="zoomOut" cppName="zoomOut" specifier="public"
@@ -279,6 +281,8 @@ xmlns:rs="http://www.ribbonsoft.com">
       <variant returnType="void" isPureVirtual="false">
         <arg type="RVector &amp;" typeName="RVector" name="center"
         isConst="true" />
+        <arg type="double" typeName="double" name="factor"
+        hasDefault="true" default="1.2" isConst="false" />
       </variant>
     </method>
     <method name="zoom" cppName="zoom" specifier="public"
@@ -319,7 +323,23 @@ xmlns:rs="http://www.ribbonsoft.com">
     <method name="zoomToSelection" cppName="zoomToSelection"
     specifier="public" isStatic="false" isVirtual="false"
     isScriptOverwritable="true">
-      <variant returnType="bool" isPureVirtual="false" />
+      <variant returnType="bool" isPureVirtual="false">
+        <arg type="int" typeName="int" name="margin"
+        hasDefault="true" default="RDEFAULT_MIN1"
+        isConst="false" />
+      </variant>
+    </method>
+    <method name="zoomToEntities" cppName="zoomToEntities"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false">
+        <arg type="QSet &lt; REntity::Id &gt; &amp;"
+        typeName="QSet &lt; REntity::Id &gt;" name="ids"
+        isConst="true" />
+        <arg type="int" typeName="int" name="margin"
+        hasDefault="true" default="RDEFAULT_MIN1"
+        isConst="false" />
+      </variant>
     </method>
     <method name="centerToPoint" cppName="centerToPoint"
     specifier="public" isStatic="false" isVirtual="true"
@@ -543,6 +563,24 @@ xmlns:rs="http://www.ribbonsoft.com">
         <arg type="int" typeName="int" name="m" isConst="false" />
       </variant>
     </method>
+    <method name="setExporting" cppName="setExporting"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="bool" typeName="bool" name="on"
+        isConst="false" />
+      </variant>
+    </method>
+    <method name="isExporting" cppName="isExporting"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
+    <method name="isPrintingOrExporting"
+    cppName="isPrintingOrExporting" specifier="public"
+    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
     <method name="setPrinting" cppName="setPrinting"
     specifier="public" isStatic="false" isVirtual="false"
     isScriptOverwritable="true">
@@ -603,6 +641,19 @@ xmlns:rs="http://www.ribbonsoft.com">
     <method name="getHairlineMode" cppName="getHairlineMode"
     specifier="public" isStatic="false" isVirtual="false"
     isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
+    <method name="setHairlineMinimumMode"
+    cppName="setHairlineMinimumMode" specifier="public"
+    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="bool" typeName="bool" name="on"
+        isConst="false" />
+      </variant>
+    </method>
+    <method name="getHairlineMinimumMode"
+    cppName="getHairlineMinimumMode" specifier="public"
+    isStatic="false" isVirtual="false" isScriptOverwritable="true">
       <variant returnType="bool" isPureVirtual="false" />
     </method>
     <method name="getTextLabels" cppName="getTextLabels"

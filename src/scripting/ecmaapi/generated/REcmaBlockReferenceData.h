@@ -51,10 +51,19 @@
         getType
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isPointType
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getBoundingBoxes
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getBoundingBox
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        to2D
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getPointOnEntity
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getInternalReferencePoints
@@ -88,6 +97,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         scale
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        scaleVisualProperties
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setReferencedBlockId
@@ -156,6 +168,15 @@
         applyTransformationTo
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getTransform
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        exportTransforms
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        exportEndTransforms
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getColumnRowOffset
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -163,6 +184,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         mapToBlock
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isPixelUnit
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue toString
     (QScriptContext *context, QScriptEngine *engine)

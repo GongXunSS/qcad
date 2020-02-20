@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -43,6 +43,7 @@
 #include "RStorage.h"
 #include "RTerminateEvent.h"
 #include "RTextLabel.h"
+#include "RTransactionListener.h"
 #include "RUcs.h"
 
 #define RDEFAULT_QLIST_QREAL QList<qreal>()
@@ -124,20 +125,27 @@ public:
     RStorage& getStorage();
     QList<RGraphicsScene*> getGraphicsScenes();
     RGraphicsView* getGraphicsViewWithFocus();
+    RGraphicsScene* getGraphicsSceneWithFocus();
 
     void addCoordinateListener(RCoordinateListener* l);
     void notifyCoordinateListeners();
 
     void addLayerListener(RLayerListener* l);
     void removeLayerListener(RLayerListener* l);
-    void notifyLayerListeners();
+    void notifyLayerListeners(QList<RLayer::Id>& layerIds);
 
-    void clear();
+    int addTransactionListener(RTransactionListener* l);
+    void removeTransactionListener(int key);
+    void removeTransactionListener(RTransactionListener* l);
+    void notifyTransactionListeners(RTransaction* t);
+
+    void clear(bool beforeLoad=false);
 
     RScriptHandler* getScriptHandler(const QString& extension);
     bool isScriptRunning();
 
     void setDefaultAction(RAction* action);
+    RAction* getDefaultAction() const;
     void setCurrentAction(RAction* action);
     void terminateCurrentAction();
     void queueAction(RAction* action);
@@ -211,6 +219,8 @@ public:
     QString getCorrectedFileName(const QString& fileName, const QString& fileVersion);
     bool exportFile(const QString& fileName, const QString& fileVersion = "", bool resetModified = true);
 
+    void tagState(const QString& tag = "");
+    void undoToTag(const QString& tag = "");
     void undo();
     void redo();
     void flushTransactions();
@@ -223,6 +233,7 @@ public:
     RSnapRestriction* getSnapRestriction();
 
     RVector snap(RMouseEvent& event, bool preview = false);
+    RVector restrictOrtho(const RVector& position, const RVector& relativeZero, RS::OrthoMode mode = RS::Orthogonal);
 
     REntity::Id getClosestEntity(RInputEvent& event);
     REntity::Id getClosestEntity(const RVector& position,
@@ -231,9 +242,9 @@ public:
         bool selectedOnly = false);
     void highlightEntity(REntity::Id entityId);
     void highlightReferencePoint(const RRefPoint& position);
-    void selectEntities(const QSet<REntity::Id>& entityIds, bool add = false);
+    int selectEntities(const QSet<REntity::Id>& entityIds, bool add = false);
     void selectEntity(REntity::Id entityId, bool add = false);
-    bool deselectEntities(const QSet<REntity::Id>& entityIds);
+    int deselectEntities(const QSet<REntity::Id>& entityIds);
     void deselectEntity(REntity::Id entityId);
     void selectBoxXY(const RBox& box, bool add = false);
     void selectAll();
@@ -267,7 +278,7 @@ public:
     void previewOperation(ROperation* operation);
     RTransaction applyOperation(ROperation* operation);
 
-    void objectChangeEvent(QList<RObject::Id>& objectIds);
+    void objectChangeEvent(RTransaction& transaction);
 
     RVector getRelativeZero() const;
     RVector getLastPosition() const;
@@ -366,6 +377,7 @@ private:
 
     QList<RCoordinateListener*> coordinateListeners;
     QList<RLayerListener*> layerListeners;
+    QMap<int, RTransactionListener*> transactionListeners;
 
     RSnap* currentSnap;
     RSnapRestriction* currentSnapRestriction;
@@ -388,6 +400,8 @@ private:
 
     bool keepPreviewOnce;
     bool mouseTrackingEnabled;
+
+    QMap<QString, int> tags;
 
     // transform for all input coordinates:
 //    QTransform inputTransform;

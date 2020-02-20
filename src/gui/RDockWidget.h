@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -52,6 +52,8 @@ protected:
 #endif
 #endif
     virtual void actionEvent(QActionEvent *event);
+
+    virtual bool event(QEvent* e);
 
 private:
     RFlowLayout* layout;

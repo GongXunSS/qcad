@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Snap.js");
+include("scripts/Snap/Snap.js");
 include("../../WidgetFactory.js");
 
 /**
@@ -40,7 +40,7 @@ RSnapCoordinate.prototype = new RSnap();
 RSnapCoordinate.prototype.initAction = function(guiAction) {
     this.action = new EAction(guiAction);
     if (!isNull(this.action.setUiOptions)) {
-        this.action.setUiOptions("scripts/Snap/SnapCoordinate/SnapCoordinate.ui");
+        this.action.setUiOptions(SnapCoordinate.includeBasePath + "/SnapCoordinate.ui");
     }
     var snap = this;
 
@@ -139,6 +139,7 @@ function SnapCoordinate(guiAction) {
 }
 
 SnapCoordinate.prototype = new Snap();
+SnapCoordinate.includeBasePath = includeBasePath;
 
 SnapCoordinate.prototype.beginEvent = function() {
     Snap.prototype.beginEvent.call(this);

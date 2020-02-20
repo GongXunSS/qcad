@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -22,6 +22,7 @@
 
 #include "../core_global.h"
 
+#include "RArc.h"
 #include "RShape.h"
 #include "RVector.h"
 
@@ -54,11 +55,13 @@ public:
     static RCircle createFrom2Points(const RVector& p1, const RVector& p2);
     static RCircle createFrom3Points(const RVector& p1, const RVector& p2, const RVector& p3);
 
+    RArc toArc(double startAngle=0.0) const;
+
     bool isValid() const {
         return center.isValid();
     }
 
-    virtual void to2D();
+    virtual void setZ(double z);
 
     virtual QList<RVector> getVectorProperties() const;
     virtual QList<double> getDoubleProperties() const;
@@ -69,8 +72,10 @@ public:
     virtual QList<RVector> getEndPoints() const;
     virtual QList<RVector> getMiddlePoints() const;
     virtual QList<RVector> getCenterPoints() const;
+    virtual QList<RVector> getArcReferencePoints() const;
     virtual QList<RVector> getPointsWithDistanceToEnd(
         double distance, int from = RS::FromAny) const;
+    virtual QList<RVector> getPointCloud(double segmentLength) const;
 
     virtual double getAngleAt(double distance, RS::From from = RS::FromStart) const;
     RVector getPointAtAngle(double a) const;

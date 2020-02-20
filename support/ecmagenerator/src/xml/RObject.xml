@@ -16,6 +16,8 @@ xmlns:rs="http://www.ribbonsoft.com">
       <value name="NoFlags" />
       <value name="Undone" />
       <value name="Protect" />
+      <value name="Selected" />
+      <value name="Invisible" />
     </enum>
     <constructor>
       <variant>
@@ -39,6 +41,11 @@ xmlns:rs="http://www.ribbonsoft.com">
     <method name="clone" cppName="clone" specifier="public"
     isStatic="false" isVirtual="true" isScriptOverwritable="true">
       <variant returnType="RObject *" isPureVirtual="false" />
+    </method>
+    <method name="mustAlwaysClone" cppName="mustAlwaysClone"
+    specifier="public" isStatic="false" isVirtual="true"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
     </method>
     <method name="getDocument" cppName="getDocument"
     specifier="public" isStatic="false" isVirtual="false"
@@ -93,6 +100,32 @@ xmlns:rs="http://www.ribbonsoft.com">
         isConst="false" />
       </variant>
     </method>
+    <method name="isInvisible" cppName="isInvisible"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
+    <method name="setInvisible" cppName="setInvisible"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="bool" typeName="bool" name="on"
+        isConst="false" />
+      </variant>
+    </method>
+    <method name="isSelected" cppName="isSelected"
+    specifier="public" isStatic="false" isVirtual="true"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
+    <method name="setSelected" cppName="setSelected"
+    specifier="public" isStatic="false" isVirtual="true"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="bool" typeName="bool" name="on"
+        isConst="false" />
+      </variant>
+    </method>
     <method name="isUndone" cppName="isUndone" specifier="public"
     isStatic="false" isVirtual="false" isScriptOverwritable="true">
       <variant returnType="bool" isPureVirtual="false" />
@@ -101,7 +134,13 @@ xmlns:rs="http://www.ribbonsoft.com">
     specifier="public" isStatic="false" isVirtual="true"
     isScriptOverwritable="true">
       <variant returnType="QSet &lt; RPropertyTypeId &gt;"
-      isPureVirtual="false" />
+      isPureVirtual="false">
+        <arg type="RPropertyAttributes::Option"
+        typeName="RPropertyAttributes::Option" name="option"
+        hasDefault="true"
+        default="RPropertyAttributes :: NoOptions"
+        isConst="false" />
+      </variant>
     </method>
     <method name="getCustomPropertyTypeIds"
     cppName="getCustomPropertyTypeIds" specifier="public"
@@ -120,6 +159,8 @@ xmlns:rs="http://www.ribbonsoft.com">
         <arg type="bool" typeName="bool" name="humanReadable"
         hasDefault="true" default="false" isConst="false" />
         <arg type="bool" typeName="bool" name="noAttributes"
+        hasDefault="true" default="false" isConst="false" />
+        <arg type="bool" typeName="bool" name="showOnRequest"
         hasDefault="true" default="false" isConst="false" />
       </variant>
     </method>
@@ -144,11 +185,6 @@ xmlns:rs="http://www.ribbonsoft.com">
         name="propertyTypeId" isConst="false" />
       </variant>
     </method>
-    <method name="isSelectedForPropertyEditing"
-    cppName="isSelectedForPropertyEditing" specifier="public"
-    isStatic="false" isVirtual="true" isScriptOverwritable="true">
-      <variant returnType="bool" isPureVirtual="true" />
-    </method>
     <method name="hasCustomProperties"
     cppName="hasCustomProperties" specifier="public"
     isStatic="false" isVirtual="false" isScriptOverwritable="true">
@@ -165,7 +201,7 @@ xmlns:rs="http://www.ribbonsoft.com">
       </variant>
     </method>
     <method name="getCustomProperty" cppName="getCustomProperty"
-    specifier="public" isStatic="false" isVirtual="false"
+    specifier="public" isStatic="false" isVirtual="true"
     isScriptOverwritable="true">
       <variant returnType="QVariant" isPureVirtual="false">
         <arg type="QString &amp;" typeName="QString" name="title"
@@ -179,7 +215,7 @@ xmlns:rs="http://www.ribbonsoft.com">
     </method>
     <method name="getCustomDoubleProperty"
     cppName="getCustomDoubleProperty" specifier="public"
-    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+    isStatic="false" isVirtual="true" isScriptOverwritable="true">
       <variant returnType="double" isPureVirtual="false">
         <arg type="QString &amp;" typeName="QString" name="title"
         isConst="true" />
@@ -191,7 +227,7 @@ xmlns:rs="http://www.ribbonsoft.com">
     </method>
     <method name="getCustomIntProperty"
     cppName="getCustomIntProperty" specifier="public"
-    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+    isStatic="false" isVirtual="true" isScriptOverwritable="true">
       <variant returnType="int" isPureVirtual="false">
         <arg type="QString &amp;" typeName="QString" name="title"
         isConst="true" />
@@ -203,7 +239,7 @@ xmlns:rs="http://www.ribbonsoft.com">
     </method>
     <method name="getCustomBoolProperty"
     cppName="getCustomBoolProperty" specifier="public"
-    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+    isStatic="false" isVirtual="true" isScriptOverwritable="true">
       <variant returnType="bool" isPureVirtual="false">
         <arg type="QString &amp;" typeName="QString" name="title"
         isConst="true" />
@@ -214,7 +250,7 @@ xmlns:rs="http://www.ribbonsoft.com">
       </variant>
     </method>
     <method name="setCustomProperty" cppName="setCustomProperty"
-    specifier="public" isStatic="false" isVirtual="false"
+    specifier="public" isStatic="false" isVirtual="true"
     isScriptOverwritable="true">
       <variant returnType="void" isPureVirtual="false">
         <arg type="QString &amp;" typeName="QString" name="title"
@@ -227,7 +263,7 @@ xmlns:rs="http://www.ribbonsoft.com">
     </method>
     <method name="removeCustomProperty"
     cppName="removeCustomProperty" specifier="public"
-    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+    isStatic="false" isVirtual="true" isScriptOverwritable="true">
       <variant returnType="void" isPureVirtual="false">
         <arg type="QString &amp;" typeName="QString" name="title"
         isConst="true" />
@@ -257,9 +293,40 @@ xmlns:rs="http://www.ribbonsoft.com">
         <arg type="QString &amp;" typeName="QString" name="title"
         hasDefault="true" default="RDEFAULT_QSTRING"
         isConst="true" />
+        <arg type="bool" typeName="bool" name="overwrite"
+        hasDefault="true" default="false" isConst="false" />
         <arg type="QStringList &amp;" typeName="QStringList"
         name="ignoreList" hasDefault="true"
         default="RDEFAULT_QSTRINGLIST" isConst="true" />
+        <arg type="QString &amp;" typeName="QString"
+        name="mapKeyFrom" hasDefault="true"
+        default="RDEFAULT_QSTRING" isConst="true" />
+        <arg type="QString &amp;" typeName="QString"
+        name="mapKeyTo" hasDefault="true"
+        default="RDEFAULT_QSTRING" isConst="true" />
+      </variant>
+    </method>
+    <method name="setCustomPropertyAttributes"
+    cppName="setCustomPropertyAttributes" specifier="public"
+    isStatic="true" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="QString &amp;" typeName="QString" name="title"
+        isConst="true" />
+        <arg type="QString &amp;" typeName="QString" name="key"
+        isConst="true" />
+        <arg type="RPropertyAttributes &amp;"
+        typeName="RPropertyAttributes" name="att" isConst="true" />
+      </variant>
+    </method>
+    <method name="getCustomPropertyAttributes"
+    cppName="getCustomPropertyAttributes" specifier="public"
+    isStatic="true" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="RPropertyAttributes"
+      isPureVirtual="false">
+        <arg type="QString &amp;" typeName="QString" name="title"
+        isConst="true" />
+        <arg type="QString &amp;" typeName="QString" name="key"
+        isConst="true" />
       </variant>
     </method>
     <method name="getComplexity" cppName="getComplexity"
@@ -320,6 +387,10 @@ xmlns:rs="http://www.ribbonsoft.com">
     <property name="PropertyHandle" type="RPropertyTypeId"
     isConst="false" isStatic="true" />
     <property name="PropertyProtected" type="RPropertyTypeId"
+    isConst="false" isStatic="true" />
+    <property name="PropertySelected" type="RPropertyTypeId"
+    isConst="false" isStatic="true" />
+    <property name="PropertyInvisible" type="RPropertyTypeId"
     isConst="false" isStatic="true" />
   </class>
 </unit>

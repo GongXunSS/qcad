@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -84,12 +84,12 @@ Transform.prototype.getOperation = function(preview, selectResult, cache) {
 
         this.clearCache();
 
-        var docTrans = new RDocument(new RMemoryStorage(), new RSpatialIndexNavel());
+        var docTrans = new RDocument(new RMemoryStorage(), new RSpatialIndexSimple());
         docTrans.copyVariablesFrom(doc);
         this.diTrans = new RDocumentInterface(docTrans);
         this.diTrans.setNotifyListeners(false);
 
-        // copy seletion to cache document:
+        // copy selection to cache document:
         var copyOp = new RCopyOperation(new RVector(0,0), doc);
         copyOp.setClear(false);
         this.diTrans.applyOperation(copyOp);
@@ -122,6 +122,7 @@ Transform.prototype.getOperation = function(preview, selectResult, cache) {
             if (isNull(entityP)) {
                 continue;
             }
+            //qDebug("%1 / %2".arg(i).arg(ids.length-1));
 
             // entity is valid as long as entityP is valid:
             //entity = entityP.data();
@@ -134,12 +135,20 @@ Transform.prototype.getOperation = function(preview, selectResult, cache) {
                 }
             }
 
+            var f = RAddObjectsOperation.GeometryOnly;
+            if (!this.useCurrentAttributes) {
+                f = f | RAddObjectsOperation.UseAttributes;
+            }
+
             if (cache) {
                 op.deleteObject(entity);
-                this.transform(entity, k, op, preview, true);
+                this.transform(entity, k, op, preview, f | RAddObjectsOperation.ForceNew);
             }
             else {
-                this.transform(entity, k, op, preview, copies>0);
+                if (copies>0) {
+                    f = f | RAddObjectsOperation.ForceNew;
+                }
+                this.transform(entity, k, op, preview, f);
             }
         }
         op.endCycle();

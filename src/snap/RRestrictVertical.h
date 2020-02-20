@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -37,7 +37,7 @@ class QCADSNAP_EXPORT RRestrictVertical : public RRestrictOrthogonal {
 public:
     RRestrictVertical(RDocumentInterface* documentInterface)
         : RRestrictOrthogonal(documentInterface) {
-        mode = Vertical;
+        mode = RS::OrthoVertical;
     }
     virtual ~RRestrictVertical() {}
 

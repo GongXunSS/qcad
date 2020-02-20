@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -42,7 +42,10 @@ ToolBarPreferences.applyPreferences = function(doc) {
     }
 
     var optionsToolBar = EAction.getOptionsToolBar();
-    optionsToolBar.setFixedHeight(s+6);
+    var ftb = EAction.getMainWindow().findChild("FileToolBar");
+    if (!isNull(ftb)) {
+        optionsToolBar.setFixedHeight(ftb.sizeHint.height());
+    }
 };
 
 ToolBarPreferences.initPreferences = function(pageWidget, calledByPrefDialog, document) {

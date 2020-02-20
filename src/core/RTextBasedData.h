@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -136,10 +136,7 @@ public:
         return fontName;
     }
 
-    void setFontName(const QString& fontName) {
-        this->fontName = fontName;
-        update();
-    }
+    void setFontName(const QString& fontName);
 
     QString getFontFile() const {
         return fontFile;
@@ -287,8 +284,7 @@ public:
 
     virtual QList<RRefPoint> getReferencePoints(RS::ProjectionRenderingHint hint = RS::RenderTop) const;
 
-    virtual bool moveReferencePoint(const RVector& referencePoint, 
-        const RVector& targetPoint);
+    virtual bool moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
 
     virtual bool move(const RVector& offset);
     virtual bool rotate(double rotation, const RVector& center);
@@ -327,7 +323,7 @@ public:
 
     QList<RTextLayout> getTextLayouts() const;
 
-    QList<RTextBasedData> getSimpleTextBlocks() const;
+    QList<RTextBasedData> getSimpleTextBlocks();
 
 //    virtual RTextBasedData getRenderedTextData() const {
 //        return *this;
@@ -354,7 +350,7 @@ public:
         return textProxy;
     }
 
-    static QString toEscapedText(const QTextDocument& textDocument, const RColor& initialColor, double fontHeightFactor=1.0);
+    static QString toEscapedText(const QTextDocument& textDocument, const RColor& initialColor, double fontHeightFactor=1.0, bool simpleText = false);
     static QString toRichText(const QString& escapedText, const QFont& mainFont, double fontHeightFactor=1.0);
 
 protected:

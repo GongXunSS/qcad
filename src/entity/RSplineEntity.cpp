@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -45,14 +45,14 @@ RPropertyTypeId RSplineEntity::PropertyDegree;
 RPropertyTypeId RSplineEntity::PropertyLength;
 RPropertyTypeId RSplineEntity::PropertyTotalLength;
 // TODO: tangent support:
-//RPropertyTypeId RSplineEntity::PropertyUseStartTangent;
-//RPropertyTypeId RSplineEntity::PropertyStartTangentX;
-//RPropertyTypeId RSplineEntity::PropertyStartTangentY;
-//RPropertyTypeId RSplineEntity::PropertyStartTangentZ;
-//RPropertyTypeId RSplineEntity::PropertyUseEndTangent;
-//RPropertyTypeId RSplineEntity::PropertyEndTangentX;
-//RPropertyTypeId RSplineEntity::PropertyEndTangentY;
-//RPropertyTypeId RSplineEntity::PropertyEndTangentZ;
+RPropertyTypeId RSplineEntity::PropertyUseStartTangent;
+RPropertyTypeId RSplineEntity::PropertyStartTangentX;
+RPropertyTypeId RSplineEntity::PropertyStartTangentY;
+RPropertyTypeId RSplineEntity::PropertyStartTangentZ;
+RPropertyTypeId RSplineEntity::PropertyUseEndTangent;
+RPropertyTypeId RSplineEntity::PropertyEndTangentX;
+RPropertyTypeId RSplineEntity::PropertyEndTangentY;
+RPropertyTypeId RSplineEntity::PropertyEndTangentZ;
 
 RSplineEntity::RSplineEntity(RDocument* document, const RSplineData& data) :
     REntity(document), data(document, data) {
@@ -81,26 +81,30 @@ void RSplineEntity::init() {
     RSplineEntity::PropertyColor.generateId(typeid(RSplineEntity), REntity::PropertyColor);
     RSplineEntity::PropertyDisplayedColor.generateId(typeid(RSplineEntity), REntity::PropertyDisplayedColor);
     RSplineEntity::PropertyDrawOrder.generateId(typeid(RSplineEntity), REntity::PropertyDrawOrder);
+
     RSplineEntity::PropertyPeriodic.generateId(typeid(RSplineEntity), "", QT_TRANSLATE_NOOP("REntity", "Closed Periodic"));
     RSplineEntity::PropertyDegree.generateId(typeid(RSplineEntity), "", QT_TRANSLATE_NOOP("REntity", "Degree"));
-    RSplineEntity::PropertyControlPointNX.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Control Point"), QT_TRANSLATE_NOOP("REntity", "X"));
-    RSplineEntity::PropertyControlPointNY.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Control Point"), QT_TRANSLATE_NOOP("REntity", "Y"));
-    RSplineEntity::PropertyControlPointNZ.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Control Point"), QT_TRANSLATE_NOOP("REntity", "Z"));
-    RSplineEntity::PropertyFitPointNX.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Fit Point"), QT_TRANSLATE_NOOP("REntity", "X"));
-    RSplineEntity::PropertyFitPointNY.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Fit Point"), QT_TRANSLATE_NOOP("REntity", "Y"));
-    RSplineEntity::PropertyFitPointNZ.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Fit Point"), QT_TRANSLATE_NOOP("REntity", "Z"));
+
+    RSplineEntity::PropertyControlPointNX.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Control Point"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyControlPointNY.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Control Point"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyControlPointNZ.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Control Point"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyFitPointNX.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Fit Point"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyFitPointNY.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Fit Point"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyFitPointNZ.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Fit Point"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
     RSplineEntity::PropertyKnotN.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Knot Vector"), QT_TRANSLATE_NOOP("REntity", "Knot"));
+
     RSplineEntity::PropertyLength.generateId(typeid(RSplineEntity), "", QT_TRANSLATE_NOOP("REntity", "Length"));
     RSplineEntity::PropertyTotalLength.generateId(typeid(RSplineEntity), "", QT_TRANSLATE_NOOP("REntity", "Total Length"));
+
     // TODO: tangent support:
-//    RSplineEntity::PropertyUseStartTangent.generateId(typeid(RSplineEntity), "", QT_TRANSLATE_NOOP("REntity", "Use Start Tangent"));
-//    RSplineEntity::PropertyStartTangentX.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Start Tangent"), QT_TRANSLATE_NOOP("REntity", "X"));
-//    RSplineEntity::PropertyStartTangentY.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Start Tangent"), QT_TRANSLATE_NOOP("REntity", "Y"));
-//    RSplineEntity::PropertyStartTangentZ.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Start Tangent"), QT_TRANSLATE_NOOP("REntity", "Z"));
-//    RSplineEntity::PropertyUseEndTangent.generateId(typeid(RSplineEntity), "", QT_TRANSLATE_NOOP("REntity", "Use End Tangent"));
-//    RSplineEntity::PropertyEndTangentX.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "End Tangent"), QT_TRANSLATE_NOOP("REntity", "X"));
-//    RSplineEntity::PropertyEndTangentY.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "End Tangent"), QT_TRANSLATE_NOOP("REntity", "Y"));
-//    RSplineEntity::PropertyEndTangentZ.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "End Tangent"), QT_TRANSLATE_NOOP("REntity", "Z"));
+    RSplineEntity::PropertyUseStartTangent.generateId(typeid(RSplineEntity), "", QT_TRANSLATE_NOOP("REntity", "Use Start Tangent"));
+    RSplineEntity::PropertyStartTangentX.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Start Tangent"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyStartTangentY.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Start Tangent"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyStartTangentZ.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "Start Tangent"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyUseEndTangent.generateId(typeid(RSplineEntity), "", QT_TRANSLATE_NOOP("REntity", "Use End Tangent"));
+    RSplineEntity::PropertyEndTangentX.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "End Tangent"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyEndTangentY.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "End Tangent"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RSplineEntity::PropertyEndTangentZ.generateId(typeid(RSplineEntity), QT_TRANSLATE_NOOP("REntity", "End Tangent"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
 }
 
 bool RSplineEntity::setProperty(RPropertyTypeId propertyTypeId,
@@ -120,15 +124,15 @@ bool RSplineEntity::setProperty(RPropertyTypeId propertyTypeId,
     }
 
     // TODO: tangent support:
-//    ret = ret || RObject::setMember(data.tangentStart.valid, value, PropertyUseStartTangent == propertyTypeId);
-//    ret = ret || RObject::setMember(data.tangentStart.x, value, PropertyStartTangentX == propertyTypeId);
-//    ret = ret || RObject::setMember(data.tangentStart.y, value, PropertyStartTangentY == propertyTypeId);
-//    ret = ret || RObject::setMember(data.tangentStart.z, value, PropertyStartTangentZ == propertyTypeId);
+    ret = ret || RObject::setMember(data.tangentStart.valid, value, PropertyUseStartTangent == propertyTypeId);
+    ret = ret || RObject::setMember(data.tangentStart.x, value, PropertyStartTangentX == propertyTypeId);
+    ret = ret || RObject::setMember(data.tangentStart.y, value, PropertyStartTangentY == propertyTypeId);
+    ret = ret || RObject::setMember(data.tangentStart.z, value, PropertyStartTangentZ == propertyTypeId);
 
-//    ret = ret || RObject::setMember(data.tangentEnd.valid, value, PropertyUseEndTangent == propertyTypeId);
-//    ret = ret || RObject::setMember(data.tangentEnd.x, value, PropertyEndTangentX == propertyTypeId);
-//    ret = ret || RObject::setMember(data.tangentEnd.y, value, PropertyEndTangentY == propertyTypeId);
-//    ret = ret || RObject::setMember(data.tangentEnd.z, value, PropertyEndTangentZ == propertyTypeId);
+    ret = ret || RObject::setMember(data.tangentEnd.valid, value, PropertyUseEndTangent == propertyTypeId);
+    ret = ret || RObject::setMember(data.tangentEnd.x, value, PropertyEndTangentX == propertyTypeId);
+    ret = ret || RObject::setMember(data.tangentEnd.y, value, PropertyEndTangentY == propertyTypeId);
+    ret = ret || RObject::setMember(data.tangentEnd.z, value, PropertyEndTangentZ == propertyTypeId);
 
     // TODO:
 //    if  (propertyTypeId==PropertyFitPointNX || propertyTypeId==PropertyFitPointNY || propertyTypeId==PropertyFitPointNZ) {
@@ -154,7 +158,7 @@ bool RSplineEntity::setProperty(RPropertyTypeId propertyTypeId,
 
 QPair<QVariant, RPropertyAttributes> RSplineEntity::getProperty(
         RPropertyTypeId& propertyTypeId, bool humanReadable,
-        bool noAttributes) {
+        bool noAttributes, bool showOnRequest) {
 
     if (!data.controlPoints.isEmpty() && data.fitPoints.isEmpty()) {
         if (propertyTypeId == PropertyControlPointNX) {
@@ -188,30 +192,30 @@ QPair<QVariant, RPropertyAttributes> RSplineEntity::getProperty(
         }
 
         // TODO: tangent support:
-//        if (propertyTypeId == PropertyUseStartTangent) {
-//            return qMakePair(QVariant(data.tangentStart.valid), RPropertyAttributes());
-//        }
-//        else if (propertyTypeId == PropertyStartTangentX) {
-//            return qMakePair(QVariant(data.tangentStart.x), RPropertyAttributes());
-//        }
-//        else if (propertyTypeId == PropertyStartTangentY) {
-//            return qMakePair(QVariant(data.tangentStart.y), RPropertyAttributes());
-//        }
-//        else if (propertyTypeId == PropertyStartTangentZ) {
-//            return qMakePair(QVariant(data.tangentStart.z), RPropertyAttributes());
-//        }
-//        else if (propertyTypeId == PropertyUseEndTangent) {
-//            return qMakePair(QVariant(data.tangentEnd.valid), RPropertyAttributes());
-//        }
-//        else if (propertyTypeId == PropertyEndTangentX) {
-//            return qMakePair(QVariant(data.tangentEnd.x), RPropertyAttributes());
-//        }
-//        else if (propertyTypeId == PropertyEndTangentY) {
-//            return qMakePair(QVariant(data.tangentEnd.y), RPropertyAttributes());
-//        }
-//        else if (propertyTypeId == PropertyEndTangentZ) {
-//            return qMakePair(QVariant(data.tangentEnd.z), RPropertyAttributes());
-//        }
+        if (propertyTypeId == PropertyUseStartTangent) {
+            return qMakePair(QVariant(data.tangentStart.valid), RPropertyAttributes(RPropertyAttributes::ReadOnly));
+        }
+        else if (propertyTypeId == PropertyStartTangentX) {
+            return qMakePair(QVariant(data.tangentStart.x), RPropertyAttributes(RPropertyAttributes::ReadOnly));
+        }
+        else if (propertyTypeId == PropertyStartTangentY) {
+            return qMakePair(QVariant(data.tangentStart.y), RPropertyAttributes(RPropertyAttributes::ReadOnly));
+        }
+        else if (propertyTypeId == PropertyStartTangentZ) {
+            return qMakePair(QVariant(data.tangentStart.z), RPropertyAttributes(RPropertyAttributes::ReadOnly));
+        }
+        else if (propertyTypeId == PropertyUseEndTangent) {
+            return qMakePair(QVariant(data.tangentEnd.valid), RPropertyAttributes(RPropertyAttributes::ReadOnly));
+        }
+        else if (propertyTypeId == PropertyEndTangentX) {
+            return qMakePair(QVariant(data.tangentEnd.x), RPropertyAttributes(RPropertyAttributes::ReadOnly));
+        }
+        else if (propertyTypeId == PropertyEndTangentY) {
+            return qMakePair(QVariant(data.tangentEnd.y), RPropertyAttributes(RPropertyAttributes::ReadOnly));
+        }
+        else if (propertyTypeId == PropertyEndTangentZ) {
+            return qMakePair(QVariant(data.tangentEnd.z), RPropertyAttributes(RPropertyAttributes::ReadOnly));
+        }
     }
 
     if (!data.knotVector.isEmpty()) {
@@ -248,7 +252,7 @@ QPair<QVariant, RPropertyAttributes> RSplineEntity::getProperty(
         }
     }
 
-    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 void RSplineEntity::setShape(const RSpline& s) {

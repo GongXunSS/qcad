@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -158,7 +158,7 @@ bool RSolidEntity::setProperty(RPropertyTypeId propertyTypeId,
 
 QPair<QVariant, RPropertyAttributes> RSolidEntity::getProperty(
         RPropertyTypeId& propertyTypeId, bool humanReadable,
-        bool noAttributes) {
+        bool noAttributes, bool showOnRequest) {
     if (propertyTypeId == PropertyPoint1X) {
         return qMakePair(QVariant(data.getVertexAt(0).x), RPropertyAttributes());
     } else if (propertyTypeId == PropertyPoint1Y) {
@@ -198,7 +198,7 @@ QPair<QVariant, RPropertyAttributes> RSolidEntity::getProperty(
         return qMakePair(QVariant(data.getLength()), RPropertyAttributes(RPropertyAttributes::Sum));
     }
 
-    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 

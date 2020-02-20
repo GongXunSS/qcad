@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -48,7 +48,8 @@ void RClipboardOperation::copy(RDocument& src, RDocument& dest,
         bool toModelSpaceBlock,
         bool preview,
         const RQMapQStringQString& attributes,
-        const RQMapQStringQString& properties) {
+        const RQMapQStringQString& properties,
+        const RQMapQStringQString& blockProperties) {
 
     bool overwriteLinetypes = false;
 
@@ -94,6 +95,7 @@ void RClipboardOperation::copy(RDocument& src, RDocument& dest,
         if (!hasBlock || overwriteBlocks) {
             block = QSharedPointer<RBlock> (new RBlock(&dest, blockName,
                     RVector(0, 0, 0)));
+            block->setCustomProperties(blockProperties);
             transaction.overwriteBlock(block);
         }
 
@@ -123,12 +125,7 @@ void RClipboardOperation::copy(RDocument& src, RDocument& dest,
         refp->rotate(rotation, center);
         refp->move(offset);
 
-        QStringList propertyNames = properties.keys();
-        for (int i=0; i<propertyNames.length(); i++) {
-            QString name = propertyNames[i];
-            QString value = properties[name];
-            refp->setCustomProperty(RSettings::getAppId(), name, value);
-        }
+        refp->setCustomProperties(properties);
 
         // create attribute for each attribute definition in block with
         // invalid parent ID (fixed later, when block reference ID is known):
@@ -340,6 +337,13 @@ void RClipboardOperation::copyEntity(
             return;
         }
 
+        // make sure the top level block ref uses the top draw order,
+        // when pasting from a part library document which contains
+        // a block reference:
+        if (blockRef->getBlockId()==src.getModelSpaceBlockId()) {
+            blockRef->setDrawOrder(REntityData::getDefaultDrawOrder());
+        }
+
         copiedBlockContents.insert(blockRef->getReferencedBlockId());
 
         // TODO: don't do this twice:
@@ -406,12 +410,18 @@ void RClipboardOperation::copyEntity(
         destEntity->flipVertical();
     }
     if (blockRef!=NULL) {
-        // don't scale block ref, scale block contents:
+        // don't scale block ref by unit scale,
+        // block contents is scaled by unit scale:
         destEntity->scale(scale);
 
-        // scale block ref position:
-        destEntity->move(-blockRef->getPosition());
-        destEntity->move(blockRef->getPosition() * unitScale);
+        // scale block ref position by unit scale:
+        QSharedPointer<RBlockReferenceEntity> destBlockRef = destEntity.dynamicCast<RBlockReferenceEntity>();
+        if (!destBlockRef.isNull()) {
+            destBlockRef->setPosition(destBlockRef->getPosition() * unitScale);
+        }
+
+        //destEntity->move(-blockRef->getPosition());
+        //destEntity->move(blockRef->getPosition() * unitScale);
     }
     else {
         destEntity->scale(scale * unitScale);

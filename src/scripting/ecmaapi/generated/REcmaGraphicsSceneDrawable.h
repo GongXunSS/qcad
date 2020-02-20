@@ -55,6 +55,12 @@
         createFromText
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        createFromTransform
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        createEndTransform
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         uninit
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -73,6 +79,12 @@
         getNoPlot
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        setPixelUnit
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getPixelUnit
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getPainterPath
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -82,10 +94,16 @@
         getText
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getTransform
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getOffset
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setOffset
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getDocument
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setSelected

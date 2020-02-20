@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by RibbonSoft, GmbH. All rights reserved.
+ * Copyright (c) 2011-2018 by RibbonSoft, GmbH. All rights reserved.
  *
  * This file is part of the QCAD project.
  *
@@ -55,10 +55,10 @@ SelectByHandle.prototype.beginEvent = function() {
 
     if (isEntity(obj)) {
         di.selectEntity(obj.getId());
-        EAction.handleUserMessage(qsTr("Object selected: ") + obj.getId());
+        EAction.handleUserMessage(qsTr("Object selected:") + " " + obj.getId());
     }
     else {
-        EAction.handleUserMessage(qsTr("Object is not an entity: ") + obj);
+        EAction.handleUserMessage(qsTr("Object is not a drawing entity:") + " " + obj);
     }
 
     dialog.destroy();

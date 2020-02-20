@@ -75,7 +75,16 @@
         isValid
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isSane
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         setToolTip
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getNormalTextColor
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setTextColor
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         slotTextChanged

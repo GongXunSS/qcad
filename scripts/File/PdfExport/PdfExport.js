@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -32,23 +32,15 @@ PdfExport.prototype.beginEvent = function() {
     File.prototype.beginEvent.call(this);
 
     include("scripts/File/PrintPreview/PrintPreview.js");
+
+    var di = this.getDocumentInterface();
     if (!PrintPreview.isRunning()) {
-        var action = this.getPrintPreviewAction();
-        action.initialAction = "PdfExport";
-        var di = this.getDocumentInterface();
-        di.setCurrentAction(action);
+        PrintPreview.start("PdfExport");
     }
     else {
-        //PrintPreview.slotPdfExport();
-        //this.terminate();
         var pp = PrintPreview.getInstance();
         pp.slotPdfExport();
     }
 
     this.terminate();
 };
-
-PdfExport.prototype.getPrintPreviewAction = function() {
-    return new PrintPreview();
-};
-

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Ellipse.js");
+include("scripts/Draw/Ellipse/Ellipse.js");
 include("../../DrawBasedOnRectangleSize.js");
 include("scripts/ShapeAlgorithms.js");
 
@@ -41,7 +41,10 @@ EllipseDD.prototype.getShapes = function(corners) {
         lines.push(new RLine(corners[i], corners[(i+1)%corners.length]));
     }
     var ellipse = ShapeAlgorithms.createEllipseInscribedFromLines(lines[0], lines[1], lines[2], lines[3]);
-    return [ ellipse ];
+
+    var shape = Ellipse.postProcess(ellipse);
+
+    return [ shape ];
 };
 
 EllipseDD.prototype.getAuxPreview = function() {

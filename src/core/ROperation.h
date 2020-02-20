@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -93,8 +93,16 @@ public:
         transactionGroup = g;
     }
 
+    int getTransactionGroup() const {
+        return transactionGroup;
+    }
+
     void setText(const QString& t) {
         text = t;
+    }
+
+    QString getText() const {
+        return text;
     }
 
 protected:

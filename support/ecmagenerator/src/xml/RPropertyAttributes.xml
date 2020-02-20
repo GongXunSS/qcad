@@ -27,9 +27,13 @@ xmlns:rs="http://www.ribbonsoft.com">
       <value name="KnownVariable" />
       <value name="NumericallySorted" />
       <value name="Percentage" />
-      <value name="Integer" />
       <value name="Sum" />
-      <value name="ReadOnly" />
+      <value name="Undeletable" />
+      <value name="OnRequest" />
+      <value name="Location" />
+      <value name="RefPoint" />
+      <value name="Geometry" />
+      <value name="Scale" />
     </enum>
     <constructor>
       <variant />
@@ -72,6 +76,19 @@ xmlns:rs="http://www.ribbonsoft.com">
     isScriptOverwritable="true">
       <variant returnType="void" isPureVirtual="false">
         <arg type="bool" typeName="bool" name="invisible"
+        isConst="false" />
+      </variant>
+    </method>
+    <method name="isUndeletable" cppName="isUndeletable"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
+    <method name="setUndeletable" cppName="setUndeletable"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="bool" typeName="bool" name="undeletable"
         isConst="false" />
       </variant>
     </method>
@@ -212,7 +229,24 @@ xmlns:rs="http://www.ribbonsoft.com">
         isConst="false" />
       </variant>
     </method>
+    <method name="isOnRequest" cppName="isOnRequest"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
+    <method name="setOnRequest" cppName="setOnRequest"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="bool" typeName="bool" name="onRequest"
+        isConst="false" />
+      </variant>
+    </method>
     <method name="isLabel" cppName="isLabel" specifier="public"
+    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
+    <method name="isCustom" cppName="isCustom" specifier="public"
     isStatic="false" isVirtual="false" isScriptOverwritable="true">
       <variant returnType="bool" isPureVirtual="false" />
     </method>
@@ -256,18 +290,28 @@ xmlns:rs="http://www.ribbonsoft.com">
         isConst="false" />
       </variant>
     </method>
-    <method name="getPropertyTypeId" cppName="getPropertyTypeId"
+    <method name="isScaleType" cppName="isScaleType"
     specifier="public" isStatic="false" isVirtual="false"
     isScriptOverwritable="true">
-      <variant returnType="RPropertyTypeId"
-      isPureVirtual="false" />
+      <variant returnType="bool" isPureVirtual="false" />
     </method>
-    <method name="setPropertyTypeId" cppName="setPropertyTypeId"
+    <method name="setScaleType" cppName="setScaleType"
     specifier="public" isStatic="false" isVirtual="false"
     isScriptOverwritable="true">
       <variant returnType="void" isPureVirtual="false">
-        <arg type="RPropertyTypeId" typeName="RPropertyTypeId"
-        name="pid" isConst="false" />
+        <arg type="bool" typeName="bool" name="v"
+        isConst="false" />
+      </variant>
+    </method>
+    <method name="getLabel" cppName="getLabel" specifier="public"
+    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="QString" isPureVirtual="false" />
+    </method>
+    <method name="setLabel" cppName="setLabel" specifier="public"
+    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="QString &amp;" typeName="QString" name="l"
+        isConst="true" />
       </variant>
     </method>
     <method name="operator ==" cppName="operator =="

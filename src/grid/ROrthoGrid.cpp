@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -827,14 +827,14 @@ RS::IsoProjectionType ROrthoGrid::getProjection() const {
     if (projection==-1) {
         int viewportNumber = getViewportNumber();
         if (viewportNumber==-1) {
-            return RS::IsoTop;
+            return RS::NoProjection;
         }
 
         RDocument* doc = getDocument();
         if (doc==NULL) {
-            return RS::IsoTop;
+            return RS::NoProjection;
         }
-        projection = (int)doc->getVariable(QString("Grid/IsometricProjection0%1").arg(viewportNumber), (int)RS::IsoTop, true).toInt();
+        projection = (int)doc->getVariable(QString("Grid/IsometricProjection0%1").arg(viewportNumber), (int)RS::NoProjection, true).toInt();
     }
     return (RS::IsoProjectionType)projection;
 }

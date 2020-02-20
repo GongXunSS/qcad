@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -196,6 +196,13 @@ void RSpatialIndexNavel::addToIndex(
     //qDebug() << "RSpatialIndexNavel::addToIndex: id: " << id << ", pos: " << pos << ", " << x1 << "," << y1 << "/" << x2 << "," << y2;
 
     //qDebug() << "\tbefore: " << *this;
+
+    if (RMath::isNaN(x1) || RMath::isNaN(y1) || RMath::isNaN(z1) ||
+            RMath::isNaN(x2) || RMath::isNaN(y2) || RMath::isNaN(z2)) {
+
+        qWarning() << "trying to add NaN values to spatial index";
+        return;
+    }
 
     addToIndex(
         id, pos,

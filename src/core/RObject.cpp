@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -27,11 +27,14 @@
 
 const RObject::Id RObject::INVALID_ID = -1;
 const RObject::Handle RObject::INVALID_HANDLE = -1;
+QMap<QString, QMap<QString, RPropertyAttributes> > RObject::customPropertyAttributes;
 
 RPropertyTypeId RObject::PropertyCustom;
 RPropertyTypeId RObject::PropertyType;
 RPropertyTypeId RObject::PropertyHandle;
 RPropertyTypeId RObject::PropertyProtected;
+RPropertyTypeId RObject::PropertySelected;
+RPropertyTypeId RObject::PropertyInvisible;
 
 RObject::RObject(RDocument* document) :
     document(document),
@@ -56,11 +59,17 @@ RObject::~RObject() {
     //RDebug::decCounter("RObject");
 }
 
+void RObject::setDocument(RDocument* document) {
+    this->document = document;
+}
+
 void RObject::init() {
     RObject::PropertyCustom.generateId(typeid(RObject), "", QT_TRANSLATE_NOOP("REntity", "Custom"));
     RObject::PropertyType.generateId(typeid(RObject), "", QT_TRANSLATE_NOOP("REntity", "Type"));
     RObject::PropertyHandle.generateId(typeid(RObject), "", QT_TRANSLATE_NOOP("REntity", "Handle"));
     RObject::PropertyProtected.generateId(typeid(RObject), "", QT_TRANSLATE_NOOP("REntity", "Protected"));
+    RObject::PropertySelected.generateId(typeid(RObject), "", QT_TRANSLATE_NOOP("REntity", "Selected"));
+    RObject::PropertySelected.generateId(typeid(RObject), "", QT_TRANSLATE_NOOP("REntity", "Invisible"));
 }
 
 void RObject::setUndone(bool on) {
@@ -92,20 +101,27 @@ void RObject::setUndone(bool on) {
     }
 }
 
-QPair<QVariant, RPropertyAttributes> RObject::getProperty(RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes) {
+QPair<QVariant, RPropertyAttributes> RObject::getProperty(RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes, bool showOnRequest) {
     Q_UNUSED(humanReadable)
     Q_UNUSED(noAttributes)
+    Q_UNUSED(showOnRequest)
 
-    if (propertyTypeId == PropertyType) {
+    if (propertyTypeId==PropertyType) {
         return qMakePair(QVariant(getType()), RPropertyAttributes(RPropertyAttributes::ReadOnly));
     }
-    if (propertyTypeId == PropertyHandle) {
+    else if (propertyTypeId==PropertyHandle) {
         return qMakePair(QVariant(handle), RPropertyAttributes(RPropertyAttributes::ReadOnly));
     }
-    if (propertyTypeId == PropertyProtected) {
-        //return qMakePair(QVariant(protect), RPropertyAttributes(RPropertyAttributes::Invisible));
+    else if (propertyTypeId==PropertyProtected) {
         return qMakePair(QVariant(isProtected()), RPropertyAttributes(RPropertyAttributes::ReadOnly));
     }
+    else if (propertyTypeId==PropertySelected) {
+        return qMakePair(QVariant(isSelected()), RPropertyAttributes(RPropertyAttributes::Invisible));
+    }
+    else if (propertyTypeId==PropertyInvisible) {
+        return qMakePair(QVariant(isInvisible()), RPropertyAttributes(RPropertyAttributes::Invisible));
+    }
+
     if (propertyTypeId.isCustom()) {
         QString appId = propertyTypeId.getCustomPropertyTitle();
         QString name = propertyTypeId.getCustomPropertyName();
@@ -133,6 +149,8 @@ bool RObject::setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
     bool ret = false;
 
     ret = ret || RObject::setMemberFlag(RObject::Protect, value, PropertyProtected == propertyTypeId);
+    ret = ret || RObject::setMemberFlag(RObject::Selected, value, PropertySelected == propertyTypeId);
+    ret = ret || RObject::setMemberFlag(RObject::Invisible, value, PropertyInvisible == propertyTypeId);
 
     // set custom property:
     if (propertyTypeId.getId()==RPropertyTypeId::INVALID_ID) {
@@ -396,9 +414,11 @@ bool RObject::setMember(QList<double>& variable, const QVariant& value, bool con
  *      The IDs that are returned can be translated into a group title and
  *      a property title using \ref getPropertyGroupTitle and \ref getPropertyTitle.
  */
-QSet<RPropertyTypeId> RObject::getPropertyTypeIds() const {
-    QSet<RPropertyTypeId> ret = RPropertyTypeId::getPropertyTypeIds(typeid(*this));
-    ret.unite(getCustomPropertyTypeIds());
+QSet<RPropertyTypeId> RObject::getPropertyTypeIds(RPropertyAttributes::Option option) const {
+    QSet<RPropertyTypeId> ret = RPropertyTypeId::getPropertyTypeIds(typeid(*this), option);
+    if (option==RPropertyAttributes::NoOptions) {
+        ret.unite(getCustomPropertyTypeIds());
+    }
     return ret;
 }
 
@@ -460,7 +480,10 @@ QVariant RObject::getCustomProperty(const QString& title, const QString& key, co
 
 double RObject::getCustomDoubleProperty(const QString& title, const QString& key, double defaultValue) const {
     QVariant ret = getCustomProperty(title, key, defaultValue);
-    if (ret.type()==QVariant::Double) {
+    if (ret.type()==QVariant::Double ||
+        ret.type()==QVariant::Int || ret.type()==QVariant::UInt ||
+        ret.type()==QVariant::LongLong || ret.type()==QVariant::ULongLong) {
+
         return ret.toDouble();
     }
     if (ret.type()==QVariant::String) {
@@ -512,6 +535,15 @@ void RObject::setCustomProperty(const QString& title, const QString& key, const 
     customProperties[title].insert(key, value);
 }
 
+void RObject::setCustomProperties(const RQMapQStringQString& properties) {
+    QStringList propertyNames = properties.keys();
+    for (int i=0; i<propertyNames.length(); i++) {
+        QString name = propertyNames[i];
+        QString value = properties[name];
+        setCustomProperty(RSettings::getAppId(), name, value);
+    }
+}
+
 /**
  * Removes the custom property with the given name.
  */
@@ -551,9 +583,12 @@ QMap<QString, QVariantMap> RObject::getCustomProperties() const {
 }
 
 /**
- * Copies all custom properties from the given object. Existing properties are overwritten.
+ * Copies all custom properties from the given object.
+ * Existing properties can be overwritten.
  */
-void RObject::copyCustomPropertiesFrom(RObject* other, const QString& title, const QStringList& ignoreList) {
+void RObject::copyCustomPropertiesFrom(RObject* other, const QString& title,
+                                       bool overwrite, const QStringList& ignoreList,
+                                       const QString& mapKeyFrom, const QString& mapKeyTo) {
     QMap<QString, QVariantMap> otherProperties = other->getCustomProperties();
     QMap<QString, QVariantMap>::iterator it;
     for (it=otherProperties.begin(); it!=otherProperties.end(); it++) {
@@ -566,6 +601,16 @@ void RObject::copyCustomPropertiesFrom(RObject* other, const QString& title, con
                 QString otherKey = it2.key();
                 QVariant otherValue = it2.value();
 
+                if (!mapKeyFrom.isEmpty()) {
+                    otherKey.replace(mapKeyFrom, mapKeyTo);
+                }
+
+                if (!overwrite) {
+                    if (customProperties[title].contains(otherKey)) {
+                        continue;
+                    }
+                }
+
                 if (ignoreList.contains(otherKey)) {
                     continue;
                 }
@@ -574,6 +619,29 @@ void RObject::copyCustomPropertiesFrom(RObject* other, const QString& title, con
             }
         }
     }
+}
+
+/**
+ * Set attributes (read-only, invisible, ...) for the given custom property.
+ */
+void RObject::setCustomPropertyAttributes(const QString& title, const QString& key, const RPropertyAttributes& att) {
+    if (!customPropertyAttributes.contains(title)) {
+        customPropertyAttributes.insert(title, QMap<QString, RPropertyAttributes>());
+    }
+    customPropertyAttributes[title].insert(key, att);
+}
+
+/**
+ * \return attributes (read-only, invisible, ...) for the given custom property.
+ */
+RPropertyAttributes RObject::getCustomPropertyAttributes(const QString& title, const QString& key) {
+    if (customPropertyAttributes.contains(title)) {
+        if (customPropertyAttributes[title].contains(key)) {
+            return customPropertyAttributes[title].value(key);
+        }
+    }
+
+    return RPropertyAttributes();
 }
 
 /**
@@ -587,6 +655,7 @@ void RObject::print(QDebug dbg) const {
             << ", address: " << QString("0x%1").arg((long int) this, 0, 16)
             << ", undone: " << (int)isUndone()
             << ", protected: " << (int)isProtected()
+            << ", selected: " << (int)isSelected()
             << ")";
 
     if (!customProperties.isEmpty()) {

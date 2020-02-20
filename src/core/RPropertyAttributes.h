@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -30,7 +30,6 @@
 
 #include "RDebug.h"
 #include "RMath.h"
-#include "RPropertyTypeId.h"
 
 /**
  * Structure to transfer attributes about property types.
@@ -68,7 +67,14 @@ public:
         KnownVariable = 0x20000,         //!< Property is a known DXF variable
         NumericallySorted = 0x40000,     //!< Sort choices for this property numerically
         Percentage = 0x80000 | Integer,  //!< Property is a percentage (0...100), implies Integer
-        Sum = 0x100000 | ReadOnly | Redundant  //!< Sum up this property when multiple entities are selected (area, lenght), implies ReadOnly and Redundant
+        Sum = 0x100000 | ReadOnly | Redundant,  //!< Sum up this property when multiple entities are selected (area, length),
+                                         //!< implies ReadOnly and Redundant
+        Undeletable = 0x200000,          //!< Property is undeletable (custom properties only)
+        OnRequest = 0x400000,            //!< Property shown on request (slow to compute)
+        Location = 0x800000,             //!< Property affected when transforming
+        RefPoint = 0x1000000,            //!< Property affected when moving reference point
+        Geometry = Location | RefPoint,  //!< Property affected when chaning geometry (Location | RefPoint)
+        Scale = 0x2000000                //!< Property is scale (1:2, 5"=1", ...)
     };
     Q_DECLARE_FLAGS(Options, Option)
 
@@ -95,6 +101,14 @@ public:
 
     void setInvisible(bool invisible) {
         setOption(Invisible, invisible);
+    }
+
+    bool isUndeletable() const {
+        return options.testFlag(Undeletable);
+    }
+
+    void setUndeletable(bool undeletable) {
+        setOption(Undeletable, undeletable);
     }
 
     bool isList() const {
@@ -195,8 +209,20 @@ public:
         setOption(Sum, sum);
     }
 
+    bool isOnRequest() const {
+        return options.testFlag(OnRequest);
+    }
+
+    void setOnRequest(bool onRequest) {
+        setOption(OnRequest, onRequest);
+    }
+
     bool isLabel() const {
         return options.testFlag(Label);
+    }
+
+    bool isCustom() const {
+        return options.testFlag(Custom);
     }
 
     bool isDimensionLabel() const {
@@ -227,12 +253,20 @@ public:
         setOption(NumericallySorted, on);
     }
 
-    RPropertyTypeId getPropertyTypeId() {
-        return propertyTypeId;
+    bool isScaleType() const {
+        return options.testFlag(Scale);
     }
 
-    void setPropertyTypeId(RPropertyTypeId pid) {
-        propertyTypeId = pid;
+    void setScaleType(bool v) {
+        setOption(Scale, v);
+    }
+
+    QString getLabel() const {
+        return label;
+    }
+
+    void setLabel(const QString& l) {
+        label = l;
     }
 
     bool operator == (const RPropertyAttributes& other) const {
@@ -251,9 +285,6 @@ public:
         if (choices != other.choices) {
             return false;
         }
-        if (propertyTypeId != other.propertyTypeId) {
-            return false;
-        }
 
         return true;
     }
@@ -266,8 +297,7 @@ public:
 private:
     RPropertyAttributes::Options options;
     QSet<QString> choices;
-    //QList<QVariant> enumChoices;
-    RPropertyTypeId propertyTypeId;
+    QString label;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(RPropertyAttributes::Options)

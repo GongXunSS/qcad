@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -71,9 +71,8 @@ function main() {
         outputFile = RSettings.getLaunchPath() + QDir.separator + outputFile;
     }
 
-    //debugger;
     var storage = new RMemoryStorage();
-    var spatialIndex = new RSpatialIndexNavel();
+    var spatialIndex = new RSpatialIndexSimple();
     var doc = new RDocument(storage, spatialIndex);
     var di = new RDocumentInterface(doc);
 
@@ -86,7 +85,6 @@ function main() {
     print("  from: " + inputFile);
     print("  to  : " + outputFile);
 
-    //debugger;
     var continuousId = doc.getLinetypeId("CONTINUOUS");
     var byLayerId = doc.getLinetypeId("BYLAYER");
 

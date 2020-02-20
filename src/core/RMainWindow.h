@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -23,6 +23,7 @@
 #include "core_global.h"
 
 #include <QMutex>
+class QKeyEvent;
 
 #include "REntityExportListener.h"
 #include "RExportListener.h"
@@ -41,6 +42,7 @@ class RDocumentInterface;
 class REntity;
 class RFocusListener;
 class RGraphicsView;
+class RKeyListener;
 class RLayerListener;
 class RNewDocumentListener;
 class RPenListener;
@@ -110,10 +112,10 @@ public:
     ) = 0;
     virtual void postCloseEvent() = 0;
     //virtual void postPropertyEvent() = 0;
-//    virtual void postPropertyEvent(RPropertyTypeId propertyTypeId,
-//        const QVariant& value,
-//        RS::EntityType entityTypeFilter = RS::EntityAll
-//    ) = 0;
+    virtual void postPropertyEvent(RPropertyTypeId propertyTypeId,
+        const QVariant& value,
+        RS::EntityType entityTypeFilter = RS::EntityAll
+    ) = 0;
 
     void addPropertyListener(RPropertyListener* l);
     void removePropertyListener(RPropertyListener* l);
@@ -150,7 +152,7 @@ public:
 
     void addNewDocumentListener(RNewDocumentListener* l);
     void removeNewDocumentListener(RNewDocumentListener* l);
-    void notifyNewDocumentListeners(RDocument* document, RTransaction* transaction);
+    void notifyNewDocumentListeners(RDocument* document, RTransaction* transaction, bool beforeLoad);
 
     void addSnapListener(RSnapListener* l);
     void removeSnapListener(RSnapListener* l);
@@ -159,6 +161,10 @@ public:
     void addFocusListener(RFocusListener* l);
     void removeFocusListener(RFocusListener* l);
     void notifyFocusListeners(RDocumentInterface* documentInterface);
+
+    void addKeyListener(RKeyListener* l);
+    void removeKeyListener(RKeyListener* l);
+    void notifyKeyListeners(QKeyEvent* event);
 
     void addViewFocusListener(RViewFocusListener* l);
     void removeViewFocusListener(RViewFocusListener* l);
@@ -176,8 +182,8 @@ public:
 
     void addLayerListener(RLayerListener* l);
     void removeLayerListener(RLayerListener* l);
-    void notifyLayerListeners(RDocumentInterface* documentInterface);
-    void notifyLayerListenersCurrentLayer(RDocumentInterface* documentInterface);
+    void notifyLayerListeners(RDocumentInterface* documentInterface, QList<RLayer::Id>& layerIds);
+    void notifyLayerListenersCurrentLayer(RDocumentInterface* documentInterface, RLayer::Id previousLayerId);
 
     void addBlockListener(RBlockListener* l);
     void removeBlockListener(RBlockListener* l);
@@ -304,6 +310,7 @@ protected:
     QList<RInterTransactionListener*> interTransactionListeners;
     QList<RNewDocumentListener*> newDocumentListeners;
     QList<RSnapListener*> snapListeners;
+    QList<RKeyListener*> keyListeners;
     QList<RFocusListener*> focusListeners;
     QList<RViewFocusListener*> viewFocusListeners;
     QList<RPreferencesListener*> preferencesListeners;

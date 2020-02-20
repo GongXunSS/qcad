@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -23,7 +23,7 @@
  *
  * \brief This module contains ECMAScript implementations of various line drawing tools.
  */
-include("../Draw.js");
+include("scripts/Draw/Draw.js");
 
 /**
  * \class Line
@@ -83,7 +83,7 @@ Line.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         action.setIcon(Line.includeBasePath + "/Line.svg");
-        action.setStatusTip(qsTr("Show line tools"));
+        //action.setStatusTip(qsTr("Show line tools"));
         action.setDefaultShortcut(new QKeySequence("w,l"));
         action.setNoState();
         action.setDefaultCommands(["linemenu"]);

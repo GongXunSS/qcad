@@ -8,6 +8,7 @@ CONFIG += precompile_header
 PRECOMPILED_HEADER = stable.h
 OTHER_FILES += ecmaapi.dox
 DEFINES += QCADECMAAPI_LIBRARY
+RC_FILE = ecmaapi.rc
 HEADERS += \
     RAutoLoadEcma.h \
     REcmaHelper.h \
@@ -26,6 +27,4 @@ LIBS += \
     -l$${RLIBNAME}operations \
     -l$${RLIBNAME}snap \
     -l$${RLIBNAME}spatialindex \
-    -l$${RLIBNAME}stemmer \
-    -l$${RLIBNAME}zip \
-    -lquazip
+    -l$${RLIBNAME}stemmer

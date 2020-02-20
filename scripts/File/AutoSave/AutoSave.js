@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../File.js");
+include("scripts/File/File.js");
 include("scripts/sprintf.js");
 
 var documentCounter;
@@ -97,8 +97,13 @@ AutoSave.init = function(basePath) {
  * Called periodically to perform an auto save of the current document.
  */
 AutoSave.autoSave = function() {
-    var nameFilters = RFileExporterRegistry.getFilterStrings();
-    if (nameFilters.length===0) {
+    var appWin = EAction.getMainWindow();
+    if (appWin.property("DisableAutoSave")==true) {
+        return;
+    }
+
+    var filterStrings = RFileExporterRegistry.getFilterStrings();
+    if (filterStrings.length===0) {
         // don't attempt autosave if no filters are available to save:
         return;
     }
@@ -132,16 +137,19 @@ AutoSave.autoSave = function() {
 
     fi = new QFileInfo(bakFileName);
 
+    var failed = true;
+
     // temp file name to make sure that a failed save does not overwrite
     // a good save (e.g. /home/tux/data/~~file.dxf):
     var tmpBakFileName = fi.absolutePath() + QDir.separator + "~" + fi.fileName();
-    var failed = true;
-
-    if (documentInterface.exportFile(tmpBakFileName, fileVersion, false)) {
-        var bakFile = new QFile(bakFileName);
-        var tmpBakFile = new QFile(tmpBakFileName);
-        if ((!bakFile.exists() || bakFile.remove()) && tmpBakFile.rename(bakFileName)) {
-            failed = false;
+    var fiDir = new QFileInfo(fi.absolutePath());
+    if (fiDir.isWritable()) {
+        if (documentInterface.exportFile(tmpBakFileName, fileVersion, false)) {
+            var bakFile = new QFile(bakFileName);
+            var tmpBakFile = new QFile(tmpBakFileName);
+            if ((!bakFile.exists() || bakFile.remove()) && tmpBakFile.rename(bakFileName)) {
+                failed = false;
+            }
         }
     }
 
@@ -149,7 +157,7 @@ AutoSave.autoSave = function() {
         EAction.handleUserWarning("[" + AutoSave.getTimestamp() + "] "
             + qsTr("Autosave failed:") + " "
             + QDir.toNativeSeparators(bakFileName));
-         return undefined;
+        return undefined;
     }
     else {
         EAction.handleUserMessage("[" + AutoSave.getTimestamp() + "] "
@@ -172,15 +180,8 @@ AutoSave.recoverUntitled = function() {
         return false;
     }
 
-    var msg;
-    if (list.length===1) {
-        msg = qsTr("An 'autosave' backup file for an untitled drawing was found.\n" +
-            "Do you wish to recover it?");
-    }
-    else {
-        msg = qsTr("%1 'autosave' backup files for untitled drawings were found.\n" +
-            "Do you wish to recover them?").arg(list.length);
-    }
+    var msg = qsTr("%n autosave backup file(s) for (an) untitled drawing(s) was/were found.\n" +
+            "Do you wish to recover it/them?", "", list.length);
 
     var buttons = new QMessageBox.StandardButtons(QMessageBox.Yes, QMessageBox.No, QMessageBox.Cancel);
     var ret = QMessageBox.warning(null,
@@ -248,7 +249,7 @@ AutoSave.recover = function(fileName) {
     var buttons = new QMessageBox.StandardButtons(QMessageBox.Yes, QMessageBox.No, QMessageBox.Cancel);
     var ret = QMessageBox.warning(null,
             qsTr("Recover File?"),
-            qsTr("An 'autosave' backup file for '%1' exists.\n" +
+            qsTr("An autosave backup file for \"%1\" exists.\n" +
                 "Do you wish to recover it?").arg(fi.fileName()),
             buttons);
 

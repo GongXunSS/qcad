@@ -61,6 +61,12 @@
         setInvisible
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isUndeletable
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setUndeletable
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         isList
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -127,7 +133,16 @@
         setSum
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isOnRequest
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setOnRequest
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         isLabel
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isCustom
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         isDimensionLabel
@@ -151,10 +166,16 @@
         setNumericallySorted
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        getPropertyTypeId
+        isScaleType
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        setPropertyTypeId
+        setScaleType
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getLabel
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setLabel
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         equals

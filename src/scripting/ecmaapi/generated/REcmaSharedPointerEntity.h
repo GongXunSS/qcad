@@ -65,10 +65,16 @@
         getType
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isPointType
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         isComplex
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         isDimension
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isTextBased
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getData
@@ -102,6 +108,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setLayerId
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setLayerName
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getLayerId
@@ -167,6 +176,9 @@
         to2D
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        setZ
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getBoundingBoxes
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -227,6 +239,9 @@
         getIntersectionPointsWithShape
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        clickReferencePoint
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         moveReferencePoint
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -239,7 +254,13 @@
         scale
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        scaleNonUniform
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         scaleVisualProperties
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setViewportContext
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         mirror
@@ -261,9 +282,6 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         exportEntity
-        (QScriptContext* context, QScriptEngine* engine) 
-        ;static  QScriptValue
-        isSelectedForPropertyEditing
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setAutoUpdatesBlocked

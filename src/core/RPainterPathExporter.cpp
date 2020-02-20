@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -47,7 +47,9 @@ void RPainterPathExporter::exportLineSegment(const RLine& line, double angle) {
     }
 }
 
-void RPainterPathExporter::exportPainterPaths(const QList<RPainterPath>& paths) {
+void RPainterPathExporter::exportPainterPaths(const QList<RPainterPath>& paths, double z) {
+    Q_UNUSED(z)
+
     for (int i=0; i<paths.length(); i++) {
         path.addPath(paths[i]);
     }

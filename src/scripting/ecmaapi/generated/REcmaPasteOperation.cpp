@@ -75,6 +75,8 @@
             
             REcmaHelper::registerFunction(&engine, proto, setRotations, "setRotations");
             
+            REcmaHelper::registerFunction(&engine, proto, setCenters, "setCenters");
+            
             REcmaHelper::registerFunction(&engine, proto, setOffset, "setOffset");
             
             REcmaHelper::registerFunction(&engine, proto, getOffset, "getOffset");
@@ -86,6 +88,10 @@
             REcmaHelper::registerFunction(&engine, proto, setRotation, "setRotation");
             
             REcmaHelper::registerFunction(&engine, proto, getRotation, "getRotation");
+            
+            REcmaHelper::registerFunction(&engine, proto, setCenter, "setCenter");
+            
+            REcmaHelper::registerFunction(&engine, proto, getCenter, "getCenter");
             
             REcmaHelper::registerFunction(&engine, proto, setFlipHorizontal, "setFlipHorizontal");
             
@@ -118,6 +124,8 @@
             REcmaHelper::registerFunction(&engine, proto, setAttribute, "setAttribute");
             
             REcmaHelper::registerFunction(&engine, proto, setProperty, "setProperty");
+            
+            REcmaHelper::registerFunction(&engine, proto, setBlockProperty, "setBlockProperty");
             
             REcmaHelper::registerFunction(&engine, proto, apply, "apply");
             
@@ -401,6 +409,62 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaPasteOperation::setRotations", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaPasteOperation::setCenters
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaPasteOperation::setCenters", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaPasteOperation::setCenters";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RPasteOperation* self = 
+                        getSelf("setCenters", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isArray()
+        ) /* type: QList < RVector > */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isArray
+                    QList < RVector >
+                    a0;
+                    REcmaHelper::fromScriptValue(
+                        engine,
+                        context->argument(0),
+                        a0
+                    );
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->setCenters(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RPasteOperation.setCenters().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaPasteOperation::setCenters", context, engine);
             return result;
         }
          QScriptValue
@@ -725,6 +789,122 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaPasteOperation::getRotation", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaPasteOperation::setCenter
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaPasteOperation::setCenter", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaPasteOperation::setCenter";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RPasteOperation* self = 
+                        getSelf("setCenter", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RVector */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RVector*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RVector*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RPasteOperation: Argument 0 is not of type RVector.",
+                               context);                    
+                    }
+                    RVector 
+                    a0 = 
+                    *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->setCenter(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RPasteOperation.setCenter().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaPasteOperation::setCenter", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaPasteOperation::getCenter
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaPasteOperation::getCenter", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaPasteOperation::getCenter";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RPasteOperation* self = 
+                        getSelf("getCenter", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'RVector'
+    RVector cppResult =
+        
+               self->getCenter();
+        // return type: RVector
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RPasteOperation.getCenter().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaPasteOperation::getCenter", context, engine);
             return result;
         }
          QScriptValue
@@ -1589,6 +1769,74 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaPasteOperation::setProperty", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaPasteOperation::setBlockProperty
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaPasteOperation::setBlockProperty", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaPasteOperation::setBlockProperty";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RPasteOperation* self = 
+                        getSelf("setBlockProperty", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    2 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+     && (
+            context->argument(1).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+                    // argument isStandardType
+                    QString
+                    a1 =
+                    (QString)
+                    
+                    context->argument( 1 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->setBlockProperty(a0
+        ,
+    a1);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RPasteOperation.setBlockProperty().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaPasteOperation::setBlockProperty", context, engine);
             return result;
         }
          QScriptValue

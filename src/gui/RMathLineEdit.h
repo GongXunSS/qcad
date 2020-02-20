@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -23,7 +23,6 @@
 #include "gui_global.h"
 
 #include <QMetaType>
-#include <QLabel>
 #include <QLineEdit>
 
 #include "RMath.h"
@@ -69,7 +68,14 @@ public:
         return !RMath::isNaN(value);
     }
 
+    bool isSane() {
+        return RMath::isSane(value);
+    }
+
     void setToolTip(const QString& toolTip);
+
+    QColor getNormalTextColor() const;
+    void setTextColor(bool error);
 
     /*
     double getDefaultValue() {
@@ -109,7 +115,6 @@ private:
     bool noEmit;
     bool noResultInToolTip;
     //double defaultValue;
-//    QLabel* resultTip;
 };
 
 Q_DECLARE_METATYPE(RMathLineEdit*)

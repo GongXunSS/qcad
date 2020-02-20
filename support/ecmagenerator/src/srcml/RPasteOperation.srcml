@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./operations" filename="RPasteOperation.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -48,6 +48,9 @@
     <function><type><name>void</name></type> <name>setRotations</name><parameter_list>(<param><decl><type><name>const</name> <name>QList<argument_list>&lt;<argument><name>double</name></argument>&gt;</argument_list></name>&amp;</type> <name>rotations</name></decl></param>)</parameter_list> <block>{
         <expr_stmt><expr><name>this</name>-&gt;<name>rotations</name> = <name>rotations</name></expr>;</expr_stmt>
     }</block></function>
+    <function><type><name>void</name></type> <name>setCenters</name><parameter_list>(<param><decl><type><name>const</name> <name>QList<argument_list>&lt;<argument><name>RVector</name></argument>&gt;</argument_list></name>&amp;</type> <name>centers</name></decl></param>)</parameter_list> <block>{
+        <expr_stmt><expr><name>this</name>-&gt;<name>centers</name> = <name>centers</name></expr>;</expr_stmt>
+    }</block></function>
 
     <function><type><name>void</name></type> <name>setOffset</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>offset</name></decl></param>)</parameter_list> <block>{
         <if>if <condition>(<expr><name>this</name>-&gt;<name>offsets</name>.<call><name>isEmpty</name><argument_list>()</argument_list></call></expr>)</condition><then> <block>{
@@ -85,6 +88,22 @@
         }</block></then>
         <else>else <block>{
             <return>return <expr><name>this</name>-&gt;<name><name>rotations</name><index>[<expr>0</expr>]</index></name></expr>;</return>
+        }</block></else></if>
+    }</block></function>
+    <function><type><name>void</name></type> <name>setCenter</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>centers</name></decl></param>)</parameter_list> <block>{
+        <if>if <condition>(<expr><name>this</name>-&gt;<name>centers</name>.<call><name>isEmpty</name><argument_list>()</argument_list></call></expr>)</condition><then> <block>{
+            <expr_stmt><expr><name>this</name>-&gt;<name>centers</name> &lt;&lt; <name>centers</name></expr>;</expr_stmt>
+        }</block></then>
+        <else>else <block>{
+            <expr_stmt><expr><name>this</name>-&gt;<name><name>centers</name><index>[<expr>0</expr>]</index></name> = <name>centers</name></expr>;</expr_stmt>
+        }</block></else></if>
+    }</block></function>
+    <function><type><name>RVector</name></type> <name>getCenter</name><parameter_list>()</parameter_list> <block>{
+        <if>if <condition>(<expr><name>this</name>-&gt;<name>centers</name>.<call><name>isEmpty</name><argument_list>()</argument_list></call></expr>)</condition><then> <block>{
+            <return>return <expr><call><name>RVector</name><argument_list>(<argument><expr>0</expr></argument>,<argument><expr>0</expr></argument>)</argument_list></call></expr>;</return>
+        }</block></then>
+        <else>else <block>{
+            <return>return <expr><name>this</name>-&gt;<name><name>centers</name><index>[<expr>0</expr>]</index></name></expr>;</return>
         }</block></else></if>
     }</block></function>
     <function><type><name>void</name></type> <name>setFlipHorizontal</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>flipHorizontal</name></decl></param>)</parameter_list> <block>{
@@ -135,6 +154,9 @@
     <function><type><name>void</name></type> <name>setProperty</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>name</name></decl></param>, <param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>value</name></decl></param>)</parameter_list> <block>{
         <expr_stmt><expr><name>properties</name>.<call><name>insert</name><argument_list>(<argument><expr><name>name</name></expr></argument>, <argument><expr><name>value</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
     }</block></function>
+    <function><type><name>void</name></type> <name>setBlockProperty</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>name</name></decl></param>, <param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>value</name></decl></param>)</parameter_list> <block>{
+        <expr_stmt><expr><name>blockProperties</name>.<call><name>insert</name><argument_list>(<argument><expr><name>name</name></expr></argument>, <argument><expr><name>value</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+    }</block></function>
 
     <function_decl><type><name>virtual</name> <name>RTransaction</name></type> <name>apply</name><parameter_list>(<param><decl><type><name>RDocument</name>&amp;</type> <name>document</name></decl></param>, <param><decl><type><name>bool</name></type> <name>preview</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list>;</function_decl>
 
@@ -145,6 +167,7 @@
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RVector</name></argument>&gt;</argument_list></name></type> <name>offsets</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>double</name></type> <name>scale</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>double</name></argument>&gt;</argument_list></name></type> <name>rotations</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RVector</name></argument>&gt;</argument_list></name></type> <name>centers</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>flipHorizontal</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>flipVertical</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>toCurrentLayer</name></decl>;</decl_stmt>
@@ -154,6 +177,7 @@
     <decl_stmt><decl><type><name>QString</name></type> <name>layerName</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QMap<argument_list>&lt;<argument><name>QString</name></argument>, <argument><name>QString</name></argument>&gt;</argument_list></name></type> <name>attributes</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QMap<argument_list>&lt;<argument><name>QString</name></argument>, <argument><name>QString</name></argument>&gt;</argument_list></name></type> <name>properties</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>QMap<argument_list>&lt;<argument><name>QString</name></argument>, <argument><name>QString</name></argument>&gt;</argument_list></name></type> <name>blockProperties</name></decl>;</decl_stmt>
 </private>}</block>;</class>
 
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>RPasteOperation*</argument>)</argument_list></macro>

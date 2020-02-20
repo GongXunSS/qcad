@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -340,14 +340,20 @@ double RMath::eval(const QString& expression, bool* ok) {
     // advanced feet/inch entering:
     // e.g. 12'3/4" -> (12*12+3/4)
     {
-        QRegExp re("(\\d+)'[ ]*([^+\\-\"][^\"]*)\"", Qt::CaseInsensitive, QRegExp::RegExp2);
+        QRegExp re("(\\d+)'\\s*([^+\\-\"][^\"]*)\"", Qt::CaseInsensitive, QRegExp::RegExp2);
         do {
             idx = re.indexIn(expr);
             if (idx==-1) {
                 break;
             }
             QString feetString = re.cap(1);
+            //qDebug() << "feetString:" << feetString;
+            if (feetString.isEmpty()) {
+                feetString="0";
+                //qDebug() << "> feetString:" << feetString;
+            }
             QString inchString = re.cap(2);
+            //qDebug() << "inchString:" << inchString;
             expr.replace(
                         re,
                         //       ((FT)*12+(IN))
@@ -378,6 +384,25 @@ double RMath::eval(const QString& expression, bool* ok) {
                         .arg(feetString)                               // feet
                         .arg(inchString.isEmpty() ? "" : "+")
                         .arg(inchString)                               // inches
+                        );
+        } while(idx!=-1);
+    }
+
+    // single inch with sign entering:
+    // e.g. 3" -> (3)
+    // e.g. 3/4" -> (3/4)
+    {
+        QRegExp re("([^+\\-\"][^\"]*)\"", Qt::CaseInsensitive, QRegExp::RegExp2);
+        do {
+            idx = re.indexIn(expr);
+            if (idx==-1) {
+                break;
+            }
+            QString inchString = re.cap(1);
+            expr.replace(
+                        re,
+                        QString("(%1)")
+                        .arg(inchString)             // inches (number or formula)
                         );
         } while(idx!=-1);
     }
@@ -460,6 +485,10 @@ QString RMath::angleToString(double a) {
 }
 
 QString RMath::trimTrailingZeroes(const QString& s) {
+    if (!s.contains('.')) {
+        return s;
+    }
+
     QString ret = s;
 
     bool done = false;
@@ -501,6 +530,19 @@ double RMath::rad2deg(double a) {
  */
 double RMath::gra2deg(double a) {
     return a / 400.0 * 360.0;
+}
+
+/**
+ * \return True if the given value is between the given limits.
+ * \param inclusive True to accept values close to the limits within the given tolerance.
+ */
+bool RMath::isBetween(double value, double limit1, double limit2, bool inclusive, double tolerance) {
+    if (fuzzyCompare(value, limit1, tolerance) || fuzzyCompare(value, limit2, tolerance)) {
+        return inclusive;
+    }
+    double min = qMin(limit1, limit2);
+    double max = qMax(limit1, limit2);
+    return (value>=min && value<=max);
 }
 
 /**
@@ -702,7 +744,7 @@ double RMath::makeAngleReadable(double angle, bool readable, bool* corrected) {
 }
 
 /**
- * \param angle the angle in rad
+ * \param angle The text angle in rad
  *
  * \param tolerance The tolerance by which the angle still maybe
  * in the unreadable range.
@@ -712,8 +754,7 @@ double RMath::makeAngleReadable(double angle, bool readable, bool* corrected) {
  */
 bool RMath::isAngleReadable(double angle, double tolerance) {
     double angleCorrected = getNormalizedAngle(angle);
-    if (angleCorrected > M_PI / 2.0 * 3.0 + tolerance || angleCorrected < M_PI
-            / 2.0 + tolerance) {
+    if (angleCorrected > M_PI / 2.0 * 3.0 + tolerance || angleCorrected < M_PI / 2.0 + tolerance) {
         return true;
     } else {
         return false;
@@ -817,37 +858,30 @@ bool RMath::containsFuzzy(const QList<double>& values, double v, double tol) {
  */
 double RMath::parseScale(const QString& scaleString) {
     int i;
-    double d;
+//    double d;
 
     double scale = 1.0;
 
-    if (scaleString.contains(':')) {
-        // e.g. 1:5
-        i = scaleString.indexOf(':');
-        bool ok1 = false;
-        bool ok2 = false;
-        double n = scaleString.left(i).toDouble(&ok1);
-        d = scaleString.mid(i+1).toDouble(&ok2);
-        if (ok1 && ok2 && !RMath::isNaN(n) && !RMath::isNaN(d) && d>1.0e-6 && n>1.0e-6) {
+    QString s = scaleString;
+    s.replace("'-", "'");
+    s.replace("' -", "'");
+
+    if (s.contains(':') || s.contains('=')) {
+        if (s.contains(':')) {
+            i = s.indexOf(':');
+        }
+        else {
+            i = s.indexOf('=');
+        }
+
+        double n = RMath::eval(s.left(i));
+        double d = RMath::eval(s.mid(i+1));
+        if (RMath::isSane(n) && RMath::isSane(d) && d>1.0e-6 && n>1.0e-6) {
             scale = n/d;
         }
-    } else if (scaleString.endsWith(" = 1'-0\"")) {
-        // e.g. 1/16" = 1'-0"
-        i = scaleString.indexOf('"');
-        d = RMath::eval(scaleString.mid(0, i));
-        if (!RMath::isNaN(d) && d > 1.0e-6) {
-            scale = d / 12.0;
-        }
-    } else if (scaleString.startsWith("1\" =")) {
-        // e.g. 1" = 2"
-        i = scaleString.indexOf('=');
-        bool ok = false;
-        d = scaleString.mid(i+2, scaleString.length()-i-3).toDouble(&ok);
-        if (!RMath::isNaN(d) && d>1.0e-6 && ok) {
-            scale = 1.0/d;
-        }
-    } else {
-        double f = RMath::eval(scaleString);
+    }
+    else {
+        double f = RMath::eval(s);
         scale = f;
     }
 

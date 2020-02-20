@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -133,6 +133,8 @@ public:
     static double deg2rad(double a);
     static double rad2gra(double a);
     static double gra2deg(double a);
+
+    static bool isBetween(double value, double limit1, double limit2, bool inclusive, double tolerance = RS::PointTolerance);
 
     static int getGcd(int a, int b);
     static bool isAngleBetween(double a, double a1, double a2, bool reversed);

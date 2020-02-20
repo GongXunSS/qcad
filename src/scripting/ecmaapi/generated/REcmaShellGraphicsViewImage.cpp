@@ -17,6 +17,8 @@
             
                 #include "RGraphicsSceneQt.h"
             
+                #include "RGraphicsSceneDrawable.h"
+            
                 #include "RLine.h"
             
                 #include "RSnap.h"
@@ -91,6 +93,140 @@
             ) : RGraphicsViewImage(
                 
                 ) {
+            }
+        
+    
+    
+      int REcmaShellGraphicsViewImage::getNumThreads(
+                
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::getNumThreads", engine);
+                QScriptValue _q_function = __qtscript_self.property("getNumThreads");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=0*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::getNumThreads";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        int ret =
+                        RGraphicsViewImage::getNumThreads(
+                            
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getNumThreads", engine);
+
+                        
+                            return ret;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    int res;
+                      
+                          res = qscriptvalue_cast< 
+                            int
+                          >(
+                        
+                            _q_function.call(__qtscript_self)
+                        
+                      )
+                    
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getNumThreads", engine);
+
+                    
+                            return res;
+                          
+            }
+        
+    
+    
+      void REcmaShellGraphicsViewImage::setNumThreads(
+                int n
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::setNumThreads", engine);
+                QScriptValue _q_function = __qtscript_self.property("setNumThreads");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=1*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::setNumThreads";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::setNumThreads(
+                            n
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setNumThreads", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        n
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setNumThreads", engine);
+
+                    
             }
         
     
@@ -657,6 +793,85 @@
                     _q_function.setData(QScriptValue(engine, prev));
 
                     //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::zoom", engine);
+
+                    
+            }
+        
+    
+    
+      void REcmaShellGraphicsViewImage::pan(
+                const RVector & delta, bool regen
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::pan", engine);
+                QScriptValue _q_function = __qtscript_self.property("pan");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=2*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::pan";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::pan(
+                            delta, regen
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::pan", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: RVector &, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        
+            // const reference argument - make a new object:
+            new RVector(delta)
+        )
+      
+
+
+
+    // type: bool, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        regen
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::pan", engine);
 
                     
             }
@@ -1585,6 +1800,140 @@
         
     
     
+      void REcmaShellGraphicsViewImage::setHairlineMinimumMode(
+                bool on
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::setHairlineMinimumMode", engine);
+                QScriptValue _q_function = __qtscript_self.property("setHairlineMinimumMode");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=1*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::setHairlineMinimumMode";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::setHairlineMinimumMode(
+                            on
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setHairlineMinimumMode", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: bool, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        on
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setHairlineMinimumMode", engine);
+
+                    
+            }
+        
+    
+    
+      bool REcmaShellGraphicsViewImage::getHairlineMinimumMode(
+                
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::getHairlineMinimumMode", engine);
+                QScriptValue _q_function = __qtscript_self.property("getHairlineMinimumMode");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=0*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::getHairlineMinimumMode";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        bool ret =
+                        RGraphicsViewImage::getHairlineMinimumMode(
+                            
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getHairlineMinimumMode", engine);
+
+                        
+                            return ret;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    bool res;
+                      
+                          res = qscriptvalue_cast< 
+                            bool
+                          >(
+                        
+                            _q_function.call(__qtscript_self)
+                        
+                      )
+                    
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getHairlineMinimumMode", engine);
+
+                    
+                            return res;
+                          
+            }
+        
+    
+    
       void REcmaShellGraphicsViewImage::setAntialiasing(
                 bool on
             ) {
@@ -1909,6 +2258,206 @@
                     _q_function.setData(QScriptValue(engine, prev));
 
                     //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getDocumentInterface", engine);
+
+                    
+                            return res;
+                          
+            }
+        
+    
+    
+      void REcmaShellGraphicsViewImage::setExporting(
+                bool on
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::setExporting", engine);
+                QScriptValue _q_function = __qtscript_self.property("setExporting");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=1*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::setExporting";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::setExporting(
+                            on
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setExporting", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: bool, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        on
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setExporting", engine);
+
+                    
+            }
+        
+    
+    
+      bool REcmaShellGraphicsViewImage::isExporting(
+                
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::isExporting", engine);
+                QScriptValue _q_function = __qtscript_self.property("isExporting");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=0*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::isExporting";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        bool ret =
+                        RGraphicsViewImage::isExporting(
+                            
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::isExporting", engine);
+
+                        
+                            return ret;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    bool res;
+                      
+                          res = qscriptvalue_cast< 
+                            bool
+                          >(
+                        
+                            _q_function.call(__qtscript_self)
+                        
+                      )
+                    
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::isExporting", engine);
+
+                    
+                            return res;
+                          
+            }
+        
+    
+    
+      bool REcmaShellGraphicsViewImage::isPrintingOrExporting(
+                
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::isPrintingOrExporting", engine);
+                QScriptValue _q_function = __qtscript_self.property("isPrintingOrExporting");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=0*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::isPrintingOrExporting";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        bool ret =
+                        RGraphicsViewImage::isPrintingOrExporting(
+                            
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::isPrintingOrExporting", engine);
+
+                        
+                            return ret;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    bool res;
+                      
+                          res = qscriptvalue_cast< 
+                            bool
+                          >(
+                        
+                            _q_function.call(__qtscript_self)
+                        
+                      )
+                    
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::isPrintingOrExporting", engine);
 
                     
                             return res;
@@ -4151,12 +4700,12 @@
         
     
     
-      void REcmaShellGraphicsViewImage::paintEntity(
-                QPainter * painter, REntity::Id id, bool preview
+      void REcmaShellGraphicsViewImage::paintEntitiesMulti(
+                const RBox & queryBox
             ) {
                 QScriptEngine* engine = __qtscript_self.engine();
-                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::paintEntity", engine);
-                QScriptValue _q_function = __qtscript_self.property("paintEntity");
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::paintEntitiesMulti", engine);
+                QScriptValue _q_function = __qtscript_self.property("paintEntitiesMulti");
 
 
 
@@ -4165,10 +4714,10 @@
                     QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
                     
                     /* function might have more arguments than expected:
-                    || _q_function.property("length").toInt32()!=3*/
+                    || _q_function.property("length").toInt32()!=1*/
                     /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
                     ) {
-                    //QString cppSig = "RGraphicsViewImage::paintEntity";
+                    //QString cppSig = "RGraphicsViewImage::paintEntitiesMulti";
                     
                         // re-enable recursion for calls from C++ into ECMAScript functions
                         // leave it marked as generated though if appropriate:
@@ -4177,14 +4726,14 @@
                         //if (cppSig!="RGraphicsViewQt::event") {
                             _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
                         //}
-                        RGraphicsViewImage::paintEntity(
-                            painter, id, preview
+                        RGraphicsViewImage::paintEntitiesMulti(
+                            queryBox
                         );
 
                         // block recursion again:
                         _q_function.setData(QScriptValue(engine, prev));
 
-                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintEntity", engine);
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintEntitiesMulti", engine);
 
                         
                             return;
@@ -4201,10 +4750,175 @@
 
 
 
-    // type: QPainter *, copyable: false
+    // type: RBox &, copyable: true
         << qScriptValueFromValue(engine, 
 
-        painter
+        
+            // const reference argument - make a new object:
+            new RBox(queryBox)
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintEntitiesMulti", engine);
+
+                    
+            }
+        
+    
+    
+      void REcmaShellGraphicsViewImage::paintEntitiesThread(
+                int threadId, QList < REntity::Id > & list, int start, int end
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::paintEntitiesThread", engine);
+                QScriptValue _q_function = __qtscript_self.property("paintEntitiesThread");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=4*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::paintEntitiesThread";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::paintEntitiesThread(
+                            threadId, list, start, end
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintEntitiesThread", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        threadId
+        )
+      
+
+
+
+    // type: QList < REntity::Id > &, copyable: false
+        // List of ...:
+        << REcmaHelper::listToScriptValue(engine, 
+          list
+        )
+      
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        start
+        )
+      
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        end
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintEntitiesThread", engine);
+
+                    
+            }
+        
+    
+    
+      void REcmaShellGraphicsViewImage::paintEntityThread(
+                int threadId, REntity::Id id, bool preview
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::paintEntityThread", engine);
+                QScriptValue _q_function = __qtscript_self.property("paintEntityThread");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=3*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::paintEntityThread";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::paintEntityThread(
+                            threadId, id, preview
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintEntityThread", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        threadId
         )
       
 
@@ -4230,7 +4944,75 @@
                     ;
                     _q_function.setData(QScriptValue(engine, prev));
 
-                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintEntity", engine);
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintEntityThread", engine);
+
+                    
+            }
+        
+    
+    
+      void REcmaShellGraphicsViewImage::paintOverlay(
+                QPainter * painter
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::paintOverlay", engine);
+                QScriptValue _q_function = __qtscript_self.property("paintOverlay");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=1*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::paintOverlay";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::paintOverlay(
+                            painter
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintOverlay", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: QPainter *, copyable: false
+        << qScriptValueFromValue(engine, 
+
+        painter
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::paintOverlay", engine);
 
                     
             }
@@ -4516,142 +5298,6 @@
         
     
     
-      void REcmaShellGraphicsViewImage::emitDecorateBackground(
-                QPainter * painter
-            ) {
-                QScriptEngine* engine = __qtscript_self.engine();
-                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::emitDecorateBackground", engine);
-                QScriptValue _q_function = __qtscript_self.property("emitDecorateBackground");
-
-
-
-                if (!_q_function.isFunction() || 
-                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
-                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
-                    
-                    /* function might have more arguments than expected:
-                    || _q_function.property("length").toInt32()!=1*/
-                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
-                    ) {
-                    //QString cppSig = "RGraphicsViewImage::emitDecorateBackground";
-                    
-                        // re-enable recursion for calls from C++ into ECMAScript functions
-                        // leave it marked as generated though if appropriate:
-                        
-                        quint32 prev = _q_function.data().toUInt32();
-                        //if (cppSig!="RGraphicsViewQt::event") {
-                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
-                        //}
-                        RGraphicsViewImage::emitDecorateBackground(
-                            painter
-                        );
-
-                        // block recursion again:
-                        _q_function.setData(QScriptValue(engine, prev));
-
-                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::emitDecorateBackground", engine);
-
-                        
-                            return;
-                          
-                }
-                    // prevent recursion if script implementation calls base implementation
-                    // mark function as 'in call':
-                    quint32 prev = _q_function.data().toUInt32();
-                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
-                    
-                            _q_function.call(__qtscript_self,
-                                QScriptValueList()
-                                
-
-
-
-    // type: QPainter *, copyable: false
-        << qScriptValueFromValue(engine, 
-
-        painter
-        )
-      
-                            )
-                        
-                    ;
-                    _q_function.setData(QScriptValue(engine, prev));
-
-                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::emitDecorateBackground", engine);
-
-                    
-            }
-        
-    
-    
-      void REcmaShellGraphicsViewImage::emitDecorateForeground(
-                QPainter * painter
-            ) {
-                QScriptEngine* engine = __qtscript_self.engine();
-                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::emitDecorateForeground", engine);
-                QScriptValue _q_function = __qtscript_self.property("emitDecorateForeground");
-
-
-
-                if (!_q_function.isFunction() || 
-                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
-                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
-                    
-                    /* function might have more arguments than expected:
-                    || _q_function.property("length").toInt32()!=1*/
-                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
-                    ) {
-                    //QString cppSig = "RGraphicsViewImage::emitDecorateForeground";
-                    
-                        // re-enable recursion for calls from C++ into ECMAScript functions
-                        // leave it marked as generated though if appropriate:
-                        
-                        quint32 prev = _q_function.data().toUInt32();
-                        //if (cppSig!="RGraphicsViewQt::event") {
-                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
-                        //}
-                        RGraphicsViewImage::emitDecorateForeground(
-                            painter
-                        );
-
-                        // block recursion again:
-                        _q_function.setData(QScriptValue(engine, prev));
-
-                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::emitDecorateForeground", engine);
-
-                        
-                            return;
-                          
-                }
-                    // prevent recursion if script implementation calls base implementation
-                    // mark function as 'in call':
-                    quint32 prev = _q_function.data().toUInt32();
-                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
-                    
-                            _q_function.call(__qtscript_self,
-                                QScriptValueList()
-                                
-
-
-
-    // type: QPainter *, copyable: false
-        << qScriptValueFromValue(engine, 
-
-        painter
-        )
-      
-                            )
-                        
-                    ;
-                    _q_function.setData(QScriptValue(engine, prev));
-
-                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::emitDecorateForeground", engine);
-
-                    
-            }
-        
-    
-    
       void REcmaShellGraphicsViewImage::clearBackground(
                 
             ) {
@@ -4857,6 +5503,237 @@
         
     
     
+      void REcmaShellGraphicsViewImage::clearOverlay(
+                int overlayId
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::clearOverlay", engine);
+                QScriptValue _q_function = __qtscript_self.property("clearOverlay");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=1*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::clearOverlay";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::clearOverlay(
+                            overlayId
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::clearOverlay", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        overlayId
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::clearOverlay", engine);
+
+                    
+            }
+        
+      void REcmaShellGraphicsViewImage::clearOverlay(
+                int overlayId, RObject::Id objectId
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::clearOverlay", engine);
+                QScriptValue _q_function = __qtscript_self.property("clearOverlay");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=2*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::clearOverlay";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::clearOverlay(
+                            overlayId, objectId
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::clearOverlay", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        overlayId
+        )
+      
+
+
+
+    // type: RObject::Id, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        objectId
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::clearOverlay", engine);
+
+                    
+            }
+        
+    
+    
+      void REcmaShellGraphicsViewImage::addToOverlay(
+                int overlayId, RObject::Id objectId, const RGraphicsSceneDrawable & drawable
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::addToOverlay", engine);
+                QScriptValue _q_function = __qtscript_self.property("addToOverlay");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=3*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::addToOverlay";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::addToOverlay(
+                            overlayId, objectId, drawable
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::addToOverlay", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        overlayId
+        )
+      
+
+
+
+    // type: RObject::Id, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        objectId
+        )
+      
+
+
+
+    // type: RGraphicsSceneDrawable &, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        
+            // const reference argument - make a new object:
+            new RGraphicsSceneDrawable(drawable)
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::addToOverlay", engine);
+
+                    
+            }
+        
+    
+    
       void REcmaShellGraphicsViewImage::setColorCorrectionOverride(
                 bool on
             ) {
@@ -5055,6 +5932,206 @@
                     //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setMinimumLineweight", engine);
 
                     
+            }
+        
+    
+    
+      double REcmaShellGraphicsViewImage::getMinimumLineweight(
+                
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::getMinimumLineweight", engine);
+                QScriptValue _q_function = __qtscript_self.property("getMinimumLineweight");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=0*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::getMinimumLineweight";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        double ret =
+                        RGraphicsViewImage::getMinimumLineweight(
+                            
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getMinimumLineweight", engine);
+
+                        
+                            return ret;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    double res;
+                      
+                          res = qscriptvalue_cast< 
+                            double
+                          >(
+                        
+                            _q_function.call(__qtscript_self)
+                        
+                      )
+                    
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getMinimumLineweight", engine);
+
+                    
+                            return res;
+                          
+            }
+        
+    
+    
+      void REcmaShellGraphicsViewImage::setMaximumLineweight(
+                double lw
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::setMaximumLineweight", engine);
+                QScriptValue _q_function = __qtscript_self.property("setMaximumLineweight");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=1*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::setMaximumLineweight";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        RGraphicsViewImage::setMaximumLineweight(
+                            lw
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setMaximumLineweight", engine);
+
+                        
+                            return;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: double, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        lw
+        )
+      
+                            )
+                        
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::setMaximumLineweight", engine);
+
+                    
+            }
+        
+    
+    
+      double REcmaShellGraphicsViewImage::getMaximumLineweight(
+                
+            ) {
+                QScriptEngine* engine = __qtscript_self.engine();
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::getMaximumLineweight", engine);
+                QScriptValue _q_function = __qtscript_self.property("getMaximumLineweight");
+
+
+
+                if (!_q_function.isFunction() || 
+                    QTSCRIPT_IS_GENERATED_FUNCTION(_q_function) ||
+                    QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
+                    
+                    /* function might have more arguments than expected:
+                    || _q_function.property("length").toInt32()!=0*/
+                    /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
+                    ) {
+                    //QString cppSig = "RGraphicsViewImage::getMaximumLineweight";
+                    
+                        // re-enable recursion for calls from C++ into ECMAScript functions
+                        // leave it marked as generated though if appropriate:
+                        
+                        quint32 prev = _q_function.data().toUInt32();
+                        //if (cppSig!="RGraphicsViewQt::event") {
+                            _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
+                        //}
+                        double ret =
+                        RGraphicsViewImage::getMaximumLineweight(
+                            
+                        );
+
+                        // block recursion again:
+                        _q_function.setData(QScriptValue(engine, prev));
+
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getMaximumLineweight", engine);
+
+                        
+                            return ret;
+                          
+                }
+                    // prevent recursion if script implementation calls base implementation
+                    // mark function as 'in call':
+                    quint32 prev = _q_function.data().toUInt32();
+                    _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
+                    double res;
+                      
+                          res = qscriptvalue_cast< 
+                            double
+                          >(
+                        
+                            _q_function.call(__qtscript_self)
+                        
+                      )
+                    
+                    ;
+                    _q_function.setData(QScriptValue(engine, prev));
+
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::getMaximumLineweight", engine);
+
+                    
+                            return res;
+                          
             }
         
     
@@ -8286,7 +9363,7 @@
             }
         
       void REcmaShellGraphicsViewImage::zoomIn(
-                const RVector & center
+                const RVector & center, double factor
             ) {
                 QScriptEngine* engine = __qtscript_self.engine();
                 //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::zoomIn", engine);
@@ -8299,7 +9376,7 @@
                     QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
                     
                     /* function might have more arguments than expected:
-                    || _q_function.property("length").toInt32()!=1*/
+                    || _q_function.property("length").toInt32()!=2*/
                     /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
                     ) {
                     //QString cppSig = "RGraphicsViewImage::zoomIn";
@@ -8312,7 +9389,7 @@
                             _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
                         //}
                         RGraphicsViewImage::zoomIn(
-                            center
+                            center, factor
                         );
 
                         // block recursion again:
@@ -8341,6 +9418,15 @@
         
             // const reference argument - make a new object:
             new RVector(center)
+        )
+      
+
+
+
+    // type: double, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        factor
         )
       
                             )
@@ -8409,7 +9495,7 @@
             }
         
       void REcmaShellGraphicsViewImage::zoomOut(
-                const RVector & center
+                const RVector & center, double factor
             ) {
                 QScriptEngine* engine = __qtscript_self.engine();
                 //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::zoomOut", engine);
@@ -8422,7 +9508,7 @@
                     QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
                     
                     /* function might have more arguments than expected:
-                    || _q_function.property("length").toInt32()!=1*/
+                    || _q_function.property("length").toInt32()!=2*/
                     /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
                     ) {
                     //QString cppSig = "RGraphicsViewImage::zoomOut";
@@ -8435,7 +9521,7 @@
                             _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
                         //}
                         RGraphicsViewImage::zoomOut(
-                            center
+                            center, factor
                         );
 
                         // block recursion again:
@@ -8464,6 +9550,15 @@
         
             // const reference argument - make a new object:
             new RVector(center)
+        )
+      
+
+
+
+    // type: double, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        factor
         )
       
                             )
@@ -8533,7 +9628,7 @@
         
     
       bool REcmaShellGraphicsViewImage::zoomToSelection(
-                
+                int margin
             ) {
                 QScriptEngine* engine = __qtscript_self.engine();
                 //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::zoomToSelection", engine);
@@ -8546,7 +9641,7 @@
                     QTSCRIPT_IS_FUNCTION_IN_CALL(_q_function)
                     
                     /* function might have more arguments than expected:
-                    || _q_function.property("length").toInt32()!=0*/
+                    || _q_function.property("length").toInt32()!=1*/
                     /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
                     ) {
                     //QString cppSig = "RGraphicsViewImage::zoomToSelection";
@@ -8560,7 +9655,7 @@
                         //}
                         bool ret =
                         RGraphicsViewImage::zoomToSelection(
-                            
+                            margin
                         );
 
                         // block recursion again:
@@ -8582,7 +9677,19 @@
                             bool
                           >(
                         
-                            _q_function.call(__qtscript_self)
+                            _q_function.call(__qtscript_self,
+                                QScriptValueList()
+                                
+
+
+
+    // type: int, copyable: true
+        << qScriptValueFromValue(engine, 
+
+        margin
+        )
+      
+                            )
                         
                       )
                     
@@ -8597,12 +9704,12 @@
             }
         
     
-      void REcmaShellGraphicsViewImage::pan(
-                const RVector & delta, bool regen
+      bool REcmaShellGraphicsViewImage::zoomToEntities(
+                const QSet < REntity::Id > & ids, int margin
             ) {
                 QScriptEngine* engine = __qtscript_self.engine();
-                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::pan", engine);
-                QScriptValue _q_function = __qtscript_self.property("pan");
+                //REcmaHelper::shellFunctionStart("REcmaShellGraphicsViewImage::zoomToEntities", engine);
+                QScriptValue _q_function = __qtscript_self.property("zoomToEntities");
 
 
 
@@ -8614,7 +9721,7 @@
                     || _q_function.property("length").toInt32()!=2*/
                     /*|| (__qtscript_self.propertyFlags("atEnd") & QScriptValue::QObjectMember)*/
                     ) {
-                    //QString cppSig = "RGraphicsViewImage::pan";
+                    //QString cppSig = "RGraphicsViewImage::zoomToEntities";
                     
                         // re-enable recursion for calls from C++ into ECMAScript functions
                         // leave it marked as generated though if appropriate:
@@ -8623,55 +9730,65 @@
                         //if (cppSig!="RGraphicsViewQt::event") {
                             _q_function.setData(QScriptValue(engine, prev & 0xFFFF0000));
                         //}
-                        RGraphicsViewImage::pan(
-                            delta, regen
+                        bool ret =
+                        RGraphicsViewImage::zoomToEntities(
+                            ids, margin
                         );
 
                         // block recursion again:
                         _q_function.setData(QScriptValue(engine, prev));
 
-                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::pan", engine);
+                        //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::zoomToEntities", engine);
 
                         
-                            return;
+                            return ret;
                           
                 }
                     // prevent recursion if script implementation calls base implementation
                     // mark function as 'in call':
                     quint32 prev = _q_function.data().toUInt32();
                     _q_function.setData(QScriptValue(engine, uint(prev | 0x0000B000)));
-                    
+                    bool res;
+                      
+                          res = qscriptvalue_cast< 
+                            bool
+                          >(
+                        
                             _q_function.call(__qtscript_self,
                                 QScriptValueList()
                                 
 
 
 
-    // type: RVector &, copyable: true
+    // type: QSet < REntity::Id > &, copyable: false
         << qScriptValueFromValue(engine, 
 
         
             // const reference argument - make a new object:
-            new RVector(delta)
+            new QSet < REntity::Id >(ids)
         )
       
 
 
 
-    // type: bool, copyable: true
+    // type: int, copyable: true
         << qScriptValueFromValue(engine, 
 
-        regen
+        margin
         )
       
                             )
                         
+                      )
+                    
                     ;
                     _q_function.setData(QScriptValue(engine, prev));
 
-                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::pan", engine);
+                    //REcmaHelper::shellFunctionEnd("REcmaShellGraphicsViewImage::zoomToEntities", engine);
 
                     
+                            return res;
+                          
             }
         
     

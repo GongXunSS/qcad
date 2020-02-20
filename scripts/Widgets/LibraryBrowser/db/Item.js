@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -185,7 +185,7 @@ Item.prototype.getIcon = function(small, regenerate, noFavoritesMark) {
 
     // generate icon:
     var ms = new RMemoryStorage();
-    var si = new RSpatialIndexNavel();
+    var si = new RSpatialIndexSimple();
     var doc = new RDocument(ms, si);
     var di = new RDocumentInterface(doc);
     di.setNotifyListeners(false);
@@ -193,7 +193,8 @@ Item.prototype.getIcon = function(small, regenerate, noFavoritesMark) {
     var view = new RGraphicsViewImage();
     view.setAntialiasing(true);
     view.setPaintOrigin(false);
-    if (RSettings.hasDarkGuiBackground()) {
+    if (RSettings.hasDarkGuiBackground() ||
+        RSettings.getBoolValue("LibraryBrowser/DarkIconBackground", false)) {
         view.setBackgroundColor(new QColor(Qt.black));
     }
     else {

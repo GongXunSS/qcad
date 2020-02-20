@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -18,7 +18,7 @@
  */
 
  
-include("../File.js");
+include("scripts/File/File.js");
 include("../AutoSave/AutoSave.js");
 
 /**
@@ -76,7 +76,7 @@ Save.prototype.save = function(fileName, fileVersion, overwriteWarning) {
             ret = QMessageBox.warning(
                         appWin,
                         qsTr("Overwrite File?"),
-                        qsTr("The file '%1' already exists. Do you wish to overwrite it?").arg(fileName), buttons);
+                        qsTr("The file \"%1\" already exists. Do you wish to overwrite it?").arg(fileName), buttons);
             if (ret!=QMessageBox.Yes) {
                 saveAs = true;
             }
@@ -94,10 +94,10 @@ Save.prototype.save = function(fileName, fileVersion, overwriteWarning) {
                 ret = QMessageBox.warning(
                             appWin,
                             qsTr("File Format Version Not Recommended"),
-                            qsTr("The file format version you are using is not recommended: '%1'.").arg(fileVersion) + "\n"
+                            qsTr("The file format version you are using is not recommended: \"%1\".").arg(fileVersion) + "\n"
                             + qsTr("Custom properties will not be saved.") + "\n"
                             + qsTr("All black entities and layers will be saved as white.") + "\n"
-                            + qsTr("All custom colors will be 'rounded' to the nearest fixed color.") + " " + qsTr("Proceed?"), buttons);
+                            + qsTr("All custom colors will be adjusted to the nearest fixed color.") + " " + qsTr("Proceed?"), buttons);
                 if (ret!=QMessageBox.Yes) {
                     saveAs = true;
                 }
@@ -116,9 +116,9 @@ Save.prototype.save = function(fileName, fileVersion, overwriteWarning) {
     appWin.setProgressText(qsTr("Saving..."));
 
     if (noFullColor) {
-        EAction.handleUserWarning(qsTr("Saving to file format version '%1'.").arg(fileVersion));
+        EAction.handleUserWarning(qsTr("Saving to file format version \"%1\".").arg(fileVersion));
         EAction.handleUserWarning(qsTr("Black entities and layers are saved as white."));
-        EAction.handleUserWarning(qsTr("Custom colors are 'rounded' to the nearest fixed color."));
+        EAction.handleUserWarning(qsTr("Custom colors are adjusted to the nearest fixed color."));
     }
 
     var bakFileName = AutoSave.getAutoSaveFileNameCurrent();
@@ -133,14 +133,17 @@ Save.prototype.save = function(fileName, fileVersion, overwriteWarning) {
     AutoSave.cleanUp(bakFileName);
 
     // file name might have been changed by filter (extension added):
-    fileName = di.getDocument().getFileName();
+    var doc = di.getDocument();
+    fileName = doc.getFileName();
+    fileVersion = doc.getFileVersion()
+
     var mdiChild = EAction.getMdiChild();
     if (!isNull(mdiChild)) {
         mdiChild.setWindowTitle(addDirtyFlag(new QFileInfo(fileName).fileName()));
     }
     RSettings.addRecentFile(fileName);
 
-    appWin.handleUserMessage(qsTr("Saved drawing:") + " " + fileName);
+    appWin.handleUserMessage(qsTr("Saved file:") + " " + fileName);
     if (fileVersion.length!==0) {
         appWin.handleUserMessage(qsTr("Format:") + " " + fileVersion);
     }

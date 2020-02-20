@@ -87,6 +87,10 @@
             
             REcmaHelper::registerFunction(&engine, proto, setAnonymous, "setAnonymous");
             
+            REcmaHelper::registerFunction(&engine, proto, isPixelUnit, "isPixelUnit");
+            
+            REcmaHelper::registerFunction(&engine, proto, setPixelUnit, "setPixelUnit");
+            
             REcmaHelper::registerFunction(&engine, proto, setOrigin, "setOrigin");
             
             REcmaHelper::registerFunction(&engine, proto, getOrigin, "getOrigin");
@@ -105,7 +109,7 @@
             
             REcmaHelper::registerFunction(&engine, proto, setProperty, "setProperty");
             
-            REcmaHelper::registerFunction(&engine, proto, isSelectedForPropertyEditing, "isSelectedForPropertyEditing");
+            REcmaHelper::registerFunction(&engine, proto, setCustomProperty, "setCustomProperty");
             
         engine.setDefaultPrototype(
             qMetaTypeId<RBlockPointer>(), *proto);
@@ -139,6 +143,10 @@
             
             ctor.setProperty("PropertyFrozen",
                 qScriptValueFromValue(&engine, RBlock::PropertyFrozen),
+                QScriptValue::SkipInEnumeration | QScriptValue::ReadOnly);
+            
+            ctor.setProperty("PropertyPixelUnit",
+                qScriptValueFromValue(&engine, RBlock::PropertyPixelUnit),
                 QScriptValue::SkipInEnumeration | QScriptValue::ReadOnly);
             
             ctor.setProperty("PropertyOriginX",
@@ -815,6 +823,110 @@
             return result;
         }
          QScriptValue
+        REcmaSharedPointerBlock::isPixelUnit
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerBlock::isPixelUnit", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerBlock::isPixelUnit";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RBlock* self = 
+                        getSelf("isPixelUnit", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isPixelUnit();
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RBlock.isPixelUnit().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerBlock::isPixelUnit", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaSharedPointerBlock::setPixelUnit
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerBlock::setPixelUnit", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerBlock::setPixelUnit";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RBlock* self = 
+                        getSelf("setPixelUnit", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    bool
+                    a0 =
+                    (bool)
+                    
+                    context->argument( 0 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->setPixelUnit(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RBlock.setPixelUnit().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerBlock::setPixelUnit", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaSharedPointerBlock::setOrigin
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -1421,6 +1533,105 @@
 
 
         
+    
+    if( context->argumentCount() ==
+    4 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RPropertyTypeId */
+     && (
+            context->argument(1).isBool()
+        ) /* type: bool */
+     && (
+            context->argument(2).isBool()
+        ) /* type: bool */
+     && (
+            context->argument(3).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RPropertyTypeId*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RPropertyTypeId*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RBlock: Argument 0 is not of type RPropertyTypeId.",
+                               context);                    
+                    }
+                    RPropertyTypeId 
+                    a0 = 
+                    *ap0;
+                
+                    // argument isStandardType
+                    bool
+                    a1 =
+                    (bool)
+                    
+                    context->argument( 1 ).
+                    toBool();
+                
+                    // argument isStandardType
+                    bool
+                    a2 =
+                    (bool)
+                    
+                    context->argument( 2 ).
+                    toBool();
+                
+                    // argument isStandardType
+                    bool
+                    a3 =
+                    (bool)
+                    
+                    context->argument( 3 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QPair < QVariant , RPropertyAttributes >'
+    QPair < QVariant , RPropertyAttributes > cppResult =
+        
+               self->getProperty(a0
+        ,
+    a1
+        ,
+    a2
+        ,
+    a3);
+        // return type: QPair < QVariant , RPropertyAttributes >
+                // Pair of ...:
+                //result = REcmaHelper::pairToScriptValue(engine, cppResult);
+                QVariantList vl;
+                QVariant v;
+                
+                    // first type of pair is variant:
+                    if (QString(cppResult.first.typeName())=="RLineweight::Lineweight") {
+                        v.setValue((int)cppResult.first.value<RLineweight::Lineweight>());
+                    }
+                    else {
+                        v.setValue(cppResult.first);
+                    }
+                  
+
+                vl.append(v);
+                v.setValue(cppResult.second);
+                vl.append(v);
+                result = qScriptValueFromValue(engine, vl);
+            
+    } else
+
+
+        
             {
                return REcmaHelper::throwError("Wrong number/types of arguments for RBlock.getProperty().",
                    context);
@@ -1611,19 +1822,19 @@
             return result;
         }
          QScriptValue
-        REcmaSharedPointerBlock::isSelectedForPropertyEditing
+        REcmaSharedPointerBlock::setCustomProperty
         (QScriptContext* context, QScriptEngine* engine) 
         
         {
-            //REcmaHelper::functionStart("REcmaSharedPointerBlock::isSelectedForPropertyEditing", context, engine);
-            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerBlock::isSelectedForPropertyEditing";
+            //REcmaHelper::functionStart("REcmaSharedPointerBlock::setCustomProperty", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerBlock::setCustomProperty";
             //QCoreApplication::processEvents();
 
             QScriptValue result = engine->undefinedValue();
             
                     // public function: can be called from ECMA wrapper of ECMA shell:
                     RBlock* self = 
-                        getSelf("isSelectedForPropertyEditing", context);
+                        getSelf("setCustomProperty", context);
                   
 
                 //Q_ASSERT(self!=NULL);
@@ -1633,30 +1844,72 @@
                 
     
     if( context->argumentCount() ==
-    0
+    3 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+     && (
+            context->argument(1).isString()
+        ) /* type: QString */
+     && (
+            context->argument(2).isVariant() || 
+            context->argument(2).isQObject() || 
+            context->argument(2).isNumber() || 
+            context->argument(2).isString() || 
+            context->argument(2).isBool() || 
+            context->argument(2).isArray() || 
+            context->argument(2).isNull() || 
+            context->argument(2).isUndefined()
+        ) /* type: QVariant */
+    
     ){
     // prepare arguments:
     
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+                    // argument isStandardType
+                    QString
+                    a1 =
+                    (QString)
+                    
+                    context->argument( 1 ).
+                    toString();
+                
+                    // argument isCopyable or pointer
+                    QVariant
+                    a2 =
+                    qscriptvalue_cast<
+                    QVariant
+                        >(
+                        context->argument(
+                        2
+                        )
+                    );
+                
     // end of arguments
 
     // call C++ function:
-    // return type 'bool'
-    bool cppResult =
-        
-               self->isSelectedForPropertyEditing();
-        // return type: bool
-                // standard Type
-                result = QScriptValue(cppResult);
-            
+    // return type 'void'
+    
+               self->setCustomProperty(a0
+        ,
+    a1
+        ,
+    a2);
     } else
 
 
         
             {
-               return REcmaHelper::throwError("Wrong number/types of arguments for RBlock.isSelectedForPropertyEditing().",
+               return REcmaHelper::throwError("Wrong number/types of arguments for RBlock.setCustomProperty().",
                    context);
             }
-            //REcmaHelper::functionEnd("REcmaSharedPointerBlock::isSelectedForPropertyEditing", context, engine);
+            //REcmaHelper::functionEnd("REcmaSharedPointerBlock::setCustomProperty", context, engine);
             return result;
         }
          QScriptValue REcmaSharedPointerBlock::toString

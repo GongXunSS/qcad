@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -75,9 +75,9 @@ QString RMathLineEditPlugin::domXml() const {
         "   <property name=\"integer\" stdset=\"0\">\n"
         "     <bool>false</bool>\n"
         "   </property>\n"
-        "   <property name=\"defaultUnit\">\n"
-        "     <number>0</number>\n"
-        "   </property>\n"
+        //"   <property name=\"defaultUnit\">\n"
+        //"     <number>0</number>\n"
+        //"   </property>\n"
         " </widget>\n"
         "</ui>\n";
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,6 @@ include("../Print/Print.js");
  */
 function PrintCurrentView(guiAction, document, view) {
     Print.call(this, guiAction);
-    this.saveView = true;
 }
 
 PrintCurrentView.prototype = new Print();

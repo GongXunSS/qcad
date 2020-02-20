@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -57,7 +57,7 @@ public:
         return new RTriangle(*this);
     }
 
-    virtual void to2D();
+    virtual void setZ(double z);
 
     virtual QList<RVector> getVectorProperties() const;
 
@@ -74,6 +74,7 @@ public:
     virtual QList<RVector> getCenterPoints() const;
     virtual QList<RVector> getPointsWithDistanceToEnd(
         double distance, int from = RS::FromAny) const;
+    virtual QList<RVector> getPointCloud(double segmentLength) const;
 
     virtual double getDistanceTo(const RVector& point, bool limited = true, double strictRange = RMAXDOUBLE) const;
     virtual RVector getVectorTo(const RVector& point, bool limited = true, double strictRange = RMAXDOUBLE) const;
@@ -105,8 +106,7 @@ public:
         corner[2].rotate(rotation, center);
         return true;
     }
-    virtual bool scale(const RVector& scaleFactors, const RVector& center =
-            RVector()) {
+    virtual bool scale(const RVector& scaleFactors, const RVector& center = RDEFAULT_RVECTOR) {
         corner[0].scale(scaleFactors, center);
         corner[1].scale(scaleFactors, center);
         corner[2].scale(scaleFactors, center);

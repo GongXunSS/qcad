@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -18,7 +18,7 @@
  */
 
  
-include("../Layer.js");
+include("scripts/Layer/Layer.js");
 include("../LayerDialog.js");
 
 /**
@@ -37,7 +37,7 @@ EditLayer.prototype.beginEvent = function() {
 
     var layer = this.getCurrentLayer();
     
-    var dlg = this.createLayerDialog(this.getDocument(), layer);
+    var dlg = this.createLayerDialog(this.getDocumentInterface(), layer);
     var newLayer = dlg.show();
     if (!newLayer) {
         this.terminate();

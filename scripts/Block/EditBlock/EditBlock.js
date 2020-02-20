@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Block.js");
+include("scripts/Block/Block.js");
 include("scripts/Widgets/BlockList/BlockList.js");
 
 
@@ -41,7 +41,7 @@ EditBlock.prototype.beginEvent = function() {
         return;
     }
 
-    var item = blockList.currentItem();
+    var item = BlockList.getActiveItem();
     if (isNull(item)) {
         this.terminate();
         return;

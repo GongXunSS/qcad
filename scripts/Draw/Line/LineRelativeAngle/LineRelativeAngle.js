@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Line.js");
+include("scripts/Draw/Line/Line.js");
 
 /**
  * \class LineRelativeAngle
@@ -63,11 +63,14 @@ LineRelativeAngle.prototype.setState = function(state) {
 
     this.setCrosshairCursor();
 
+    var tr;
     var appWin = RMainWindowQt.getMainWindow();
     switch (this.state) {
     case LineRelativeAngle.State.ChoosingEntity:
         this.getDocumentInterface().setClickMode(RAction.PickEntity);
-        this.setLeftMouseTip(qsTr("Choose base line, arc, circle, ellipse or polyline"));
+        tr = qsTr("Choose base line, arc, circle, ellipse or polyline");
+        this.setCommandPrompt(tr);
+        this.setLeftMouseTip(tr);
         this.setRightMouseTip(EAction.trCancel);
         this.entity = undefined;
         this.shape = undefined;
@@ -75,7 +78,9 @@ LineRelativeAngle.prototype.setState = function(state) {
         break;
     case LineRelativeAngle.State.SettingPos:
         this.getDocumentInterface().setClickMode(RAction.PickCoordinate);
-        this.setLeftMouseTip(qsTr("Set position"));
+        tr = qsTr("Set position");
+        this.setCommandPrompt(tr);
+        this.setLeftMouseTip(tr);
         this.setRightMouseTip(EAction.trBack);
         EAction.showSnapTools();
         break;

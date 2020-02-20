@@ -84,10 +84,7 @@
         getToolTip
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        setDocumentInterface
-        (QScriptContext* context, QScriptEngine* engine) 
-        ;static  QScriptValue
-        getDocumentInterface
+        addShortcut
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setShortcut
@@ -97,6 +94,12 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setShortcuts
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setShortcutsFromStrings
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getShortcuts
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setDefaultShortcuts
@@ -109,6 +112,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getShortcutText
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getShortcutsString
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setGroupSortOrderStatic
@@ -196,6 +202,12 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         isChecked
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setForceGlobal
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getForceGlobal
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setRequiresDocument
@@ -292,6 +304,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         triggerByCommand
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        triggerByShortcut
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getByScriptFile

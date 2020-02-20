@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Information.js");
+include("scripts/Information/Information.js");
 
 /**
  * \class InfoArea
@@ -73,7 +73,7 @@ InfoArea.prototype.setState = function(state) {
     case InfoArea.State.SettingPoint:
         this.setCommandPrompt(trSelectPoint);
         this.setLeftMouseTip(trSelectPoint);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         break;
     case InfoArea.State.Done:
         this.setCommandPrompt(trSelectPoint);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -92,7 +92,7 @@ public:
     void setOverride();
     bool isOverride();
 
-    void setNoState();
+    void setNoState(bool on = true);
     bool hasNoState();
 
     void setUniqueGroup(const QString& ug);

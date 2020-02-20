@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -85,9 +85,10 @@ public:
     static QString formatToolTip(const QString& oriText, const QString& shortcut);
     QString getToolTip(const QString& oriText, const QString& shortcut);
 
-    void setDocumentInterface(RDocumentInterface* di);
-    RDocumentInterface* getDocumentInterface() const;
+    //void setDocumentInterface(RDocumentInterface* di);
+    //RDocumentInterface* getDocumentInterface() const;
 
+    void addShortcut(const QKeySequence& shortcut);
     /**
      * Sets the shortcut(s) for this action.
      *
@@ -96,10 +97,13 @@ public:
     void setShortcut(const QKeySequence& shortcut);
     void setDefaultShortcut(const QKeySequence& shortcut);
     void setShortcuts(const QList<QKeySequence>& shortcuts);
+    void setShortcutsFromStrings(const QStringList& shortcuts);
+    QList<QKeySequence> getShortcuts() const;
     void setDefaultShortcuts(const QList<QKeySequence>& shortcuts);
     QList<QKeySequence> getDefaultShortcuts();
     void setShortcutText(const QString& oriText);
     QString getShortcutText() const;
+    QString getShortcutsString(const QString& separator = ",", QKeySequence::SequenceFormat format = QKeySequence::PortableText) const;
 
     static void setGroupSortOrderStatic(QAction* a, int sortOrder);
     static void setGroupSortOrderOverrideStatic(QAction* a, const QString& widgetName, int sortOrder);
@@ -168,6 +172,18 @@ public:
      */
     virtual bool isChecked() const;
     
+    /**
+     * If \c on is true, this action runs in the global script context (default for
+     * actions that don't require a document).
+     */
+    void setForceGlobal(bool on) {
+        forceGlobal = on;
+    }
+
+    bool getForceGlobal() const {
+        return forceGlobal;
+    }
+
     /**
      * If \c on is true, this action requires a document to be open. The GUI element(s)
      * can for example be grayed out if no document is open.
@@ -320,6 +336,7 @@ public:
     }
 
     static bool triggerByCommand(const QString& cmd);
+    static bool triggerByShortcut(const QString& sc);
     static RGuiAction* getByScriptFile(const QString& scriptFile);
     static RGuiAction* getByClassName(const QString& className);
     static RGuiAction* getByCommand(const QString& command);
@@ -355,6 +372,7 @@ signals:
 
 protected:
     static QMap<QString, RGuiAction*> actionsByCommand;
+    static QMap<QString, RGuiAction*> actionsByShortcut;
     static QMap<QString, RGuiAction*> actionsByPrimaryCommand;
     static QMap<QString, RGuiAction*> actionsByScriptFile;
     static QMultiMap<QString, RGuiAction*> actionsByGroup;
@@ -370,6 +388,7 @@ protected:
     bool groupDefault;
     
     // TODO: refactor to use flags:
+    bool forceGlobal;
     bool requiresDocument;
     bool requiresSelection;
     bool requiresUndoableTransaction;
@@ -382,11 +401,12 @@ protected:
     QStringList arguments;
 
     QList<QKeySequence> defaultShortcuts;
+    QList<QKeySequence> multiKeyShortcuts;
     QString shortcutText;
     QString toolTip;
     bool iconDisabled;
     int enabledOverride;
-    RDocumentInterface* documentInterface;
+    //RDocumentInterface* documentInterface;
 };
 
 Q_DECLARE_METATYPE(RGuiAction*)

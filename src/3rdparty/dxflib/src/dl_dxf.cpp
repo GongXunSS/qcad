@@ -1735,7 +1735,7 @@ void DL_Dxf::addAttribute(DL_CreationInterface* creationInterface) {
  */
 DL_DimensionData DL_Dxf::getDimData() {
     // generic dimension data:
-    return DL_DimensionData(
+    DL_DimensionData ret(
                // def point
                getRealValue(10, 0.0),
                getRealValue(20, 0.0),
@@ -1758,6 +1758,9 @@ DL_DimensionData DL_Dxf::getDimData() {
                getStringValue(3, ""),
                // angle
                getRealValue(53, 0.0));
+    ret.arrow1Flipped = getIntValue(74, 0)==1;
+    ret.arrow2Flipped = getIntValue(75, 0)==1;
+    return ret;
 }
 
 
@@ -1852,7 +1855,7 @@ void DL_Dxf::addDimAngular(DL_CreationInterface* creationInterface) {
     DL_DimensionData d = getDimData();
 
     // angular dimension:
-    DL_DimAngularData da(
+    DL_DimAngular2LData da(
         // definition point 1
         getRealValue(13, 0.0),
         getRealValue(23, 0.0),
@@ -2963,6 +2966,11 @@ void DL_Dxf::writeDimStyleOverrides(DL_WriterA& dw,
         dw.dxfString(1001, "ACAD");
         dw.dxfString(1000, "DSTYLE");
         dw.dxfString(1002, "{");
+        if (data.type&128) {
+            // custom text position:
+            dw.dxfInt(1070, 279);
+            dw.dxfInt(1070, 2);
+        }
         dw.dxfInt(1070, 144);
         dw.dxfReal(1040, data.linearFactor);
         dw.dxfInt(1070,40);
@@ -3007,6 +3015,8 @@ void DL_Dxf::writeDimAligned(DL_WriterA& dw,
     if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
+        dw.dxfInt(74, data.arrow1Flipped);
+        dw.dxfInt(75, data.arrow2Flipped);
         dw.dxfReal(41, data.lineSpacingFactor); // opt
     }
 
@@ -3068,6 +3078,8 @@ void DL_Dxf::writeDimLinear(DL_WriterA& dw,
     if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
+        dw.dxfInt(74, data.arrow1Flipped);
+        dw.dxfInt(75, data.arrow2Flipped);
         dw.dxfReal(41, data.lineSpacingFactor); // opt
     }
 
@@ -3135,6 +3147,8 @@ void DL_Dxf::writeDimRadial(DL_WriterA& dw,
     if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
+        dw.dxfInt(74, data.arrow1Flipped);
+        //dw.dxfInt(75, data.arrow2Flipped);
         dw.dxfReal(41, data.lineSpacingFactor); // opt
     }
 
@@ -3194,6 +3208,8 @@ void DL_Dxf::writeDimDiametric(DL_WriterA& dw,
     if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
+        dw.dxfInt(74, data.arrow1Flipped);
+        dw.dxfInt(75, data.arrow2Flipped);
         dw.dxfReal(41, data.lineSpacingFactor); // opt
     }
 
@@ -3226,9 +3242,9 @@ void DL_Dxf::writeDimDiametric(DL_WriterA& dw,
  * @param data Specific angular dimension data from the file
  * @param attrib Attributes
  */
-void DL_Dxf::writeDimAngular(DL_WriterA& dw,
+void DL_Dxf::writeDimAngular2L(DL_WriterA& dw,
                              const DL_DimensionData& data,
-                             const DL_DimAngularData& edata,
+                             const DL_DimAngular2LData& edata,
                              const DL_Attributes& attrib) {
 
     dw.entity("DIMENSION");
@@ -3253,6 +3269,8 @@ void DL_Dxf::writeDimAngular(DL_WriterA& dw,
     if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
+        dw.dxfInt(74, data.arrow1Flipped);
+        dw.dxfInt(75, data.arrow2Flipped);
         dw.dxfReal(41, data.lineSpacingFactor); // opt
     }
 
@@ -3320,6 +3338,8 @@ void DL_Dxf::writeDimAngular3P(DL_WriterA& dw,
     if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
+        dw.dxfInt(74, data.arrow1Flipped);
+        dw.dxfInt(75, data.arrow2Flipped);
         dw.dxfReal(41, data.lineSpacingFactor); // opt
     }
 
@@ -3389,6 +3409,8 @@ void DL_Dxf::writeDimOrdinate(DL_WriterA& dw,
     if (version>DL_VERSION_R12) {
         dw.dxfInt(71, data.attachmentPoint);
         dw.dxfInt(72, data.lineSpacingStyle); // opt
+        //dw.dxfInt(74, data.arrow1Flipped);
+        //dw.dxfInt(75, data.arrow2Flipped);
         dw.dxfReal(41, data.lineSpacingFactor); // opt
     }
 

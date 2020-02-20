@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -41,7 +41,7 @@ public:
     /**
      * Called whenever a new document is created to do additional initialization.
      */
-    virtual void updateNewDocumentListener(RDocument* document, RTransaction* transaction) = 0;
+    virtual void updateNewDocumentListener(RDocument* document, RTransaction* transaction, bool beforeLoad) = 0;
 };
 
 Q_DECLARE_METATYPE(RNewDocumentListener*)

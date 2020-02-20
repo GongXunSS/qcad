@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./core" filename="RDocument.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -36,6 +36,7 @@
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RTransactionStack.h"</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RUcs.h"</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RLayer.h"</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RLayerState.h"</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RLinetype.h"</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RView.h"</cpp:file></cpp:include>
 
@@ -70,18 +71,19 @@
     <constructor_decl><name>RDocument</name><parameter_list>(<param><decl><type><name>RStorage</name>&amp;</type> <name>storage</name></decl></param>, <param><decl><type><name>RSpatialIndex</name>&amp;</type> <name>spatialIndex</name></decl></param>)</parameter_list>;</constructor_decl>
     <destructor_decl><specifier>virtual</specifier> <name>~RDocument</name><parameter_list>()</parameter_list>;</destructor_decl>
 
-    <function_decl><type><name>void</name></type> <name>init</name><parameter_list>()</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>init</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>beforeLoad</name>=<init><expr><name>false</name></expr></init></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>initLinetypes</name><parameter_list>(<param><decl><type><name>RTransaction</name>*</type> <name>transaction</name>=<init><expr><name>NULL</name></expr></init></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>QList<argument_list>&lt;<argument><name>QSharedPointer<argument_list>&lt;<argument><name>RObject</name></argument>&gt;</argument_list></name></argument> &gt;</argument_list></name></type> <name>getDefaultLinetypes</name><parameter_list>()</parameter_list>;</function_decl>
 
     <function_decl><type><name>RStorage</name>&amp;</type> <name>getStorage</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>const</name> <name>RStorage</name>&amp;</type> <name>getStorage</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>RSpatialIndex</name>&amp;</type> <name>getSpatialIndex</name><parameter_list>()</parameter_list>;</function_decl>
-    <function_decl><type><name>RSpatialIndex</name>*</type> <name>getSpatialIndexForBlock</name><parameter_list>(<param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name></decl></param>)</parameter_list>;</function_decl>
-    <function_decl><type><name>RSpatialIndex</name>*</type> <name>getSpatialIndexForCurrentBlock</name><parameter_list>()</parameter_list>;</function_decl>
+    <function_decl><type><name>const</name> <name>RSpatialIndex</name>&amp;</type> <name>getSpatialIndex</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>RSpatialIndex</name>*</type> <name>getSpatialIndexForBlock</name><parameter_list>(<param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>RSpatialIndex</name>*</type> <name>getSpatialIndexForCurrentBlock</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>RTransactionStack</name>&amp;</type> <name>getTransactionStack</name><parameter_list>()</parameter_list>;</function_decl>
 
-    <function_decl><type><name>void</name></type> <name>clear</name><parameter_list>()</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>clear</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>beforeLoad</name>=<init><expr><name>false</name></expr></init></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>queryClosestXY</name><parameter_list>(
         <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>wcsPosition</name></decl></param>,
@@ -100,11 +102,13 @@
     )</parameter_list>;</function_decl>
 
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>RObject</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllObjects</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>RObject</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>querySelectedLayers</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllVisibleEntities</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllEntities</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>undone</name> =<init> <expr><name>false</name></expr></init></decl></param>, <param><decl><type><name>bool</name></type> <name>allBlocks</name> =<init> <expr><name>false</name></expr></init></decl></param>, <param><decl><type><name><name>RS</name>::<name>EntityType</name></name></type> <name>type</name> =<init> <expr><name><name>RS</name>::<name>EntityAll</name></name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllEntities</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>undone</name></decl></param>, <param><decl><type><name>bool</name></type> <name>allBlocks</name></decl></param>, <param><decl><type><name>QList<argument_list>&lt;<argument><name><name>RS</name>::<name>EntityType</name></name></argument>&gt;</argument_list></name></type> <name>types</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>RUcs</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllUcs</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>RLayer</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllLayers</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>RLayerState</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllLayerStates</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>RBlock</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllBlocks</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>RBlock</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllLayoutBlocks</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>includeModelSpace</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>RBlock</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllLayouts</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
@@ -120,9 +124,13 @@
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryBlockReferences</name><parameter_list>(<param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryAllBlockReferences</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
 
-    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryContainedEntities</name><parameter_list>(<param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryContainedEntities</name><parameter_list>(<param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
 
-    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryInfiniteEntities</name><parameter_list>()</parameter_list>;</function_decl>
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryInfiniteEntities</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryIntersectedEntitiesXYFast</name><parameter_list>(<param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryIntersectedShapesXYFast</name><parameter_list>(<param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>, <param><decl><type><name>bool</name></type> <name>noInfiniteEntities</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list>;</function_decl>
+
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryIntersectedEntitiesXY</name><parameter_list>(
             <param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>,
             <param><decl><type><name>bool</name></type> <name>checkBoundingBoxOnly</name>=<init><expr><name>false</name></expr></init></decl></param>,
@@ -130,7 +138,7 @@
             <param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name> =<init> <expr><name><name>RBlock</name>::<name>INVALID_ID</name></name></expr></init></decl></param>,
             <param><decl><type><name>const</name> <name>QList<argument_list>&lt;<argument><name><name>RS</name>::<name>EntityType</name></name></argument>&gt;</argument_list></name>&amp;</type> <name>filter</name> =<init> <expr><name>RDEFAULT_QLIST_RS_ENTITYTYPE</name></expr></init></decl></param>,
             <param><decl><type><name>bool</name></type> <name>selectedOnly</name> =<init> <expr><name>false</name></expr></init></decl></param>
-    )</parameter_list>;</function_decl>
+    )</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <function_decl><type><name>QMap<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>, <argument><name>QSet<argument_list>&lt;<argument><name>int</name></argument>&gt;</argument_list></name></argument> &gt;</argument_list></name></type> <name>queryIntersectedShapesXY</name><parameter_list>(
         <param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>,
@@ -139,13 +147,11 @@
         <param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name> =<init> <expr><name><name>RBlock</name>::<name>INVALID_ID</name></name></expr></init></decl></param>,
         <param><decl><type><name>const</name> <name>QList<argument_list>&lt;<argument><name><name>RS</name>::<name>EntityType</name></name></argument>&gt;</argument_list></name>&amp;</type> <name>filter</name> =<init> <expr><name>RDEFAULT_QLIST_RS_ENTITYTYPE</name></expr></init></decl></param>,
         <param><decl><type><name>bool</name></type> <name>selectedOnly</name> =<init> <expr><name>false</name></expr></init></decl></param>
-    )</parameter_list>;</function_decl>
+    )</parameter_list> <specifier>const</specifier>;</function_decl>
 
-    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryContainedEntitiesXY</name><parameter_list>(
-        <param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>
-    )</parameter_list>;</function_decl>
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryContainedEntitiesXY</name><parameter_list>(<param><decl><type><name>const</name> <name>RBox</name>&amp;</type> <name>box</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
 
-    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>querySelectedEntities</name><parameter_list>()</parameter_list>;</function_decl>
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>querySelectedEntities</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>queryConnectedEntities</name><parameter_list>(<param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>, <param><decl><type><name>double</name></type> <name>tolerance</name> =<init> <expr><name><name>RS</name>::<name>PointTolerance</name></name></expr></init></decl></param>)</parameter_list>;</function_decl>
 
@@ -158,11 +164,15 @@
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RObject</name></argument>&gt;</argument_list></name></type> <name>queryObjectByHandle</name><parameter_list>(<param><decl><type><name><name>RObject</name>::<name>Handle</name></name></type> <name>objectHandle</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>REntity</name></argument>&gt;</argument_list></name></type> <name>queryEntity</name><parameter_list>(<param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>REntity</name></argument>&gt;</argument_list></name></type> <name>queryEntityDirect</name><parameter_list>(<param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>REntity</name></argument>&gt;</argument_list></name></type> <name>queryVisibleEntityDirect</name><parameter_list>(<param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RUcs</name></argument>&gt;</argument_list></name></type> <name>queryUcs</name><parameter_list>(<param><decl><type><name><name>RUcs</name>::<name>Id</name></name></type> <name>ucsId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RUcs</name></argument>&gt;</argument_list></name></type> <name>queryUcs</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>ucsName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayer</name></argument>&gt;</argument_list></name></type> <name>queryLayer</name><parameter_list>(<param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>layerId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayer</name></argument>&gt;</argument_list></name></type> <name>queryLayerDirect</name><parameter_list>(<param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>layerId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayer</name></argument>&gt;</argument_list></name></type> <name>queryLayer</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layerName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayerState</name></argument>&gt;</argument_list></name></type> <name>queryLayerState</name><parameter_list>(<param><decl><type><name><name>RLayerState</name>::<name>Id</name></name></type> <name>layerStateId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayerState</name></argument>&gt;</argument_list></name></type> <name>queryLayerStateDirect</name><parameter_list>(<param><decl><type><name><name>RLayerState</name>::<name>Id</name></name></type> <name>layerStateId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayerState</name></argument>&gt;</argument_list></name></type> <name>queryLayerState</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layerStateName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayout</name></argument>&gt;</argument_list></name></type> <name>queryLayout</name><parameter_list>(<param><decl><type><name><name>RLayout</name>::<name>Id</name></name></type> <name>layoutId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayout</name></argument>&gt;</argument_list></name></type> <name>queryLayoutDirect</name><parameter_list>(<param><decl><type><name><name>RLayout</name>::<name>Id</name></name></type> <name>layoutId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>RLayout</name></argument>&gt;</argument_list></name></type> <name>queryLayout</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layoutName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
@@ -181,7 +191,7 @@
         <param><decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>*</type> <name>affectedEntities</name>=<init><expr><name>NULL</name></expr></init></decl></param>
     )</parameter_list>;</function_decl>
 
-    <function_decl><type><name>void</name></type> <name>selectAllEntites</name><parameter_list>(<param><decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>*</type> <name>affectedEntities</name> =<init> <expr><name>NULL</name></expr></init></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>selectAllEntities</name><parameter_list>(<param><decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>*</type> <name>affectedEntities</name> =<init> <expr><name>NULL</name></expr></init></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name>void</name></type> <name>selectEntity</name><parameter_list>(
         <param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>,
@@ -192,12 +202,12 @@
         <param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>,
         <param><decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>*</type> <name>affectedEntities</name>=<init><expr><name>NULL</name></expr></init></decl></param>
     )</parameter_list>;</function_decl>
-    <function_decl><type><name>void</name></type> <name>selectEntities</name><parameter_list>(
+    <function_decl><type><name>int</name></type> <name>selectEntities</name><parameter_list>(
         <param><decl><type><name>const</name> <name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>&amp;</type> <name>entityId</name></decl></param>,
         <param><decl><type><name>bool</name></type> <name>add</name>=<init><expr><name>false</name></expr></init></decl></param>,
         <param><decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>*</type> <name>affectedEntities</name>=<init><expr><name>NULL</name></expr></init></decl></param>
     )</parameter_list>;</function_decl>
-    <function_decl><type><name>bool</name></type> <name>deselectEntities</name><parameter_list>(
+    <function_decl><type><name>int</name></type> <name>deselectEntities</name><parameter_list>(
         <param><decl><type><name>const</name> <name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>&amp;</type> <name>entityId</name></decl></param>,
         <param><decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>*</type> <name>affectedEntities</name>=<init><expr><name>NULL</name></expr></init></decl></param>
     )</parameter_list>;</function_decl>
@@ -218,11 +228,15 @@
 
     <function_decl><type><name>bool</name></type> <name>isLayerFrozen</name><parameter_list>(<param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>layerId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isLayerFrozen</name><parameter_list>(<param><decl><type><name>const</name> <name>RLayer</name>&amp;</type> <name>layer</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>bool</name></type> <name>isLayerPlottable</name><parameter_list>(<param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>layerId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>bool</name></type> <name>isLayerPlottable</name><parameter_list>(<param><decl><type><name>const</name> <name>RLayer</name>&amp;</type> <name>layer</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isParentLayerFrozen</name><parameter_list>(<param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>layerId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isParentLayerFrozen</name><parameter_list>(<param><decl><type><name>const</name> <name>RLayer</name>&amp;</type> <name>layer</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isBlockFrozen</name><parameter_list>(<param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isLayoutBlock</name><parameter_list>(<param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isEntityLayerFrozen</name><parameter_list>(<param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+
+    <function_decl><type><name>bool</name></type> <name>isEntityVisible</name><parameter_list>(<param><decl><type><name>const</name> <name>REntity</name>&amp;</type> <name>entity</name></decl></param>, <param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name> =<init> <expr><name><name>RBlock</name>::<name>INVALID_ID</name></name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <function_decl><type><name>bool</name></type> <name>isParentLayerSnappable</name><parameter_list>(<param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>layerId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isParentLayerSnappable</name><parameter_list>(<param><decl><type><name>const</name> <name>RLayer</name>&amp;</type> <name>layer</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
@@ -234,6 +248,7 @@
 
     <function_decl><type><name>RBox</name></type> <name>getBoundingBox</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>ignoreHiddenLayers</name> =<init> <expr><name>true</name></expr></init></decl></param>, <param><decl><type><name>bool</name></type> <name>ignoreEmpty</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>RBox</name></type> <name>getSelectionBox</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>RBox</name></type> <name>getEntitiesBox</name><parameter_list>(<param><decl><type><name>QSet<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>&gt;</argument_list></name>&amp;</type> <name>ids</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <comment type="line">//void addToSpatialIndex(RObject&amp; object, bool isNew = false);</comment>
     <function_decl><type><name>void</name></type> <name>clearSpatialIndices</name><parameter_list>()</parameter_list>;</function_decl>
@@ -254,8 +269,20 @@
     <function_decl><type><name>QList<argument_list>&lt;<argument><name>RTransaction</name></argument>&gt;</argument_list></name></type> <name>redo</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isUndoAvailable</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>isRedoAvailable</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+
     <function_decl><type><name>void</name></type> <name>startTransactionGroup</name><parameter_list>()</parameter_list>;</function_decl>
     <function_decl><type><name>int</name></type> <name>getTransactionGroup</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+
+    <comment type="block">/**
+     * True: add all operations to the current transaction group
+     */</comment>
+    <function><type><name>void</name></type> <name>setAutoTransactionGroup</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>on</name></decl></param>)</parameter_list> <block>{
+        <expr_stmt><expr><name>autoTransactionGroup</name> = <name>on</name></expr>;</expr_stmt>
+    }</block></function>
+    <function><type><name>bool</name></type> <name>getAutoTransactionGroup</name><parameter_list>()</parameter_list> <specifier>const</specifier> <block>{
+        <return>return <expr><name>autoTransactionGroup</name></expr>;</return>
+    }</block></function>
+
     <function_decl><type><name>void</name></type> <name>resetTransactionStack</name><parameter_list>()</parameter_list>;</function_decl>
 
     <function_decl><type><name>void</name></type> <name>setFileName</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>fn</name></decl></param>)</parameter_list>;</function_decl>
@@ -308,14 +335,20 @@
 
     <function_decl><type><name>QString</name></type> <name>getTempBlockName</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QString</name></type> <name>getBlockName</name><parameter_list>(<param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QString</name></type> <name>getBlockNameFromLayout</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layoutName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QString</name></type> <name>getBlockNameFromLayout</name><parameter_list>(<param><decl><type><name><name>RLayout</name>::<name>Id</name></name></type> <name>layoutId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name>QString</name></argument>&gt;</argument_list></name></type> <name>getBlockNames</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>rxStr</name> =<init> <expr><name>RDEFAULT_QSTRING</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QList<argument_list>&lt;<argument><name><name>RBlock</name>::<name>Id</name></name></argument>&gt;</argument_list></name></type> <name>sortBlocks</name><parameter_list>(<param><decl><type><name>const</name> <name>QList<argument_list>&lt;<argument><name><name>RBlock</name>::<name>Id</name></name></argument>&gt;</argument_list></name>&amp;</type> <name>blockIds</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QString</name></type> <name>getLayerName</name><parameter_list>(<param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>layerId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name>QString</name></argument>&gt;</argument_list></name></type> <name>getLayerNames</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>rxStr</name> =<init> <expr><name>RDEFAULT_QSTRING</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QString</name></type> <name>getLayerStateName</name><parameter_list>(<param><decl><type><name><name>RLayerState</name>::<name>Id</name></name></type> <name>layerStateId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QSet<argument_list>&lt;<argument><name>QString</name></argument>&gt;</argument_list></name></type> <name>getLayerStateNames</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>rxStr</name> =<init> <expr><name>RDEFAULT_QSTRING</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QString</name></type> <name>getLayoutName</name><parameter_list>(<param><decl><type><name><name>RLayout</name>::<name>Id</name></name></type> <name>layoutId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>QSet<argument_list>&lt;<argument><name>QString</name></argument>&gt;</argument_list></name></type> <name>getViewNames</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <function_decl><type><name>bool</name></type> <name>hasLayer</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layerName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>bool</name></type> <name>hasLayerStates</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>bool</name></type> <name>hasLayerState</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layerStateName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>hasBlock</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>blockName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>hasLayout</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layoutName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>hasView</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>viewName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
@@ -323,7 +356,11 @@
 
     <function_decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>getLayerId</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layerName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>getLayer0Id</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+
+    <function_decl><type><name><name>RLayerState</name>::<name>Id</name></name></type> <name>getLayerStateId</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>layerStateName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+
     <function_decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>getBlockId</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>blockName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>getBlockIdAuto</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>blockLayoutName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>getModelSpaceBlockId</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <function_decl><type><name><name>RLinetype</name>::<name>Id</name></name></type> <name>getLinetypeId</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>linetypeName</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
@@ -388,6 +425,11 @@
 
     <function_decl><type><name>void</name></type> <name>copyVariablesFrom</name><parameter_list>(<param><decl><type><name>const</name> <name>RDocument</name>&amp;</type> <name>other</name></decl></param>)</parameter_list>;</function_decl>
 
+    <function_decl><type><name>QString</name></type> <name>addAutoVariable</name><parameter_list>(<param><decl><type><name>double</name></type> <name>value</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>QStringList</name></type> <name>getAutoVariables</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QString</name></type> <name>substituteAutoVariables</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>expression</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>double</name></type> <name>eval</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>expression</name></decl></param>, <param><decl><type><name>bool</name>*</type> <name>ok</name> =<init> <expr><name>NULL</name></expr></init></decl></param>)</parameter_list>;</function_decl>
+
     <comment type="block">/*
     void copyToDocument(const RVector&amp; reference, RDocument&amp; other,
         bool selectionOnly, bool clear, RTransaction&amp; transaction);
@@ -416,11 +458,13 @@
     <decl_stmt><decl><type><name>RSpatialIndex</name>&amp;</type> <name>spatialIndex</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>bool</name></type> <name>disableSpatialIndicesByBlock</name></decl>;</decl_stmt>
     <comment type="line">// map of spatial indices (per block):</comment>
-    <decl_stmt><decl><type><name>QMap<argument_list>&lt;<argument><name><name>RBlock</name>::<name>Id</name></name></argument>, <argument><name>RSpatialIndex</name>*</argument>&gt;</argument_list></name></type> <name>spatialIndicesByBlock</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>mutable</name> <name>QMap<argument_list>&lt;<argument><name><name>RBlock</name>::<name>Id</name></name></argument>, <argument><name>RSpatialIndex</name>*</argument>&gt;</argument_list></name></type> <name>spatialIndicesByBlock</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>RTransactionStack</name></type> <name>transactionStack</name></decl>;</decl_stmt>
     <comment type="line">//RBlock::Id modelSpaceBlockId;</comment>
     <decl_stmt><decl><type><name><name>RLinetype</name>::<name>Id</name></name></type> <name>linetypeByLayerId</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name><name>RLinetype</name>::<name>Id</name></name></type> <name>linetypeByBlockId</name></decl>;</decl_stmt>
+
+    <decl_stmt><decl><type><name>bool</name></type> <name>autoTransactionGroup</name></decl>;</decl_stmt>
 </private>}</block>;</class>
 
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>RDocument*</argument>)</argument_list></macro>

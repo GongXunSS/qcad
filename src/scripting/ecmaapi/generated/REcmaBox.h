@@ -56,6 +56,12 @@
         isSane
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        equalsFuzzy
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        equalsFuzzy2D
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         get2D
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -66,6 +72,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getSize
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getArea
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getCenter
@@ -144,6 +153,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         move
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        scaleByReference
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         toQRectF

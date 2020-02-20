@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -83,13 +83,13 @@ public:
      * Stops the timer with the given ID and prints the given message together 
      * with the time that has elapsed.
      */
-    static int stopTimer(int id, const QString& msg, int msThreshold = 0);
+    static uint stopTimer(int id, const QString& msg, uint msThreshold = 0);
 
     /**
      * Stops the timer with ID 0 and prints the given message together 
      * with the time that has elapsed.
      */
-    static int stopTimer(const QString& msg) {
+    static uint stopTimer(const QString& msg) {
         return stopTimer(0, msg);
     }
 

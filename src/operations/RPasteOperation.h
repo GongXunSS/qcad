@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -153,6 +153,9 @@ public:
     void setProperty(const QString& name, const QString& value) {
         properties.insert(name, value);
     }
+    void setBlockProperty(const QString& name, const QString& value) {
+        blockProperties.insert(name, value);
+    }
 
     virtual RTransaction apply(RDocument& document, bool preview = false);
 
@@ -173,6 +176,7 @@ private:
     QString layerName;
     QMap<QString, QString> attributes;
     QMap<QString, QString> properties;
+    QMap<QString, QString> blockProperties;
 };
 
 Q_DECLARE_METATYPE(RPasteOperation*)

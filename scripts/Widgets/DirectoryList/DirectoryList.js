@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -54,7 +54,7 @@ DirectoryList.prototype.doInit = function(pageWidget, listWidgetName, fileDlgTit
         if (!found) {
             listWidget.addItem(dir);
         } else {
-            var text = qsTr("The folder\n'%1'\nis already in the list.").arg(dir);
+            var text = qsTr("The folder\n\"%1\"\nis already in the list.").arg(dir);
             var appWin = EAction.getMainWindow();
             QMessageBox.information(appWin, qsTr("Folder not added"), text);
         }

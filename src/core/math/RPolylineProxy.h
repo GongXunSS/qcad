@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -23,6 +23,7 @@
 #include "../core_global.h"
 
 #include <RS.h>
+#include <RMath.h>
 
 class RArc;
 class RExporter;
@@ -56,6 +57,20 @@ public:
     virtual RVector getPointInside(const RPolyline& polyline) = 0;
 
     virtual QList<RPolyline> splitAtDiscontinuities(const RPolyline& polyline, double tolerance) = 0;
+
+    virtual double getBaseAngle(const RPolyline& polyline) = 0;
+    virtual double getWidth(const RPolyline& polyline) = 0;
+    virtual bool setWidth(RPolyline& polyline, double v) = 0;
+    virtual double getHeight(const RPolyline& polyline) = 0;
+    virtual bool setHeight(RPolyline& polyline, double v) = 0;
+
+    virtual QList<RPolyline> morph(const RPolyline& polyline, const RPolyline& target, int steps, RS::Easing easing = RS::Linear, bool zLinear = true, double customFactor = RNANDOUBLE) = 0;
+    virtual RPolyline roundAllCorners(const RPolyline& polyline, double radius) = 0;
+    virtual RPolyline getPolygonHull(const RPolyline& polyline, double angle, double tolerance, bool inner = false) = 0;
+    virtual RVector insertVertexAtDistance(RPolyline& polyline, double dist) = 0;
+
+    virtual bool simplify(RPolyline& polyline, double tolerance) = 0;
+    virtual QList<RPolyline> splitAtSegmentTypeChange(const RPolyline& polyline) = 0;
 };
 
 #endif

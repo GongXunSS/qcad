@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * DirectDistanceEntry handling added 2013 by Robert S.
  *
@@ -113,6 +113,19 @@ EcmaScriptShell.init = function(basePath) {
     }
 
     var formWidget = WidgetFactory.createWidget(basePath, "EcmaScriptShell.ui");
+
+    var frame = formWidget.findChild("Frame");
+    var p = frame.palette;
+    if (!RSettings.hasDarkGuiBackground()) {
+        // white background of command line label:
+        p.setColor(QPalette.Active, QPalette.Window, new QColor(Qt.white));
+    }
+    else {
+        p.setColor(QPalette.Active, QPalette.Window, new QColor("#1e1e1e"));
+    }
+    frame.palette = p;
+    frame.autoFillBackground = true;
+
     var teHistory = formWidget.findChild("History");
     var leCommand = formWidget.findChild("CommandEdit");
     leCommand.setHistory(RSettings.getStringListValue("EcmaScriptShell/History", []));
@@ -227,6 +240,7 @@ EcmaScriptShell.init = function(basePath) {
 
         appendAndScroll("<span style='font-style:italic;color:"+colPrompt+";'>" + Qt.escape("ecma> ") + "</span>"
                         + "<span style='color:"+col+"'>" + Qt.escape(command) + "</span>");
+        leCommand.appendCommand(command);
 
         // if we have open brackets: continue entering:
         countBraces(command);
@@ -238,7 +252,8 @@ EcmaScriptShell.init = function(basePath) {
             var res;
             try {
                 //startTransaction();
-                res = RMainWindow.getMainWindow().eval("js", expression);
+                //res = RMainWindow.getMainWindow().eval("js", expression);
+                res = EcmaScriptShell.eval(expression);
                 //endTransaction();
 
                 // make sure input is enabled again:
@@ -262,24 +277,6 @@ EcmaScriptShell.init = function(basePath) {
         }
 
         leCommand.setFocus();
-    });
-
-    leCommand.multiLinePaste.connect(function() {
-        var cb = QGuiApplication.clipboard();
-
-        var text = cb.text();
-
-        // multi line paste and enter:
-        if (text.contains("\n")) {
-            var lines = text.split("\n");
-            for (var i=0; i<lines.length; i++) {
-                leCommand.commandConfirmed(lines[i]);
-            }
-        }
-        else {
-            // single line paste only:
-            leCommand.paste(text);
-        }
     });
 
     // user pressed tab:
@@ -347,3 +344,7 @@ EcmaScriptShell.init = function(basePath) {
 
     leCommand.clearHistory.connect(teHistory, "clear");
 };
+
+EcmaScriptShell.eval = function(expression) {
+    return RMainWindow.getMainWindow().eval("js", expression);
+}

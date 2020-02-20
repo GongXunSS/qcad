@@ -55,6 +55,9 @@
 
     // public methods:
     static  QScriptValue
+        getInstance
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         updateFromDocument
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -89,6 +92,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getPropertyAttributes
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getCustomPropertyAttributes
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getTypes

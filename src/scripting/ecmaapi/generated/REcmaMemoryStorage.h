@@ -68,6 +68,9 @@
         queryAllObjects
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        querySelectedLayers
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         queryAllVisibleEntities
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -78,6 +81,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         queryAllLayers
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        queryAllLayerStates
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         queryAllBlocks
@@ -146,6 +152,9 @@
         queryLayer
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        queryLayerState
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         queryLayout
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -167,10 +176,19 @@
         queryLinetype
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        clearVisibleCache
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        updateVisibleCache
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         clearSelectionCache
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         updateSelectedEntityMap
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        updateSelectedLayerMap
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         countSelectedEntities
@@ -179,7 +197,7 @@
         clearEntitySelection
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        selectAllEntites
+        selectAllEntities
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         selectEntity
@@ -200,6 +218,9 @@
         isSelected
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isEntityVisible
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         hasSelection
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -207,6 +228,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getSelectionBox
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getEntitiesBox
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         removeObject
@@ -269,6 +293,15 @@
         getLayerId
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getLayerStateName
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getLayerStateNames
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getLayerStateId
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getLayoutName
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -281,10 +314,16 @@
         getBlockName
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getBlockNameFromLayout
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getBlockNames
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getBlockId
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getBlockIdAuto
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getViewName
@@ -320,10 +359,16 @@
         queryEntityDirect
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        queryVisibleEntityDirect
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         queryUcsDirect
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         queryLayerDirect
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        queryLayerStateDirect
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         queryLayoutDirect

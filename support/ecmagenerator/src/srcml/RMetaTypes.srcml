@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./core" filename="RMetaTypes.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -44,6 +44,7 @@
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QDragMoveEvent&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QDragLeaveEvent&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QDropEvent&gt;</cpp:file></cpp:include>
+<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QEasingCurve&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QEvent&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QFocusEvent&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QFocusFrame&gt;</cpp:file></cpp:include>
@@ -55,7 +56,6 @@
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QFileSystemModel&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QFrame&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QGestureEvent&gt;</cpp:file></cpp:include>
-<cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QGLWidget&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QGraphicsItem&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QGraphicsView&gt;</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QGridLayout&gt;</cpp:file></cpp:include>
@@ -142,7 +142,9 @@
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RSingleApplication.h"</cpp:file></cpp:include>
 
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>int*</argument>)</argument_list></macro>
+<cpp:ifdef>#<cpp:directive>ifdef</cpp:directive> <name>_LP64</name></cpp:ifdef>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>unsigned int*</argument>)</argument_list></macro>
+<cpp:endif>#<cpp:directive>endif</cpp:directive></cpp:endif>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>qint64*</argument>)</argument_list></macro>
 
 <cpp:if>#<cpp:directive>if</cpp:directive> <expr>!<name>defined</name> <name>Q_OS_WIN</name> &amp;&amp; !<name>defined</name> <name>Q_OS_LINUX</name> &amp;&amp; !<name>defined</name> <name>Q_OS_FREEBSD</name></expr></cpp:if>
@@ -198,7 +200,6 @@
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QFontDatabase*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QFrame*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QGestureEvent*</argument>)</argument_list></macro>
-<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QGLWidget*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QGraphicsView*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QGridLayout*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QHelpEvent*</argument>)</argument_list></macro>
@@ -209,6 +210,7 @@
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QInputMethodEvent*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QItemDelegate*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QItemSelection*</argument>)</argument_list></macro>
+<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QItemSelectionModel*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QKeyEvent*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QKeySequence*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QLayout*</argument>)</argument_list></macro>
@@ -334,8 +336,14 @@
 
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QVector&lt;qreal&gt;</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QVector&lt;qreal&gt;*</argument>)</argument_list></macro>
+<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QVector&lt;float&gt;</argument>)</argument_list></macro>
+<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QVector&lt;float&gt;*</argument>)</argument_list></macro>
+<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QVector&lt;uint&gt;</argument>)</argument_list></macro>
+<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QVector&lt;uint&gt;*</argument>)</argument_list></macro>
 
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QEvent::Type</argument>)</argument_list></macro>
+<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QKeySequence::SequenceFormat</argument>)</argument_list></macro>
+<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QKeySequence::SequenceFormat*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>Qt::DropActions</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>Qt::CursorShape</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>Qt::GlobalColor</argument>)</argument_list></macro>
@@ -352,6 +360,7 @@
 <cpp:endif>#<cpp:directive>endif</cpp:directive></cpp:endif>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QVariant::Type</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QAbstractItemView::ScrollHint</argument>)</argument_list></macro>
+<macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QEasingCurve::Type</argument>)</argument_list></macro>
 
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QtMsgType*</argument>)</argument_list></macro>
 <macro><name>Q_DECLARE_METATYPE</name><argument_list>(<argument>QtMsgType</argument>)</argument_list></macro>

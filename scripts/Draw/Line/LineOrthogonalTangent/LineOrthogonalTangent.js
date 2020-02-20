@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Line.js");
+include("scripts/Draw/Line/Line.js");
 include("scripts/ShapeAlgorithms.js");
 
 /**
@@ -64,10 +64,13 @@ LineOrthogonalTangent.prototype.setState = function(state) {
     this.getDocumentInterface().setClickMode(RAction.PickEntity);
     this.setCrosshairCursor();
 
+    var tr;
     var appWin = RMainWindowQt.getMainWindow();
     switch (this.state) {
     case LineOrthogonalTangent.State.ChoosingEntity1:
-        this.setLeftMouseTip(qsTr("Choose line"));
+        tr = qsTr("Choose line");
+        this.setLeftMouseTip(tr);
+        this.setCommandPrompt(tr);
         this.setRightMouseTip(EAction.trCancel);
         this.entity1 = undefined;
         this.shape1 = undefined;
@@ -78,7 +81,9 @@ LineOrthogonalTangent.prototype.setState = function(state) {
         break;
     case LineOrthogonalTangent.State.ChoosingEntity2:
         this.getDocumentInterface().setClickMode(RAction.PickEntity);
-        this.setLeftMouseTip(qsTr("Choose circle, arc or ellipse"));
+        tr = qsTr("Choose circle, arc or ellipse");
+        this.setLeftMouseTip(tr);
+        this.setCommandPrompt(tr);
         this.setRightMouseTip(EAction.trBack);
         break;
     }

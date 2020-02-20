@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 SUBDIRS = \
     GraphicsViewPreferences \
     InputPreferences \
+    KeyboardPreferences \
     LanguagePreferences \
     LayerCompatibility \
     ScriptingPreferences \
@@ -9,4 +10,4 @@ SUBDIRS = \
     TextPreferences \
     ThemePreferences \
     ToolBarPreferences \
-    ts
+    dir

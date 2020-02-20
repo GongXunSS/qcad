@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -100,7 +100,7 @@ Favorites.add = function(fileName) {
 
     var fi = new QFileInfo(fileName);
 //    EAction.handleUserMessage(
-//            qsTr("Item '%1' has been added to your favorites.".arg(fi
+//            qsTr("Item \"%1\" has been added to your favorites.".arg(fi
 //                    .fileName())));
 };
 
@@ -120,7 +120,7 @@ Favorites.remove = function(fileName) {
 
     var fi = new QFileInfo(fileName);
 //    EAction.handleUserMessage(
-//            qsTr("Item '%1' has been removed from your favorites.".arg(fi.fileName())));
+//            qsTr("Item \"%1\" has been removed from your favorites.".arg(fi.fileName())));
 };
 
 /**

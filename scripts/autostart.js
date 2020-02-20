@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -55,14 +55,16 @@ function usage() {
           + "                                 implemented in the given script.\n"
           + "-config [path]                   Reads and stores settings in a configuration file\n"
           + "                                 at the given location instead of the default location.\n"
+          + "-debug-action-order              Print action order information in menus\n"
           + "-enable-script-debugger          Enables the script debugger.\n"
           + "                                 NOT recommended as this may cause unexpected\n"
           + "                                 behavior when using QCAD.\n"
-          + "-debug-action-order              Print action order information in menus\n"
           + "-exec [script file] [options]    Executes the given script file directly\n"
           + "                                 after staring QCAD. Options after the script\n"
           + "                                 file are passed on to the script.\n"
           + "-help                            Displays this help.\n"
+          + "-ignore-script-files             Ignore script files on disk."
+          + "                                 Only load scripts from plugins if applicable."
           + "-locale [locale]                 Sets the locale to be used (overrides\n"
           + "                                 the language set in the preferences).\n"
           + "                                 E.g. '-locale de' starts QCAD in German.\n"
@@ -114,7 +116,7 @@ function openFiles(args, createNew, close) {
         }
 
         // argument with two parameters
-        if (args[i] === "-font-substitution" || args[i] === "-fs") {
+        if (args[i] === "-font-substitution" || args[i] === "-fs" || args[i] === "-ts") {
             // skip 3 arguments
             i+=2;
             if (i>=args.length) {
@@ -301,9 +303,6 @@ function setUpDragAndDrop(appWin) {
  */
 function loadTranslations(addOns, splash) {
     var locale = RSettings.getLocale();
-    if (locale === "en" || locale.toLowerCase() === "en_us") {
-        return;
-    }
 
     if (!isNull(splash)) {
         // no translations yet:
@@ -316,22 +315,47 @@ function loadTranslations(addOns, splash) {
         modules.unshift("qtbase");
     }
 
+    var i;
+    var module;
+
     for (var mi=0; mi<modules.length; ++mi) {
-        var module = modules[mi];
+        module = modules[mi];
 
         RSettings.loadTranslations(module);
     }
 
+    //RSettings.loadTranslations("scripts_" + locale, [autoPath("scripts/ts")]);
 
-    // install one QTranslator for each script add-on:
+    // load translations from arguments:
+    var args = QCoreApplication.arguments();
+    for (i = 0; i < args.length; ++i) {
+        if (args[i] === "-ts") {
+            if (++i>=args.length) {
+                break;
+            }
+            module = args[i];
+            if (++i>=args.length) {
+                break;
+            }
+            var dir = args[i];
+
+            RSettings.loadTranslations(module, [autoPath(dir)]);
+        }
+    }
+
+//    RSettings.loadTranslations("scripts", [autoPath("ts")]);
+//    RSettings.loadTranslations("proscripts", [autoPath("../qcadpro/ts")]);
+//    RSettings.loadTranslations("camscripts", [autoPath("../qcadcam/ts")]);
+
+    // install one QTranslator for each script add-on if available:
     if (!isNull(splash)) {
         splash.showMessage(qsTr("Loading add-on translations...") + "\n", Qt.AlignBottom);
         QCoreApplication.processEvents();
     }
 
-    RSettings.loadTranslations("Scripts_" + locale, ["scripts/ts"]);
+    //RSettings.loadTranslations("Scripts_" + locale, [autoPath("scripts/ts")]);
 
-    for (var i = 0; i < addOns.length; ++i) {
+    for (i = 0; i < addOns.length; ++i) {
         var addOn = addOns[i];
         if (isNull(addOn)) {
             qWarning("Null add on found");
@@ -551,6 +575,8 @@ function main() {
         first.showDialog();
     }
 
+    RPluginLoader.initTranslations();
+
     // correct library paths from 'library' to 'libraries':
     if (RSettings.getIntValue("Application/Version", 0)<=3000008) {
         var oldDefaultSource = new QFileInfo("library").absoluteFilePath();
@@ -568,9 +594,14 @@ function main() {
     // theme:
     applyTheme();
 
+    // native / non-native menubar:
+    if (RSettings.getBoolValue("MenuBar/UseNativeMenuBar", true)===false) {
+        QCoreApplication.setAttribute(Qt.AA_DontUseNativeMenuBar);
+    }
+
     // splash:
     var splash = undefined;
-    if (RSettings.getBoolValue("Start/EnableSplashScreen", true)) {
+    if (RSettings.getBoolValue("Startup/EnableSplashScreen", true)) {
         var fn;
         var key;
         if (RSettings.getDevicePixelRatio()===2) {
@@ -583,12 +614,26 @@ function main() {
         }
 
         // look up slash screen override:
+        var maxPri = undefined;
         for (i=0; i<numPlugins; i++) {
             pluginInfo = RPluginLoader.getPluginInfo(i);
-            var s = pluginInfo.get(key);
-            if (!isNull(s)) {
-                fn = s;
-                qDebug("splash override: ", fn);
+
+            // override priority:
+            var pri = pluginInfo.get("OverridePriority");
+            if (!isNull(pri)) {
+                pri = parseInt(pri);
+            }
+            else {
+                // default to lowest priority:
+                pri = 0;
+            }
+
+            if (isNull(maxPri) || pri>maxPri) {
+                var s = pluginInfo.get(key);
+                if (!isNull(s)) {
+                    fn = s;
+                    maxPri = pri;
+                }
             }
         }
 
@@ -647,11 +692,14 @@ function main() {
 
     // create application window:
     var appWin = new RMainWindowQt();
-    if (!RSettings.getQtVersionString().startsWith("5.7")) {
-        // animated crashes sometimes (Qt 4.7.2, 5.6.0):
-        // Qt 5.7.0 will not allow tabifying dock widgets if animations are turned off:
+
+    // Note: animated MUST be true for Qt 5.7:
+    // Qt 5.7.0 will not allow tabifying dock widgets if animations are turned off:
+    if (RSettings.getQtVersion()<0x050600) {
+        // animated must be false for Qt 4.7.2, 5.6.0 (crashes):
         appWin.animated = false;
     }
+
     appWin.objectName = "MainWindow";
     appWin.windowTitle = qApp.applicationName;
 
@@ -697,7 +745,7 @@ function main() {
 
     setUpDragAndDrop(appWin);
 
-    appWin.windowIcon = new QIcon("scripts/qcad_icon.png");
+    appWin.windowIcon = new QIcon(autoPath("scripts/qcad_icon.png"));
     if (!ignoreDockappWindows) {
         appWin.readSettings();
     }

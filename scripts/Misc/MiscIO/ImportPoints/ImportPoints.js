@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -47,6 +47,7 @@ ImportPoints.prototype.beginEvent = function() {
     fileDialog.fileMode = QFileDialog.ExistingFiles;
     if (!fileDialog.exec()) {
         fileDialog.destroy();
+        EAction.activateMainWindow();
         this.terminate();
         return;
     }
@@ -54,9 +55,13 @@ ImportPoints.prototype.beginEvent = function() {
     var files = fileDialog.selectedFiles();
     if (files.length===0) {
         fileDialog.destroy();
+        EAction.activateMainWindow();
         this.terminate();
         return;
     }
+
+    fileDialog.destroy();
+    EAction.activateMainWindow();
 
     var fileName = files[0];
 
@@ -71,6 +76,7 @@ ImportPoints.prototype.beginEvent = function() {
     }
 
     var ts = new QTextStream(file);
+    ts.setCodec("UTF-8");
     var line;
     var coordinates;
     var point;

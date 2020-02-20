@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * DirectDistanceEntry handling added 2013 by Robert S.
  *
@@ -69,8 +69,22 @@ CommandLine.init = function(basePath) {
 
     var e;
     var formWidget = WidgetFactory.createWidget(basePath, "CommandLine.ui");
+    var frame = formWidget.findChild("Frame");
+
+    var p = frame.palette;
+    if (!RSettings.hasDarkGuiBackground()) {
+        // white background of command line label:
+        p.setColor(QPalette.Active, QPalette.Window, new QColor(Qt.white));
+    }
+    else {
+        p.setColor(QPalette.Active, QPalette.Window, new QColor("#1e1e1e"));
+    }
+    frame.palette = p;
+    frame.autoFillBackground = true;
+
     var teHistory = formWidget.findChild("History");
     var leCommand = formWidget.findChild("CommandEdit");
+    WidgetFactory.initLineEditInfoTools(leCommand);
     var lCommand = formWidget.findChild("CommandLabel");
     var bToggleTitleBar = formWidget.findChild("ToggleTitleBar");
     var dock = new RDockWidget(qsTr("Command Line"), appWin);
@@ -82,8 +96,13 @@ CommandLine.init = function(basePath) {
     dock.hidden.connect(function() { action.setChecked(false); });
 
     var blue = "#0000cc";
+    var infoBlue = "#0066cc";
+    var red = "#cc0000";
+
     if (RSettings.hasDarkGuiBackground()) {
-        blue = "#2E9AFE";
+        blue = "#2E9AFF";
+        infoBlue = "#91c1ff";
+        red = "#FF6060";
     }
 
     // open fragment links of format "#<entity ID>,<entity ID>" by selecting
@@ -149,9 +168,13 @@ CommandLine.init = function(basePath) {
         if (isNull(di)) {
             return;
         }
+        var doc = di.getDocument();
+
+        // substitute variables:
+        var cmd = doc.substituteAutoVariables(command);
 
         // handle action specific commands for preview:
-        e = new RCommandEvent(command);
+        e = new RCommandEvent(cmd);
         di.commandEventPreview(e);
         if (e.isAccepted()) {
             di.repaintViews();
@@ -159,7 +182,7 @@ CommandLine.init = function(basePath) {
         }
 
         // handle math expressions preview,
-        if (command.startsWith("=")) {
+        if (cmd.startsWith("=")) {
             return;
         }
 
@@ -167,14 +190,15 @@ CommandLine.init = function(basePath) {
             return;
         }
 
+
         var view = di.getLastKnownViewWithFocus();
 
         // handle direct distance entry for preview:
-        var pos = stringToDirectDistanceEntry(di.getRelativeZero(), di.getCursorPosition(), command);
+        var pos = stringToDirectDistanceEntry(di.getRelativeZero(), di.getCursorPosition(), cmd);
 
         // handle coordinate entry for preview:
         if (isNull(pos) || !pos.isValid()) {
-            pos = stringToCoordinate(di.getRelativeZero(), command);
+            pos = stringToCoordinate(di.getRelativeZero(), cmd);
         }
 
         var sp;
@@ -212,8 +236,13 @@ CommandLine.init = function(basePath) {
         var di = appWin.getDocumentInterface();
 
         if (!isNull(di)) {
+            var doc = di.getDocument();
+
+            // substitute variables:
+            var cmd = doc.substituteAutoVariables(command);
+
             // handle action specific commands:
-            var e = new RCommandEvent(command);
+            var e = new RCommandEvent(cmd);
             di.commandEvent(e);
             if (e.isAccepted()) {
                 //appWin.handleUserCommand(command);
@@ -223,46 +252,46 @@ CommandLine.init = function(basePath) {
 
             // handle math expressions and leave result in command line,
             // or, if error, print error and leave command line unchanged
-            if (command.startsWith("=")) {
+            if (cmd.startsWith("=")) {
                 // remove leading '='
-                command = command.slice(1);
+                cmd = cmd.slice(1);
                 var prefix = "=";
                 var relprefix = RSettings.getStringValue(
                             "Input/RelativeCoordinatePrefix",
                             String.fromCharCode(64)  // @ (doxygen can't cope with an @ here)
                 );
-                if (command.endsWith(" ")) {
+                if (cmd.endsWith(" ")) {
                     prefix = "";
-                } else if (command.endsWith(relprefix)) {
-                    command = command.replace(relprefix, "");
+                } else if (cmd.endsWith(relprefix)) {
+                    cmd = cmd.replace(relprefix, "");
                     prefix = relprefix;
                 }
 
-                var val = RMath.eval(command);
+                var val = RMath.eval(cmd);
                 if (isNumber(val)) {
-                    appWin.handleUserCommand("=" + command);
+                    appWin.handleUserCommand("=" + cmd);
                     appWin.handleUserInfo(val.toString());
                     leCommand.text = prefix + val;
                 } else {
                     var er = RMath.getError();
-                    EAction.handleUserWarning(qsTr("Invalid value:") + " '=%1' -  %2".arg(command).arg(er));
+                    EAction.handleUserWarning(qsTr("Invalid value:") + " '=%1' -  %2".arg(cmd).arg(er));
                 }
                 return;
             }
 
             // handle direct distance entry:
-            var pos = stringToDirectDistanceEntry(di.getRelativeZero(), di.getCursorPosition(), command);
+            var pos = stringToDirectDistanceEntry(di.getRelativeZero(), di.getCursorPosition(), cmd);
 
             // handle coordinate entry:
             if (isNull(pos) || !pos.isValid()) {
-                pos = stringToCoordinate(di.getRelativeZero(), command);
+                pos = stringToCoordinate(di.getRelativeZero(), cmd);
             }
 
             if (!pos.isNaN()) {
                 if (!pos.isValid()) {
                     appWin.handleUserWarning(
-                        qsTr("Invalid coordinate or distance '%1'.")
-                            .arg(Qt.escape(command))
+                        qsTr("Invalid coordinate or distance \"%1\".")
+                            .arg(Qt.escape(cmd))
                     );
                     return;
                 }
@@ -280,21 +309,21 @@ CommandLine.init = function(basePath) {
         var commandLower = command.toLowerCase();
         if (!RGuiAction.triggerByCommand(commandLower)) {
             EAction.handleUserWarning(
-                qsTr("Unknown command or invalid coordinate or value: '%1'").arg(commandLower)
+                qsTr("Unknown command or invalid coordinate or value: \"%1\"").arg(commandLower)
             );
 
             // guess: if there's a number somewhere, user might be trying to enter
             // a number value or coordinate. Nuge him in the right direction:
             if (command.search(/[0-9]./)!==-1) {
                 EAction.handleUserWarning(
-                    qsTr("Numbers may be entered as: '%1'")
+                    qsTr("Numbers may be entered as: \"%1\"")
                         .arg(numberToString(Math.PI, 3))
                 );
                 var sample = new RVector(1.234,1.234);
                 var samplePolar = RVector.createPolar(10,30);
                 EAction.handleUserWarning(
-                    qsTr("Coordinates may be entered as: '%1' (absolute) " +
-                         "or '%2' (relative) or '%3' (polar) or '%4' (relative polar)")
+                    qsTr("Coordinates may be entered as: \"%1\" (absolute) " +
+                         "or \"%2\" (relative) or \"%3\" (polar) or \"%4\" (relative polar)")
                         .arg(coordinateToString(sample, 3, false, false))
                         .arg(coordinateToString(sample, 3, true, false))
                         .arg(coordinateToString(samplePolar, 3, false, true))
@@ -305,6 +334,7 @@ CommandLine.init = function(basePath) {
                         "format in the application preferences.")
                 );
             }
+            leCommand.clear();
             return;
         }
 
@@ -356,26 +386,6 @@ CommandLine.init = function(basePath) {
     
     leCommand.clearHistory.connect(teHistory, "clear");
 
-    leCommand.multiLinePaste.connect(function() {
-        var cb = QGuiApplication.clipboard();
-        qDebug("pasting: " + cb.text());
-
-        var text = cb.text();
-
-        // multi line paste and enter:
-        if (text.contains("\n")) {
-            var lines = text.split("\n");
-            for (var i=0; i<lines.length; i++) {
-                qDebug("line: " + lines[i]);
-                leCommand.commandConfirmed(lines[i]);
-            }
-        }
-        else {
-            // single line paste only:
-            leCommand.paste(text);
-        }
-    });
-
     // show message to user:
     appWin.userMessage.connect(function(message, escape) {
         if (escape) {
@@ -394,9 +404,11 @@ CommandLine.init = function(basePath) {
 
         if (escape) {
             message = Qt.escape(message);
+            // workaround for Qt showing &quot; in label:
+            message = message.replace(/&quot;/g, "\"");
         }
 
-        appendAndScroll("<span style='color:#cc0000;'>" + message + "</span>");
+        appendAndScroll("<span style='color:" + red + ";'>" + message + "</span>");
         if (RSettings.getBoolValue("CommandLine/WarningsAsDialog", false) || messageBox) {
             QMessageBox.warning(appWin, qsTr("Warning"), message);
         }
@@ -408,7 +420,7 @@ CommandLine.init = function(basePath) {
             message = Qt.escape(message);
         }
 
-        appendAndScroll("<span style='color:#0066cc;'>" + message + "</span>");
+        appendAndScroll("<span style='color:" + infoBlue + ";'>" + message + "</span>");
         if (RSettings.getBoolValue("CommandLine/InfoAsDialog", false)) {
             QMessageBox.information(appWin, qsTr("Info"), message);
         }
@@ -421,8 +433,9 @@ CommandLine.init = function(basePath) {
             return;
         }
 
+        var msgEsc = message;
         if (escape) {
-            message = Qt.escape(message);
+            msgEsc = Qt.escape(message);
         }
 
         var cartCoordSep = RSettings.getStringValue("Input/CartesianCoordinateSeparator", ',');
@@ -441,7 +454,7 @@ CommandLine.init = function(basePath) {
         appendAndScroll(
             "<span style='color:" + blue + ";'>"
             + "<i>" + what + ": </i>"
-            + message + "</span>");
+            + msgEsc + "</span>");
     });
 
     // change command prompt label:
@@ -453,4 +466,36 @@ CommandLine.init = function(basePath) {
             lCommand.text = text + qsTr(": ");
         }
     });
+
+    var system;
+    switch (RS.getSystemId()) {
+    case "win":
+        system = "Windows";
+        break;
+    case "osx":
+        system = "macOS";
+        break;
+    case "linux":
+        system = "Linux";
+        break;
+    case "freebsd":
+        system = "FreeBSD";
+        break;
+    case "netbsd":
+        system = "NetBSD";
+        break;
+    case "openbsd":
+        system = "OpenBSD";
+        break;
+    case "solaris":
+        system = "Solaris";
+        break;
+    }
+    EAction.handleUserMessage(
+                "%1 %2 / %3 %4"
+                .arg(qApp.applicationName)
+                .arg(RSettings.getVersionString())
+                .arg(system)
+                .arg(RS.getBuildCpuArchitecture())
+                );
 };

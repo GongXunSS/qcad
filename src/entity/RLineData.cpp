@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -39,6 +39,12 @@ RLineData::RLineData(const RVector& startPoint, const RVector& endPoint) :
     RLine(startPoint, endPoint) {
 }
 
+RBox RLineData::getBoundingBox(bool ignoreEmpty) const {
+    Q_UNUSED(ignoreEmpty)
+
+    return RLine::getBoundingBox();
+}
+
 RPolyline RLineData::getHull(double offset) const {
     RVector vRight = RVector::createPolar(offset, getAngle()-M_PI/2);
 
@@ -61,8 +67,9 @@ QList<RRefPoint> RLineData::getReferencePoints(RS::ProjectionRenderingHint hint)
     return ret;
 }
 
-bool RLineData::moveReferencePoint(const RVector& referencePoint,
-        const RVector& targetPoint) {
+bool RLineData::moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers) {
+    Q_UNUSED(modifiers)
+
     bool ret = false;
     if (referencePoint.equalsFuzzy(startPoint)) {
         startPoint = targetPoint;

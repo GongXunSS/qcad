@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -77,6 +77,9 @@ public:
     static QScriptValue ecmaInclude(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue doInclude(QScriptEngine* engine, const QString& fileName, QString trContext = QString(), bool force=false);
 
+    static QScriptValue ecmaEvalAppEngine(QScriptContext* context, QScriptEngine* engine);
+    static QScriptValue ecmaEvalDocEngine(QScriptContext* context, QScriptEngine* engine);
+
     static QScriptValue ecmaExit(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaPrint(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaDebug(QScriptContext* context, QScriptEngine* engine);
@@ -90,6 +93,9 @@ public:
     static QScriptValue ecmaQObjectGetChildren(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaQDomNodeAppendChild(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaQDomNodeRemoveChild(QScriptContext* context, QScriptEngine* engine);
+    static QScriptValue ecmaGetAvailablePrinterNames(QScriptContext* context, QScriptEngine* engine);
+    static QScriptValue ecmaGetDefaultPrinterName(QScriptContext* context, QScriptEngine* engine);
+    static QScriptValue ecmaCreatePrinter(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaBacktrace(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaAttachDebugger(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaDetachDebugger(QScriptContext* context, QScriptEngine* engine);
@@ -100,6 +106,8 @@ public:
     static QScriptValue ecmaQLocaleScript(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaQLocaleScriptToString(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaQLineEditValidator(QScriptContext* context, QScriptEngine* engine);
+    static QScriptValue ecmaQItemSelectionModelCountSelectedRows(QScriptContext* context, QScriptEngine* engine);
+    static QScriptValue ecmaQItemSelectionModelSelectedRow(QScriptContext* context, QScriptEngine* engine);
     //static QScriptValue ecmaQWebPageSetLinkDelegationPolicy(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaMSleep(QScriptContext* context, QScriptEngine* engine);
     static QScriptValue ecmaParseXml(QScriptContext* context, QScriptEngine* engine);

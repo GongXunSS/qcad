@@ -2,6 +2,7 @@
 <unit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:rs="http://www.ribbonsoft.com">
   <class_decl name="RDocument" />
+  <class_decl name="RExporter" />
   <class name="RBlockReferenceData"
   xsi:noNamespaceSchemaLocation="../class.xsd" isCopyable="true"
   hasShell="false" sharedPointerSupport="false" isQObject="false"
@@ -32,6 +33,11 @@ xmlns:rs="http://www.ribbonsoft.com">
     isStatic="false" isVirtual="true" isScriptOverwritable="true">
       <variant returnType="RS::EntityType" isPureVirtual="false" />
     </method>
+    <method name="isPointType" cppName="isPointType"
+    specifier="public" isStatic="false" isVirtual="true"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
     <method name="getBoundingBoxes" cppName="getBoundingBoxes"
     specifier="public" isStatic="false" isVirtual="true"
     isScriptOverwritable="true">
@@ -48,6 +54,15 @@ xmlns:rs="http://www.ribbonsoft.com">
         <arg type="bool" typeName="bool" name="ignoreEmpty"
         hasDefault="true" default="false" isConst="false" />
       </variant>
+    </method>
+    <method name="to2D" cppName="to2D" specifier="public"
+    isStatic="false" isVirtual="true" isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false" />
+    </method>
+    <method name="getPointOnEntity" cppName="getPointOnEntity"
+    specifier="public" isStatic="false" isVirtual="true"
+    isScriptOverwritable="true">
+      <variant returnType="RVector" isPureVirtual="false" />
     </method>
     <method name="getInternalReferencePoints"
     cppName="getInternalReferencePoints" specifier="public"
@@ -127,6 +142,10 @@ xmlns:rs="http://www.ribbonsoft.com">
         name="referencePoint" isConst="true" />
         <arg type="RVector &amp;" typeName="RVector"
         name="targetPoint" isConst="true" />
+        <arg type="Qt::KeyboardModifiers"
+        typeName="Qt::KeyboardModifiers" name="modifiers"
+        hasDefault="true" default="Qt :: NoModifier"
+        isConst="false" />
       </variant>
     </method>
     <method name="move" cppName="move" specifier="public"
@@ -161,6 +180,14 @@ xmlns:rs="http://www.ribbonsoft.com">
         <arg type="RVector &amp;" typeName="RVector" name="center"
         hasDefault="true" default="RDEFAULT_RVECTOR"
         isConst="true" />
+      </variant>
+    </method>
+    <method name="scaleVisualProperties"
+    cppName="scaleVisualProperties" specifier="public"
+    isStatic="false" isVirtual="true" isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="double" typeName="double" name="scaleFactor"
+        isConst="false" />
       </variant>
     </method>
     <method name="setReferencedBlockId"
@@ -298,6 +325,8 @@ xmlns:rs="http://www.ribbonsoft.com">
       isPureVirtual="false">
         <arg type="REntity::Id" typeName="REntity::Id"
         name="entityId" isConst="false" />
+        <arg type="bool" typeName="bool" name="transform"
+        hasDefault="true" default="false" isConst="false" />
       </variant>
     </method>
     <method name="applyTransformationTo"
@@ -305,6 +334,27 @@ xmlns:rs="http://www.ribbonsoft.com">
     isStatic="false" isVirtual="false" isScriptOverwritable="true">
       <variant returnType="bool" isPureVirtual="false">
         <arg type="REntity &amp;" typeName="REntity" name="entity"
+        isConst="false" />
+      </variant>
+    </method>
+    <method name="getTransform" cppName="getTransform"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="QTransform" isPureVirtual="false" />
+    </method>
+    <method name="exportTransforms" cppName="exportTransforms"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="RExporter &amp;" typeName="RExporter" name="e"
+        isConst="false" />
+      </variant>
+    </method>
+    <method name="exportEndTransforms"
+    cppName="exportEndTransforms" specifier="public"
+    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="RExporter &amp;" typeName="RExporter" name="e"
         isConst="false" />
       </variant>
     </method>
@@ -316,6 +366,8 @@ xmlns:rs="http://www.ribbonsoft.com">
         isConst="false" />
         <arg type="int" typeName="int" name="row"
         isConst="false" />
+        <arg type="bool" typeName="bool" name="rotated"
+        hasDefault="true" default="false" isConst="false" />
       </variant>
     </method>
     <method name="applyColumnRowOffsetTo"
@@ -328,6 +380,8 @@ xmlns:rs="http://www.ribbonsoft.com">
         isConst="false" />
         <arg type="int" typeName="int" name="row"
         isConst="false" />
+        <arg type="bool" typeName="bool" name="rotated"
+        hasDefault="true" default="false" isConst="false" />
       </variant>
     </method>
     <method name="mapToBlock" cppName="mapToBlock"
@@ -337,6 +391,11 @@ xmlns:rs="http://www.ribbonsoft.com">
         <arg type="RVector &amp;" typeName="RVector" name="v"
         isConst="true" />
       </variant>
+    </method>
+    <method name="isPixelUnit" cppName="isPixelUnit"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
     </method>
   </class>
 </unit>

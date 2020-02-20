@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -28,6 +28,10 @@
 class RDocument;
 class RTransaction;
 
+#ifndef RQMapQStringQString
+typedef QMap<QString, QString> RQMapQStringQString;
+#endif
+
 #ifndef RDEFAULT_QVARIANT
 #define RDEFAULT_QVARIANT QVariant()
 #endif
@@ -39,6 +43,7 @@ class RTransaction;
 #ifndef RDEFAULT_QSTRINGLIST
 #define RDEFAULT_QSTRINGLIST QStringList()
 #endif
+
 
 
 /**
@@ -67,6 +72,8 @@ public:
     static RPropertyTypeId PropertyType;
     static RPropertyTypeId PropertyHandle;
     static RPropertyTypeId PropertyProtected;
+    static RPropertyTypeId PropertySelected;
+    static RPropertyTypeId PropertyInvisible;
 
     enum XYZ {
         X, Y, Z
@@ -76,7 +83,9 @@ public:
     enum ObjectFlag {
         NoFlags = 0x000,
         Undone = 0x001,           //!< object is undone
-        Protect = 0x002          //!< object is protected
+        Protect = 0x002,          //!< object is protected
+        Selected = 0x004,         //!< object is selected
+        Invisible = 0x008         //!< object is invisible
     };
     Q_DECLARE_FLAGS(Flags, ObjectFlag)
 
@@ -91,6 +100,14 @@ public:
 
     virtual RObject* clone() const = 0;
 
+    /**
+     * \return True to always clone object instead of saving diff when object changes.
+     * This can be used for complex object types which cannot be modified using properties.
+     */
+    virtual bool mustAlwaysClone() const {
+        return false;
+    }
+
     RDocument* getDocument() {
         return document;
     }
@@ -99,9 +116,7 @@ public:
         return document;
     }
 
-    void setDocument(RDocument* document) {
-        this->document = document;
-    }
+    void setDocument(RDocument* document);
 
     void setFlag(int flag, bool on = true) {
         if (on) {
@@ -111,13 +126,8 @@ public:
         }
     }
     bool getFlag(int flag) const {
-        return (flags & flag) == flag;
+        return (flags & flag) == (ObjectFlag)flag;
     }
-
-    //  static double variantToDouble(const QVariant& v, double defaultValue,
-    //          bool ignoreError = true);
-    //  static int variantToInt(const QVariant& v, int defaultValue,
-    //          bool ignoreError = true);
 
     /**
      * \nonscriptable
@@ -152,11 +162,27 @@ public:
         setFlag(RObject::Protect, on);
     }
 
+    bool isInvisible() const {
+        return getFlag(RObject::Invisible);
+    }
+
+    void setInvisible(bool on) {
+        setFlag(RObject::Invisible, on);
+    }
+
+    virtual bool isSelected() const {
+        return getFlag(RObject::Selected);
+    }
+
+    virtual void setSelected(bool on) {
+        setFlag(RObject::Selected, on);
+    }
+
     bool isUndone() const {
         return getFlag(RObject::Undone);
     }
 
-    virtual QSet<RPropertyTypeId> getPropertyTypeIds() const;
+    virtual QSet<RPropertyTypeId> getPropertyTypeIds(RPropertyAttributes::Option option = RPropertyAttributes::NoOptions) const;
     virtual QSet<RPropertyTypeId> getCustomPropertyTypeIds() const;
 
     /**
@@ -164,7 +190,7 @@ public:
      *      property if this property owner has no property with the given ID.
      */
     virtual QPair<QVariant, RPropertyAttributes> getProperty(RPropertyTypeId& propertyTypeId,
-        bool humanReadable = false, bool noAttributes = false);
+        bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
 
     /**
      * Sets the given property to the given value. If this property owner
@@ -185,13 +211,6 @@ public:
         return RPropertyTypeId::hasPropertyType(typeid(*this), propertyTypeId);
     }
 
-    /**
-     * \return True if this object is selected for editing. This means
-     *      that the properties of this object should for example
-     *      be shown in a property editor.
-     */
-    virtual bool isSelectedForPropertyEditing() = 0;
-
     bool hasCustomProperties() const;
     bool hasCustomProperty(const QString& title, const QString& key) const;
 
@@ -200,15 +219,29 @@ public:
      */
     bool hasCustomProperty(const QString& title, const QRegExp& key) const;
 
-    QVariant getCustomProperty(const QString& title, const QString& key, const QVariant& defaultValue = RDEFAULT_QVARIANT) const;
-    double getCustomDoubleProperty(const QString& title, const QString& key, double defaultValue) const;
-    int getCustomIntProperty(const QString& title, const QString& key, int defaultValue) const;
-    bool getCustomBoolProperty(const QString& title, const QString& key, bool defaultValue) const;
-    void setCustomProperty(const QString& title, const QString& key, const QVariant& value);
-    void removeCustomProperty(const QString& title, const QString& key);
+    virtual QVariant getCustomProperty(const QString& title, const QString& key, const QVariant& defaultValue = RDEFAULT_QVARIANT) const;
+    virtual double getCustomDoubleProperty(const QString& title, const QString& key, double defaultValue) const;
+    virtual int getCustomIntProperty(const QString& title, const QString& key, int defaultValue) const;
+    virtual bool getCustomBoolProperty(const QString& title, const QString& key, bool defaultValue) const;
+    virtual void setCustomProperty(const QString& title, const QString& key, const QVariant& value);
+
+    /**
+     * \nonscriptable
+     */
+    virtual void setCustomProperties(const RQMapQStringQString& properties);
+    virtual void removeCustomProperty(const QString& title, const QString& key);
     QStringList getCustomPropertyTitles() const;
     QStringList getCustomPropertyKeys(const QString& title) const;
-    void copyCustomPropertiesFrom(RObject* other, const QString& title = RDEFAULT_QSTRING, const QStringList& ignoreList = RDEFAULT_QSTRINGLIST);
+    void copyCustomPropertiesFrom(
+            RObject* other,
+            const QString& title = RDEFAULT_QSTRING,
+            bool overwrite = false,
+            const QStringList& ignoreList = RDEFAULT_QSTRINGLIST,
+            const QString& mapKeyFrom = RDEFAULT_QSTRING,
+            const QString& mapKeyTo = RDEFAULT_QSTRING);
+
+    static void setCustomPropertyAttributes(const QString& title, const QString& key, const RPropertyAttributes& att);
+    static RPropertyAttributes getCustomPropertyAttributes(const QString& title, const QString& key);
 
     /**
      * \nonscriptable
@@ -300,15 +333,10 @@ private:
      * Handle of this object (from DXF / DWG).
      */
     Handle handle;
+    /**
+     * Object flags (undone, protected, ...)
+     */
     Flags flags;
-    /**
-     * True if this object has been undone (deleted).
-     */
-    //bool undone;
-    /**
-     * True if this object is protected (undeletable).
-     */
-    //bool protect;
     /**
      * AppID -> key -> value
      * e.g. 'QCAD' -> 'wall thickness' -> 12.0;
@@ -317,6 +345,11 @@ private:
      * original DXF code from the file.
      */
     QMap<QString, QVariantMap> customProperties;
+
+    /**
+     * Attributes of custom properties (read-only, invisible, ...).
+     */
+    static QMap<QString, QMap<QString, RPropertyAttributes> > customPropertyAttributes;
 };
 
 Q_DECLARE_METATYPE(RObject::Id)

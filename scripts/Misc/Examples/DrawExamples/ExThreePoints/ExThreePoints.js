@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -55,7 +55,9 @@ ExThreePoints.prototype.setState = function(state) {
 
     // status bar user information:
     var appWin = RMainWindowQt.getMainWindow();
-    this.setLeftMouseTip(qsTr("Position"));
+    var tr = qsTr("Position");
+    this.setLeftMouseTip(tr);
+    this.setCommandPrompt(tr);
     this.setRightMouseTip(EAction.trCancel);
 
     // show the snap toolbar, so the user can choose an alternative 

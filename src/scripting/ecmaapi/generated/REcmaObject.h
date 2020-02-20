@@ -55,6 +55,9 @@
         clone
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        mustAlwaysClone
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getDocument
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -79,6 +82,18 @@
         setProtected
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isInvisible
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setInvisible
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isSelected
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setSelected
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         isUndone
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -95,9 +110,6 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         hasPropertyType
-        (QScriptContext* context, QScriptEngine* engine) 
-        ;static  QScriptValue
-        isSelectedForPropertyEditing
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         hasCustomProperties
@@ -131,6 +143,12 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         copyCustomPropertiesFrom
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setCustomPropertyAttributes
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getCustomPropertyAttributes
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getComplexity

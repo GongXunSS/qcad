@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,6 +24,7 @@
 
 #include <QtCore>
 #include <QPinchGesture>
+#include <QTransform>
 
 #include "RGraphicsView.h"
 #include "RPainterPath.h"
@@ -32,6 +33,7 @@ class RAction;
 class RDocument;
 class RDocumentInterface;
 class RGraphicsSceneQt;
+class RGraphicsSceneDrawable;
 class RLine;
 class RSnap;
 class RSnapRestriction;
@@ -53,6 +55,11 @@ class QCADGUI_EXPORT RGraphicsViewImage : public RGraphicsView {
 public:
     RGraphicsViewImage();
     virtual ~RGraphicsViewImage();
+
+    int getNumThreads() const {
+        return numThreads;
+    }
+    void setNumThreads(int n);
 
     void clear();
 
@@ -85,6 +92,10 @@ public:
 
     void zoom(const RVector& center, double factor) {
         RGraphicsView::zoom(center, factor);
+    }
+
+    void pan(const RVector& delta, bool regen=true) {
+        RGraphicsView::pan(delta, regen);
     }
 
     void centerToBox(const RBox& box) {
@@ -139,6 +150,14 @@ public:
         return RGraphicsView::getHairlineMode();
     }
 
+    void setHairlineMinimumMode(bool on) {
+        RGraphicsView::setHairlineMinimumMode(on);
+    }
+
+    bool getHairlineMinimumMode() {
+        return RGraphicsView::getHairlineMinimumMode();
+    }
+
     void setAntialiasing(bool on) {
         RGraphicsView::setAntialiasing(on);
     }
@@ -157,6 +176,18 @@ public:
 
     RDocumentInterface* getDocumentInterface() const {
         return RGraphicsView::getDocumentInterface();
+    }
+
+    void setExporting(bool on) {
+        RGraphicsView::setExporting(on);
+    }
+
+    bool isExporting() const {
+        return RGraphicsView::isExporting();
+    }
+
+    bool isPrintingOrExporting() const {
+        return RGraphicsView::isPrintingOrExporting();
     }
 
     void setPrinting(bool on) {
@@ -241,7 +272,12 @@ public:
     bool getPanOptimization();
 
     virtual void paintEntities(QPainter* painter, const RBox& queryBox);
-    virtual void paintEntity(QPainter* painter, REntity::Id id, bool preview = false);
+    void paintEntitiesMulti(const RBox& queryBox);
+    void paintEntitiesThread(int threadId, QList<REntity::Id>& list, int start, int end);
+
+    virtual void paintEntityThread(int threadId, REntity::Id id, bool preview = false);
+
+    virtual void paintOverlay(QPainter* painter);
 
     QImage getBuffer() const;
     QTransform getTransform() const;
@@ -253,12 +289,16 @@ public:
     virtual void emitUpdateTextLabel(const RTextLabel& textLabel) {
         Q_UNUSED(textLabel)
     }
-    virtual void emitDecorateBackground(QPainter* painter) { Q_UNUSED(painter) }
-    virtual void emitDecorateForeground(QPainter* painter) { Q_UNUSED(painter) }
+    //virtual void emitDecorateBackground(QPainter* painter) { Q_UNUSED(painter) }
+    //virtual void emitDecorateForeground(QPainter* painter) { Q_UNUSED(painter) }
 
     void clearBackground();
     void addToBackground(const RPainterPath& path);
     void setBackgroundTransform(double bgFactor, const RVector& bgOffset);
+
+    void clearOverlay(int overlayId);
+    void clearOverlay(int overlayId, RObject::Id objectId);
+    void addToOverlay(int overlayId, RObject::Id objectId, const RGraphicsSceneDrawable& drawable);
 
     void setColorCorrectionOverride(bool on) {
         colorCorrectionOverride = on;
@@ -270,6 +310,18 @@ public:
 
     void setMinimumLineweight(double lw) {
         minimumLineweight = lw;
+    }
+
+    double getMinimumLineweight() const {
+        return minimumLineweight;
+    }
+
+    void setMaximumLineweight(double lw) {
+        maximumLineweight = lw;
+    }
+
+    double getMaximumLineweight() const {
+        return maximumLineweight;
     }
 
     void setPaintOffset(const RVector& offset) {
@@ -325,8 +377,10 @@ protected:
     void updateTransformation() const;
 
 protected:
-    QImage graphicsBuffer;
+    QList<QImage> graphicsBufferThread;
+    QList<QPainter*> painterThread;
     QImage graphicsBufferWithPreview;
+    int numThreads;
 
 protected:
     bool panOptimization;
@@ -354,6 +408,7 @@ protected:
     int colorThreshold;
 
     double minimumLineweight;
+    double maximumLineweight;
 
 //    int textHeightThresholdOverride;
 //    int textHeightThreshold;
@@ -364,9 +419,17 @@ protected:
     //QTransform backgroundTransform;
     double backgroundFactor;
     RVector backgroundOffset;
+
+    QMap<int, QMap<RObject::Id, QList<RGraphicsSceneDrawable> > > overlayDrawables;
+
     RBox clipBox;
+    QList<QStack<QTransform> > entityTransformThread;
     RVector paintOffset;
     bool alphaEnabled;
+
+    QString lastScaleString;
+
+    bool showOnlyPlottable;
 };
 
 Q_DECLARE_METATYPE(RGraphicsViewImage*)

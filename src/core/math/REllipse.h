@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -49,6 +49,8 @@ public:
              bool reversed);
     virtual ~REllipse();
 
+    static REllipse createInscribed(const RVector& p1, const RVector& p2, const RVector& p3, const RVector& p4);
+
     virtual RShape::Type getShapeType() const {
         return Ellipse;
     }
@@ -63,7 +65,7 @@ public:
 
     bool isValid();
 
-    virtual void to2D();
+    virtual void setZ(double z);
 
     virtual QList<RVector> getVectorProperties() const;
     virtual QList<double> getDoubleProperties() const;
@@ -76,6 +78,7 @@ public:
     virtual QList<RVector> getCenterPoints() const;
     virtual QList<RVector> getPointsWithDistanceToEnd(
         double distance, int from = RS::FromAny) const;
+    virtual QList<RVector> getPointCloud(double segmentLength) const;
 
     virtual RVector getVectorTo(const RVector& point,
             bool limited = true, double strictRange = RMAXDOUBLE) const;

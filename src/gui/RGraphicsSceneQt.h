@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -92,10 +92,12 @@ public:
     virtual void exportTriangle(const RTriangle& triangle);
     virtual void exportRectangle(const RVector& p1, const RVector& p2);
 
-    virtual void exportPainterPaths(const QList<RPainterPath>& paths);
+    virtual void exportPainterPaths(const QList<RPainterPath>& paths, double z = 0.0);
     virtual void exportImage(const RImageData& image, bool forceSelected = false);
     virtual QList<RPainterPath> exportText(const RTextBasedData& text, bool forceSelected = false);
     virtual void exportClipRectangle(const RBox& clipRectangles, bool forceSelected = false);
+    virtual void exportTransform(const QTransform& t);
+    virtual void exportEndTransform();
 
     virtual double getLineTypePatternScale(const RLinetypePattern& p) const;
     
@@ -107,14 +109,14 @@ public:
     bool hasPreview() const;
     QList<REntity::Id> getPreviewEntityIds();
     QList<RGraphicsSceneDrawable> getPreviewDrawables(REntity::Id entityId);
-    virtual void addToPreview(REntity::Id entityId, const QList<RGraphicsSceneDrawable>& drawables);
-    virtual void addToPreview(REntity::Id entityId, const RGraphicsSceneDrawable& drawable);
+    virtual void addToPreview(REntity::Id entityId, QList<RGraphicsSceneDrawable>& drawables);
+    virtual void addToPreview(REntity::Id entityId, RGraphicsSceneDrawable& drawable);
     void addTextToPreview(const RTextBasedData& text);
 
-    bool hasClipRectangleFor(REntity::Id entityId, bool preview = false);
-    RBox getClipRectangle(REntity::Id entityId, bool preview = false);
+    bool hasClipRectangleFor(REntity::Id entityId, bool preview = false) const;
+    RBox getClipRectangle(REntity::Id entityId, bool preview = false) const;
 
-    void addDrawable(REntity::Id entityId, RGraphicsSceneDrawable& drawable, bool draft);
+    void addDrawable(REntity::Id entityId, RGraphicsSceneDrawable& drawable, bool draft = false, bool preview = false);
 
     virtual void startEntity(bool topLevelEntity);
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,7 @@
  * \brief This module contains ECMAScript implementations of various 
  * user interface widgets.
  */
-include("../EAction.js");
+include("scripts/EAction.js");
 
 /**
  * \class Widgets
@@ -39,7 +39,7 @@ Widgets.prototype = new EAction();
 Widgets.includeBasePath = includeBasePath;
 
 Widgets.getMenu = function() {
-    include("../View/View.js");
+    include("scripts/View/View.js");
     return View.getMenu();
 };
 

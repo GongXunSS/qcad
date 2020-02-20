@@ -67,7 +67,7 @@
         isDirected
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        to2D
+        setZ
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getVectorProperties
@@ -109,7 +109,13 @@
         getCenterPoints
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getArcReferencePoints
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getPointsWithDistanceToEnd
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getPointCloud
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getVectorTo

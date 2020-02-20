@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./core" filename="RBlockReferenceData.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -29,6 +29,7 @@
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RBlock.h"</cpp:file></cpp:include>
 
 <class_decl>class <name>RDocument</name>;</class_decl>
+<class_decl>class <name>RExporter</name>;</class_decl>
 
 <comment type="block">/**
  * Defines the geometry and appearance of a block reference entity.
@@ -57,8 +58,14 @@
         <return>return <expr><name><name>RS</name>::<name>EntityBlockRef</name></name></expr>;</return>
     }</block></function>
 
+    <function_decl><type><name>virtual</name> <name>bool</name></type> <name>isPointType</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+
     <function_decl><type><name>virtual</name> <name>QList<argument_list>&lt;<argument><name>RBox</name></argument>&gt;</argument_list></name></type> <name>getBoundingBoxes</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>ignoreEmpty</name>=<init><expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>virtual</name> <name>RBox</name></type> <name>getBoundingBox</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>ignoreEmpty</name>=<init><expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+
+    <function_decl><type><name>virtual</name> <name>void</name></type> <name>to2D</name><parameter_list>()</parameter_list>;</function_decl>
+
+    <function_decl><type><name>virtual</name> <name>RVector</name></type> <name>getPointOnEntity</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <function_decl><type><name>virtual</name> <name>QList<argument_list>&lt;<argument><name>RRefPoint</name></argument>&gt;</argument_list></name></type> <name>getInternalReferencePoints</name><parameter_list>(<param><decl><type><name><name>RS</name>::<name>ProjectionRenderingHint</name></name></type> <name>hint</name> =<init> <expr><name><name>RS</name>::<name>RenderTop</name></name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>virtual</name> <name>QList<argument_list>&lt;<argument><name>RRefPoint</name></argument>&gt;</argument_list></name></type> <name>getReferencePoints</name><parameter_list>(<param><decl><type><name><name>RS</name>::<name>ProjectionRenderingHint</name></name></type> <name>hint</name> =<init> <expr><name><name>RS</name>::<name>RenderTop</name></name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
@@ -71,12 +78,14 @@
 
     <comment type="line">//virtual void setSelected(bool on);</comment>
 
-    <function_decl><type><name>virtual</name> <name>bool</name></type> <name>moveReferencePoint</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>referencePoint</name></decl></param>, <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>targetPoint</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>virtual</name> <name>bool</name></type> <name>moveReferencePoint</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>referencePoint</name></decl></param>, <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>targetPoint</name></decl></param>, <param><decl><type><name><name>Qt</name>::<name>KeyboardModifiers</name></name></type> <name>modifiers</name> =<init> <expr><name><name>Qt</name>::<name>NoModifier</name></name></expr></init></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>virtual</name> <name>bool</name></type> <name>move</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>offset</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>virtual</name> <name>bool</name></type> <name>rotate</name><parameter_list>(<param><decl><type><name>double</name></type> <name>rotation</name></decl></param>, <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name> =<init> <expr><name>RDEFAULT_RVECTOR</name></expr></init></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>virtual</name> <name>bool</name></type> <name>mirror</name><parameter_list>(<param><decl><type><name>const</name> <name>RLine</name>&amp;</type> <name>axis</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>virtual</name> <name>bool</name></type> <name>scale</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>scaleFactors</name></decl></param>,
                        <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name> =<init> <expr><name>RDEFAULT_RVECTOR</name></expr></init></decl></param>)</parameter_list>;</function_decl>
+
+    <function_decl><type><name>virtual</name> <name>void</name></type> <name>scaleVisualProperties</name><parameter_list>(<param><decl><type><name>double</name></type> <name>scaleFactor</name></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name>void</name></type> <name>setReferencedBlockId</name><parameter_list>(<param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name></decl></param>)</parameter_list>;</function_decl>
 
@@ -135,12 +144,22 @@
     <function_decl><type><name>virtual</name> <name>void</name></type> <name>update</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>virtual</name> <name>void</name></type> <name>update</name><parameter_list>(<param><decl><type><name><name>RObject</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
 
-    <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>REntity</name></argument>&gt;</argument_list></name></type> <name>queryEntity</name><parameter_list>(<param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>REntity</name></argument>&gt;</argument_list></name></type> <name>queryEntity</name><parameter_list>(<param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>entityId</name></decl></param>, <param><decl><type><name>bool</name></type> <name>transform</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>bool</name></type> <name>applyTransformationTo</name><parameter_list>(<param><decl><type><name>REntity</name>&amp;</type> <name>entity</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
-    <function_decl><type><name>RVector</name></type> <name>getColumnRowOffset</name><parameter_list>(<param><decl><type><name>int</name></type> <name>col</name></decl></param>, <param><decl><type><name>int</name></type> <name>row</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
-    <function_decl><type><name>void</name></type> <name>applyColumnRowOffsetTo</name><parameter_list>(<param><decl><type><name>REntity</name>&amp;</type> <name>entity</name></decl></param>, <param><decl><type><name>int</name></type> <name>col</name></decl></param>, <param><decl><type><name>int</name></type> <name>row</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <comment type="block">/**
+     * \nonscriptable
+     */</comment>
+    <function_decl><type><name>bool</name></type> <name>applyTransformationTo</name><parameter_list>(<param><decl><type><name>QSharedPointer<argument_list>&lt;<argument><name>REntity</name></argument>&gt;</argument_list></name>&amp;</type> <name>entity</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+
+    <function_decl><type><name>QTransform</name></type> <name>getTransform</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>exportTransforms</name><parameter_list>(<param><decl><type><name>RExporter</name>&amp;</type> <name>e</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>exportEndTransforms</name><parameter_list>(<param><decl><type><name>RExporter</name>&amp;</type> <name>e</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+
+    <function_decl><type><name>RVector</name></type> <name>getColumnRowOffset</name><parameter_list>(<param><decl><type><name>int</name></type> <name>col</name></decl></param>, <param><decl><type><name>int</name></type> <name>row</name></decl></param>, <param><decl><type><name>bool</name></type> <name>rotated</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>applyColumnRowOffsetTo</name><parameter_list>(<param><decl><type><name>REntity</name>&amp;</type> <name>entity</name></decl></param>, <param><decl><type><name>int</name></type> <name>col</name></decl></param>, <param><decl><type><name>int</name></type> <name>row</name></decl></param>, <param><decl><type><name>bool</name></type> <name>rotated</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>RVector</name></type> <name>mapToBlock</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>v</name></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
 
+    <function_decl><type><name>bool</name></type> <name>isPixelUnit</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
 
 </public><private>private:
     <decl_stmt><decl><type><name>mutable</name> <name><name>RBlock</name>::<name>Id</name></name></type> <name>referencedBlockId</name></decl>;</decl_stmt>
@@ -151,6 +170,9 @@
     <decl_stmt><decl><type><name>int</name></type> <name>rowCount</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>double</name></type> <name>columnSpacing</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>double</name></type> <name>rowSpacing</name></decl>;</decl_stmt>
+
+    <decl_stmt><decl><type><name>double</name></type> <name>visualPropertiesScale</name></decl>;</decl_stmt>
+
     <decl_stmt><decl><type><name>mutable</name> <name>QList<argument_list>&lt;<argument><name>RBox</name></argument>&gt;</argument_list></name></type> <name>boundingBoxes</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>mutable</name> <name>QList<argument_list>&lt;<argument><name>RBox</name></argument>&gt;</argument_list></name></type> <name>boundingBoxesIgnoreEmpty</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>mutable</name> <name>QMap<argument_list>&lt;<argument><name><name>REntity</name>::<name>Id</name></name></argument>, <argument><name>QSharedPointer<argument_list>&lt;<argument><name>REntity</name></argument>&gt;</argument_list></name></argument> &gt;</argument_list></name></type> <name>cache</name></decl>;</decl_stmt>

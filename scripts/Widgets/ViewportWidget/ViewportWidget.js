@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -19,7 +19,7 @@
 
 include("scripts/sprintf.js");
 
-if (new QFileInfo(autoPath("scripts/Navigation/DefaultNavigation/DefaultNavigation.js")).exists()) {
+if (exists("scripts/Navigation/DefaultNavigation/DefaultNavigation.js")) {
     include("scripts/Navigation/DefaultNavigation/DefaultNavigation.js");
 }
 
@@ -166,6 +166,11 @@ ViewportWidget.prototype.init = function(uiFile, graphicsSceneClass) {
     }
 
     this.graphicsView.setAntialiasing(RSettings.getBoolValue("GraphicsView/Antialiasing", false));
+
+    // enable multithreaded graphics view:
+    if (RSettings.getBoolValue("GraphicsView/Multithreading", true)) {
+        this.graphicsView.setNumThreads(RS.getIdealThreadCount());
+    }
 
     // create custom graphics scene (e.g. OpenGL, ...):
     var scene = undefined;

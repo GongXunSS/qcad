@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,7 @@
  * \brief This module contains ECMAScript implementations of various polyline 
  * drawing and modification tools.
  */
-include("../Draw.js");
+include("scripts/Draw/Draw.js");
 
 /**
  * \class Polyline
@@ -75,7 +75,7 @@ Polyline.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         action.setIcon(Polyline.includeBasePath + "/Polyline.svg");
-        action.setStatusTip(qsTr("Show polyline tools"));
+        //action.setStatusTip(qsTr("Show polyline tools"));
         action.setDefaultShortcut(new QKeySequence("w,o"));
         action.setNoState();
         action.setDefaultCommands(["polylinemenu"]);

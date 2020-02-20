@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -51,7 +51,8 @@ RDocument::RDocument(
       disableSpatialIndicesByBlock(false),
       transactionStack(storage),
       linetypeByLayerId(RObject::INVALID_ID),
-      linetypeByBlockId(RObject::INVALID_ID) {
+      linetypeByBlockId(RObject::INVALID_ID),
+      autoTransactionGroup(false) {
 
     storage.setDocument(this);
     init();
@@ -66,7 +67,7 @@ RDocument::RDocument(
 //    }
 //}
 
-void RDocument::init() {
+void RDocument::init(bool beforeLoad) {
     RS::Unit defaultUnit = (RS::Unit)RSettings::getValue("UnitSettings/Unit", RS::None).toInt();
     RS::Measurement measurement = (RS::Measurement)RSettings::getValue("UnitSettings/Measurement", RS::Metric).toInt();
     if (measurement!=RS::Metric && measurement!=RS::Imperial) {
@@ -109,8 +110,8 @@ void RDocument::init() {
 
     // add default layer:
     if (!storageIsLinked && queryLayer("0").isNull()) {
-        RColor c = RSettings::getColorValue("Layer/DefaultColor", RColor(Qt::white));
-        RLineweight::Lineweight lw = (RLineweight::Lineweight)RSettings::getIntValue("Layer/DefaultLineweight", RLineweight::Weight025);
+        RColor c = RSettings::getColorValue("Layer/DefaultColorLayer0", RColor(Qt::white));
+        RLineweight::Lineweight lw = (RLineweight::Lineweight)RSettings::getIntValue("Layer/DefaultLineweightLayer0", RLineweight::Weight025);
         QSharedPointer<RLayer> layer0 = QSharedPointer<RLayer>(
             new RLayer(
                 this, "0", false, false,
@@ -212,6 +213,7 @@ void RDocument::init() {
         docVars->setKnownVariable(RS::DIMGAP, RSettings::getDoubleValue("DimensionSettings/DIMGAP", 0.625));
         docVars->setKnownVariable(RS::DIMASZ, RSettings::getDoubleValue("DimensionSettings/DIMASZ", 2.5));
         docVars->setKnownVariable(RS::DIMSCALE, RSettings::getDoubleValue("DimensionSettings/DIMSCALE", 1.0));
+        docVars->setKnownVariable(RS::DIMDLI, RSettings::getDoubleValue("DimensionSettings/DIMDLI", 5.0));
 
         // arrow head:
         if (RSettings::getStringValue("DimensionSettings/ArrowStyle", "Arrow")=="Arrow") {
@@ -311,6 +313,11 @@ void RDocument::init() {
         setVariable("PageSettings/ShowPaperBorders", RSettings::getBoolValue("PageSettings/ShowPaperBorders", true));
         //setVariable("PageSettings/ShowBoundingBox", RSettings::getBoolValue("PageSettings/ShowBoundingBox", false));
 
+        setVariable("PageTagSettings/EnablePageTags", RSettings::getBoolValue("PageTagSettings/EnablePageTags", false));
+        setVariable("PageTagSettings/TagAlignment", RSettings::getValue("PageTagSettings/TagAlignment", "Inside"));
+        setVariable("PageTagSettings/TagFont", RSettings::getValue("PageTagSettings/TagFont", QFont("Arial", 10)));
+        setVariable("PageTagSettings/TagPosition", RSettings::getValue("PageTagSettings/TagPosition", "TopLeft"));
+
         // grid settings:
         QString s;
         for (int i=0; i<4; i++) {
@@ -334,7 +341,7 @@ void RDocument::init() {
 
         // notify new document listeners
         if (RMainWindow::hasMainWindow()) {
-            RMainWindow::getMainWindow()->notifyNewDocumentListeners(this, &transaction);
+            RMainWindow::getMainWindow()->notifyNewDocumentListeners(this, &transaction, beforeLoad);
         }
     }
 
@@ -407,7 +414,7 @@ QList<QSharedPointer<RObject> > RDocument::getDefaultLinetypes() {
 /**
  * Resets this document to its initial, empty state.
  */
-void RDocument::clear() {
+void RDocument::clear(bool beforeLoad) {
     // preserve unit:
     RS::Unit u = getUnit();
 
@@ -416,7 +423,7 @@ void RDocument::clear() {
     clearSpatialIndices();
     transactionStack.reset();
 
-    init();
+    init(beforeLoad);
     setUnit(u);
 }
 
@@ -828,22 +835,12 @@ QString RDocument::getCurrentBlockName() const {
 void RDocument::setCurrentBlock(RBlock::Id blockId) {
     RBlock::Id prevBlockId = getCurrentBlockId();
 
-    RLinkedStorage* ls = dynamic_cast<RLinkedStorage*>(&storage);
-
-    // remove references to block we're entering from spatial index:
-    if (ls==NULL) {
-        //qDebug() << "RDocument::setCurrentBlock: removing block: " << blockId;
-    }
     removeBlockFromSpatialIndex(blockId);
-    //rebuildSpatialIndex(oldBlockId);
 
     storage.setCurrentBlock(blockId);
 
     // add references to block we're leaving to spatial index:
     if (prevBlockId!=RBlock::INVALID_ID) {
-        if (ls==NULL) {
-            //qDebug() << "RDocument::setCurrentBlock: adding block back on: " << prevBlockId;
-        }
         addBlockToSpatialIndex(prevBlockId, blockId);
     }
 }
@@ -889,6 +886,14 @@ QString RDocument::getTempBlockName() const {
  */
 QString RDocument::getBlockName(RBlock::Id blockId) const {
     return storage.getBlockName(blockId);
+}
+
+QString RDocument::getBlockNameFromLayout(const QString& layoutName) const {
+    return storage.getBlockNameFromLayout(layoutName);
+}
+
+QString RDocument::getBlockNameFromLayout(RLayout::Id layoutId) const {
+    return storage.getBlockNameFromLayout(layoutId);
 }
 
 /**
@@ -952,6 +957,20 @@ QSet<QString> RDocument::getLayerNames(const QString& rxStr) const {
 }
 
 /**
+ * \copydoc RStorage::getLayerStateName
+ */
+QString RDocument::getLayerStateName(RLayerState::Id layerStateId) const {
+    return storage.getLayerStateName(layerStateId);
+}
+
+/**
+ * \copydoc RStorage::getLayerStateNames
+ */
+QSet<QString> RDocument::getLayerStateNames(const QString& rxStr) const {
+    return storage.getLayerStateNames(rxStr);
+}
+
+/**
  * \copydoc RStorage::getLayoutName
  */
 QString RDocument::getLayoutName(RLayout::Id layoutId) const {
@@ -973,6 +992,20 @@ bool RDocument::hasLayer(const QString& layerName) const {
 }
 
 /**
+ * \copydoc RStorage::hasLayerStates
+ */
+bool RDocument::hasLayerStates() const {
+    return storage.hasLayerStates();
+}
+
+/**
+ * \copydoc RStorage::hasLayerState
+ */
+bool RDocument::hasLayerState(const QString& layerStateName) const {
+    return storage.hasLayerState(layerStateName);
+}
+
+/**
  * \copydoc RStorage::getLayerId
  */
 RLayer::Id RDocument::getLayerId(const QString& layerName) const {
@@ -981,6 +1014,13 @@ RLayer::Id RDocument::getLayerId(const QString& layerName) const {
 
 RLayer::Id RDocument::getLayer0Id() const {
     return storage.getLayer0Id();
+}
+
+/**
+ * \copydoc RStorage::getLayerStateId
+ */
+RLayerState::Id RDocument::getLayerStateId(const QString& layerStateName) const {
+    return storage.getLayerStateId(layerStateName);
 }
 
 /**
@@ -1009,6 +1049,13 @@ bool RDocument::hasLinetype(const QString& linetypeName) const {
  */
 RBlock::Id RDocument::getBlockId(const QString& blockName) const {
     return storage.getBlockId(blockName);
+}
+
+/**
+ * \copydoc RStorage::getBlockIdAuto
+ */
+RBlock::Id RDocument::getBlockIdAuto(const QString& blockLayoutName) const {
+    return storage.getBlockIdAuto(blockLayoutName);
 }
 
 /**
@@ -1133,7 +1180,11 @@ RSpatialIndex& RDocument::getSpatialIndex() {
     return spatialIndex;
 }
 
-RSpatialIndex* RDocument::getSpatialIndexForBlock(RBlock::Id blockId) {
+const RSpatialIndex& RDocument::getSpatialIndex() const {
+    return spatialIndex;
+}
+
+RSpatialIndex* RDocument::getSpatialIndexForBlock(RBlock::Id blockId) const {
     if (disableSpatialIndicesByBlock) {
         return &spatialIndex;
     }
@@ -1144,7 +1195,7 @@ RSpatialIndex* RDocument::getSpatialIndexForBlock(RBlock::Id blockId) {
     return spatialIndicesByBlock[blockId];
 }
 
-RSpatialIndex* RDocument::getSpatialIndexForCurrentBlock() {
+RSpatialIndex* RDocument::getSpatialIndexForCurrentBlock() const {
     RBlock::Id currentBlockId = getCurrentBlockId();
     return getSpatialIndexForBlock(currentBlockId);
 }
@@ -1208,6 +1259,15 @@ QSet<RUcs::Id> RDocument::queryAllUcs() const {
  */
 QSet<RLayer::Id> RDocument::queryAllLayers() const {
     return storage.queryAllLayers();
+}
+
+/**
+ * Queries all layer state objects of this document.
+ *
+ * \return Set of layer state IDs.
+ */
+QSet<RLayer::Id> RDocument::queryAllLayerStates() const {
+    return storage.queryAllLayerStates();
 }
 
 /*
@@ -1370,9 +1430,7 @@ REntity::Id RDocument::queryClosestXY(
  * index query.
  *
  * \param candidates Sets of candidates to consider.
- *
  * \param wcsPosition
- *
  * \param range Maximum distance between position and entity.
  */
 REntity::Id RDocument::queryClosestXY(
@@ -1395,6 +1453,12 @@ REntity::Id RDocument::queryClosestXY(
             continue;
         }
         double dist = e->getDistanceTo(wcsPosition, true, range, draft, strictRange);
+
+        if (e->isPointType() && dist<strictRange*1.1) {
+            // make point type entities easier to select:
+            dist/=100.0;
+        }
+
         if (!RMath::isNaN(dist) && dist < minDist && dist < range+RS::PointTolerance) {
             minDist = dist;
             ret = *it;
@@ -1404,7 +1468,7 @@ REntity::Id RDocument::queryClosestXY(
     return ret;
 }
 
-QSet<REntity::Id> RDocument::queryInfiniteEntities() {
+QSet<REntity::Id> RDocument::queryInfiniteEntities() const {
     return storage.queryInfiniteEntities();
 }
 
@@ -1416,7 +1480,7 @@ QSet<REntity::Id> RDocument::queryInfiniteEntities() {
  * \param result Set of IDs of entities that are completely inside the
  *      given area.
  */
-QSet<REntity::Id> RDocument::queryContainedEntities(const RBox& box) {
+QSet<REntity::Id> RDocument::queryContainedEntities(const RBox& box) const {
     RSpatialIndex* si = getSpatialIndexForCurrentBlock();
     QSet<REntity::Id> ret = si->queryContained(box).keys().toSet();
 
@@ -1427,27 +1491,119 @@ QSet<REntity::Id> RDocument::queryContainedEntities(const RBox& box) {
 }
 
 
+QSet<REntity::Id> RDocument::queryIntersectedEntitiesXYFast(const RBox& box) {
+    RBox boxExpanded = box;
+    boxExpanded.c1.z = RMINDOUBLE;
+    boxExpanded.c2.z = RMAXDOUBLE;
+
+    // box contains bounding box of this document:
+    // return all visible entities:
+    if (boxExpanded.contains(getBoundingBox())) {
+        QSet<REntity::Id> ids;
+        //RDebug::startTimer(70);
+        ids = queryAllVisibleEntities();
+        //RDebug::stopTimer(70, "queryAllVisibleEntities");
+        return ids;
+    }
+
+    return queryIntersectedShapesXYFast(boxExpanded);
+}
+
+QSet<REntity::Id> RDocument::queryIntersectedShapesXYFast(const RBox& box, bool noInfiniteEntities) {
+    // always include construction lines (XLine):
+    QSet<REntity::Id> infinites;
+    if (!noInfiniteEntities) {
+        infinites = queryInfiniteEntities();
+    }
+
+    // box is completely outside the bounding box of this document:
+    if (box.isOutside(getBoundingBox())) {
+        return infinites;
+    }
+
+    RSpatialIndex* si = getSpatialIndexForBlock(getCurrentBlockId());
+    //RDebug::startTimer(120);
+    QSet<REntity::Id> candidates = si->queryIntersected(box).keys().toSet();
+    //RDebug::stopTimer(120, "si->queryIntersected");
+    candidates.unite(infinites);
+
+    QSet<REntity::Id> res;
+    QSet<REntity::Id>::iterator it;
+    for (it=candidates.begin(); it!=candidates.end(); ++it) {
+        if (RMouseEvent::hasMouseMoved()) {
+            return QSet<REntity::Id>();
+        }
+
+        QSharedPointer<REntity> entity;
+        entity = queryVisibleEntityDirect(*it);
+        if (entity.isNull()) {
+            continue;
+        }
+
+        if (!entity->isVisible()) {
+            continue;
+        }
+
+        res.insert(*it);
+    }
+
+    return res;
+}
+
 QSet<REntity::Id> RDocument::queryIntersectedEntitiesXY(
         const RBox& box, bool checkBoundingBoxOnly, bool includeLockedLayers, RBlock::Id blockId,
-        const QList<RS::EntityType>& filter, bool selectedOnly) {
+        const QList<RS::EntityType>& filter, bool selectedOnly) const {
+
+    bool onlyVisible = false;
+
+    RBox boxExpanded = box;
+    boxExpanded.c1.z = RMINDOUBLE;
+    boxExpanded.c2.z = RMAXDOUBLE;
+
+    if (blockId==RBlock::INVALID_ID) {
+        blockId = getCurrentBlockId();
+        onlyVisible = true;
+    }
+    bool usingCurrentBlock = (blockId == getCurrentBlockId());
+
+    // box contains bounding box of this document:
+    // return all visible entities:
+    if (usingCurrentBlock && boxExpanded.contains(getBoundingBox())) {
+        QSet<REntity::Id> ids;
+        if (onlyVisible) {
+            //RDebug::startTimer(70);
+            ids = queryAllVisibleEntities();
+            //RDebug::stopTimer(70, "queryAllVisibleEntities");
+            //qDebug() << "all visible ids:" << ids;
+        }
+        else {
+            ids = queryAllEntities(false, false);
+        }
+
+        return ids;
+    }
 
     return queryIntersectedShapesXY(box, checkBoundingBoxOnly, includeLockedLayers, blockId, filter, selectedOnly).keys().toSet();
 }
 
 QMap<REntity::Id, QSet<int> > RDocument::queryIntersectedShapesXY(
         const RBox& box, bool checkBoundingBoxOnly, bool includeLockedLayers, RBlock::Id blockId,
-        const QList<RS::EntityType>& filter, bool selectedOnly) {
+        const QList<RS::EntityType>& filter, bool selectedOnly) const {
+
+    bool onlyVisible = false;
 
     QSet<RS::EntityType> filterSet = filter.toSet();
     RBox boxExpanded = box;
     boxExpanded.c1.z = RMINDOUBLE;
     boxExpanded.c2.z = RMAXDOUBLE;
-    bool usingCurrentBlock = false;
+    //bool usingCurrentBlock = false;
     if (blockId==RBlock::INVALID_ID) {
         blockId = getCurrentBlockId();
+        onlyVisible = true;
+        //qDebug() << "onlyVisible:" << onlyVisible;
     }
 
-    usingCurrentBlock = (blockId == getCurrentBlockId());
+    bool usingCurrentBlock = (blockId == getCurrentBlockId());
 
     // always include construction lines (XLine):
     QMap<REntity::Id, QSet<int> > infinites;
@@ -1468,7 +1624,13 @@ QMap<REntity::Id, QSet<int> > RDocument::queryIntersectedShapesXY(
 
     // box contains bounding box of this document:
     if (usingCurrentBlock && boxExpanded.contains(getBoundingBox())) {
-        QSet<REntity::Id> ids = queryAllEntities(false, false);
+        QSet<REntity::Id> ids;
+        if (onlyVisible) {
+            ids = queryAllVisibleEntities();
+        }
+        else {
+            ids = queryAllEntities(false, false);
+        }
         QSet<REntity::Id>::iterator it;
         for (it=ids.begin(); it!=ids.end(); it++) {
             candidates.insert(*it, QSet<int>());
@@ -1498,29 +1660,38 @@ QMap<REntity::Id, QSet<int> > RDocument::queryIntersectedShapesXY(
         if (RMouseEvent::hasMouseMoved()) {
             return QMap<REntity::Id, QSet<int> >();
         }
-        QSharedPointer<REntity> entity = queryEntityDirect(it.key());
+
+        QSharedPointer<REntity> entity;
+        if (onlyVisible) {
+            entity = queryVisibleEntityDirect(it.key());
+        }
+        else {
+            entity = queryEntityDirect(it.key());
+        }
         if (entity.isNull()) {
             continue;
         }
 
-        // undone:
-        if (entity->isUndone()) {
-            continue;
-        }
+        if (!onlyVisible) {
+            // undone:
+            if (entity->isUndone()) {
+                continue;
+            }
 
-        // not on current or given block:
-        if (entity->getBlockId()!=blockId) {
-            continue;
+            // not on current or given block:
+            if (entity->getBlockId()!=blockId) {
+                continue;
+            }
+
+            if (!entity->isVisible()) {
+                continue;
+            }
         }
 
         if (selectedOnly) {
             if (!entity->isSelected()) {
                 continue;
             }
-        }
-
-        if (!entity->isVisible()) {
-            continue;
         }
 
         // layer is off:
@@ -1595,7 +1766,7 @@ QMap<REntity::Id, QSet<int> > RDocument::queryIntersectedShapesXY(
 }
 
 
-QSet<REntity::Id> RDocument::queryContainedEntitiesXY(const RBox& box) {
+QSet<REntity::Id> RDocument::queryContainedEntitiesXY(const RBox& box) const {
     RBox boxExpanded = box;
     boxExpanded.c1.z = RMINDOUBLE;
     boxExpanded.c2.z = RMAXDOUBLE;
@@ -1696,8 +1867,17 @@ QSet<REntity::Id> RDocument::queryEntitiesContainedXYIntersectedZ(const RBox& bo
  *
  * \return Set of IDs of all selected entities.
  */
-QSet<REntity::Id> RDocument::querySelectedEntities() {
+QSet<REntity::Id> RDocument::querySelectedEntities() const {
     return storage.querySelectedEntities();
+}
+
+/**
+ * Queries all selected objects.
+ *
+ * \return Set of IDs of all selected objects.
+ */
+QSet<RObject::Id> RDocument::querySelectedLayers() const {
+    return storage.querySelectedLayers();
 }
 
 QSet<REntity::Id> RDocument::queryConnectedEntities(REntity::Id entityId, double tolerance) {
@@ -1780,7 +1960,10 @@ QSet<RObject::Id> RDocument::queryPropertyEditorObjects() {
         // no entities selected:
         if (objectIds.isEmpty()) {
             // expose properties of current layer:
-            objectIds.insert(getCurrentLayerId());
+            //objectIds.insert(getCurrentLayerId());
+
+            // expose properties of selected layer(s):
+            objectIds.unite(querySelectedLayers());
 
             // expose properties of selected block:
             RBlock::Id blockId = getCurrentBlockId();
@@ -1861,7 +2044,9 @@ QSharedPointer<REntity> RDocument::queryEntityDirect(REntity::Id entityId) const
     return storage.queryEntityDirect(entityId);
 }
 
-
+QSharedPointer<REntity> RDocument::queryVisibleEntityDirect(REntity::Id entityId) const {
+    return storage.queryVisibleEntityDirect(entityId);
+}
 
 /**
  * Queries the UCS with the given ID.
@@ -1911,6 +2096,35 @@ QSharedPointer<RLayer> RDocument::queryLayerDirect(RLayer::Id layerId) const {
  */
 QSharedPointer<RLayer> RDocument::queryLayer(const QString& layerName) const {
     return storage.queryLayer(layerName);
+}
+
+/**
+ * Queries the layer state with the given ID.
+ *
+ * \return Pointer to the layer state or NULL.
+ */
+QSharedPointer<RLayerState> RDocument::queryLayerState(RLayerState::Id layerStateId) const {
+    return storage.queryLayerState(layerStateId);
+}
+
+/**
+ * Queries the layer state with the given ID direct (no cloning).
+ * Layer states queried this way should not be
+ * modified unless undo / redo functionality is not required.
+ *
+ * \return Pointer to the layer state or NULL.
+ */
+QSharedPointer<RLayerState> RDocument::queryLayerStateDirect(RLayerState::Id layerStateId) const {
+    return storage.queryLayerStateDirect(layerStateId);
+}
+
+/**
+ * Queries the layer state with the given name.
+ *
+ * \return Pointer to the layer state or NULL.
+ */
+QSharedPointer<RLayerState> RDocument::queryLayerState(const QString& layerStateName) const {
+    return storage.queryLayerState(layerStateName);
 }
 
 /**
@@ -2151,6 +2365,13 @@ bool RDocument::isEntityLayerFrozen(REntity::Id entityId) const {
 }
 
 /**
+ * \copydoc RStorage::isEntityVisible
+ */
+bool RDocument::isEntityVisible(const REntity& entity, RObject::Id blockId) const {
+    return storage.isEntityVisible(entity, blockId);
+}
+
+/**
  * \copydoc RStorage::isParentLayerSnappable
  */
 bool RDocument::isParentLayerSnappable(RLayer::Id layerId) const {
@@ -2162,6 +2383,20 @@ bool RDocument::isParentLayerSnappable(RLayer::Id layerId) const {
  */
 bool RDocument::isParentLayerSnappable(const RLayer& layer) const {
     return storage.isParentLayerSnappable(layer);
+}
+
+/**
+ * \copydoc RStorage::isLayerPlottable
+ */
+bool RDocument::isLayerPlottable(RLayer::Id layerId) const {
+    return storage.isLayerPlottable(layerId);
+}
+
+/**
+ * \copydoc RStorage::isLayerPlottable
+ */
+bool RDocument::isLayerPlottable(const RLayer& layer) const {
+    return storage.isLayerPlottable(layer);
 }
 
 /**
@@ -2197,8 +2432,8 @@ void RDocument::clearSelection(QSet<REntity::Id>* affectedEntities) {
 /**
  * Selects all not selected entities.
  */
-void RDocument::selectAllEntites(QSet<REntity::Id>* affectedEntities) {
-    storage.selectAllEntites(affectedEntities);
+void RDocument::selectAllEntities(QSet<REntity::Id>* affectedEntities) {
+    storage.selectAllEntities(affectedEntities);
 }
 
 /**
@@ -2230,12 +2465,12 @@ void RDocument::deselectEntity(
  * \copydoc RStorage::selectEntities
  *
  */
-void RDocument::selectEntities(
+int RDocument::selectEntities(
     const QSet<REntity::Id>& entityIds,
     bool add,
     QSet<REntity::Id>* affectedEntities) {
 
-    storage.selectEntities(entityIds, add, affectedEntities);
+    return storage.selectEntities(entityIds, add, affectedEntities);
 }
 
 /**
@@ -2244,7 +2479,7 @@ void RDocument::selectEntities(
  * \copydoc RStorage::deselectEntities
  *
  */
-bool RDocument::deselectEntities(
+int RDocument::deselectEntities(
     const QSet<REntity::Id>& entityIds,
     QSet<REntity::Id>* affectedEntities) {
 
@@ -2270,6 +2505,13 @@ RBox RDocument::getBoundingBox(bool ignoreHiddenLayers, bool ignoreEmpty) const 
  */
 RBox RDocument::getSelectionBox() const {
     return storage.getSelectionBox();
+}
+
+/**
+ * \copydoc RStorage::getEntitiesBox
+ */
+RBox RDocument::getEntitiesBox(QSet<REntity::Id>& ids) const {
+    return storage.getEntitiesBox(ids);
 }
 
 void RDocument::clearSpatialIndices() {
@@ -2569,6 +2811,51 @@ void RDocument::copyVariablesFrom(const RDocument& other) {
     delete transaction;
 }
 
+QString RDocument::addAutoVariable(double value) {
+    RTransaction* transaction = new RTransaction(storage, "Add auto variable", false);
+    bool useLocalTransaction;
+    QSharedPointer<RDocumentVariables> docVars = storage.startDocumentVariablesTransaction(transaction, useLocalTransaction);
+    QString ret = docVars->addAutoVariable(value);
+    storage.endDocumentVariablesTransaction(transaction, useLocalTransaction, docVars);
+    transaction->end();
+    delete transaction;
+    return ret;
+}
+
+QStringList RDocument::getAutoVariables() const {
+    QSharedPointer<RDocumentVariables> docVars = queryDocumentVariablesDirect();
+    if (docVars.isNull()) {
+        return QStringList();
+    }
+    return docVars->getAutoVariables();
+}
+
+QString RDocument::substituteAutoVariables(const QString& expression) {
+    QString exp = expression;
+
+    QSharedPointer<RDocumentVariables> docVars = queryDocumentVariablesDirect();
+    if (docVars.isNull()) {
+        return expression;
+    }
+
+    QStringList autoVariables = docVars->getAutoVariables();
+    for (int i=0; i<autoVariables.length(); i++) {
+        QString key = autoVariables[i];
+        double value = docVars->getCustomDoubleProperty("QCAD", key, RNANDOUBLE);
+        if (RMath::isNaN(value)) {
+            continue;
+        }
+        exp = exp.replace(QRegExp(QString("\\b%1\\b").arg(key)), QString("%1").arg(value, 0, 'f', 12));
+    }
+
+    return exp;
+}
+
+double RDocument::eval(const QString& expression, bool* ok) {
+    QString exp = substituteAutoVariables(expression);
+    return RMath::eval(exp, ok);
+}
+
 RDocument& RDocument::getClipboard() {
     if (clipboard==NULL) {
         clipboard = new RDocument(
@@ -2587,11 +2874,11 @@ QDebug operator<<(QDebug dbg, RDocument& d) {
     dbg.nospace() << "RDocument(" << QString("0x%1").arg((long int)&d, 0, 16) << ", ";
     dbg.nospace() << d.getStorage();
     dbg.nospace() << d.getSpatialIndex();
-    QSet<RBlock::Id> blockIds = d.queryAllBlocks();
-    for (QSet<RBlock::Id>::iterator it=blockIds.begin(); it!=blockIds.end(); it++) {
-        dbg.nospace() << "\nspatial index for block: " << d.getBlockName(*it);
-        dbg.nospace() << *d.getSpatialIndexForBlock(*it);
-    }
+//    QSet<RBlock::Id> blockIds = d.queryAllBlocks();
+//    for (QSet<RBlock::Id>::iterator it=blockIds.begin(); it!=blockIds.end(); it++) {
+//        dbg.nospace() << "\nspatial index for block: " << d.getBlockName(*it);
+//        dbg.nospace() << *d.getSpatialIndexForBlock(*it);
+//    }
     return dbg.space();
 }
 

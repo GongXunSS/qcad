@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -69,14 +69,14 @@ void RTextBasedEntity::init() {
     RTextBasedEntity::PropertyDrawOrder.generateId(typeid(RTextBasedEntity), REntity::PropertyDrawOrder);
 
     RTextBasedEntity::PropertySimple.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Simple"));
-    RTextBasedEntity::PropertyPositionX.generateId(typeid(RTextBasedEntity), QT_TRANSLATE_NOOP("REntity", "Text Position"), QT_TRANSLATE_NOOP("REntity", "X"));
-    RTextBasedEntity::PropertyPositionY.generateId(typeid(RTextBasedEntity), QT_TRANSLATE_NOOP("REntity", "Text Position"), QT_TRANSLATE_NOOP("REntity", "Y"));
-    RTextBasedEntity::PropertyPositionZ.generateId(typeid(RTextBasedEntity), QT_TRANSLATE_NOOP("REntity", "Text Position"), QT_TRANSLATE_NOOP("REntity", "Z"));
+    RTextBasedEntity::PropertyPositionX.generateId(typeid(RTextBasedEntity), QT_TRANSLATE_NOOP("REntity", "Text Position"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RTextBasedEntity::PropertyPositionY.generateId(typeid(RTextBasedEntity), QT_TRANSLATE_NOOP("REntity", "Text Position"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RTextBasedEntity::PropertyPositionZ.generateId(typeid(RTextBasedEntity), QT_TRANSLATE_NOOP("REntity", "Text Position"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
     RTextBasedEntity::PropertyText.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Text"));
     RTextBasedEntity::PropertyPlainText.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Plain Text"));
     RTextBasedEntity::PropertyFontName.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Font Name"));
-    RTextBasedEntity::PropertyHeight.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Text Height"));
-    RTextBasedEntity::PropertyAngle.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Text Angle"));
+    RTextBasedEntity::PropertyHeight.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Text Height"), false, RPropertyAttributes::Geometry);
+    RTextBasedEntity::PropertyAngle.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Text Angle"), false, RPropertyAttributes::Geometry);
     RTextBasedEntity::PropertyXScale.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "X Scale"));
     RTextBasedEntity::PropertyBold.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Bold"));
     RTextBasedEntity::PropertyItalic.generateId(typeid(RTextBasedEntity), "", QT_TRANSLATE_NOOP("REntity", "Italic"));
@@ -116,7 +116,8 @@ bool RTextBasedEntity::setProperty(RPropertyTypeId propertyTypeId,
 }
 
 QPair<QVariant, RPropertyAttributes> RTextBasedEntity::getProperty(
-        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes) {
+        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes, bool showOnRequest) {
+
     if (propertyTypeId == PropertySimple) {
         return qMakePair(QVariant(getData().simple), RPropertyAttributes());
     } else if (propertyTypeId == PropertyPositionX) {
@@ -150,7 +151,7 @@ QPair<QVariant, RPropertyAttributes> RTextBasedEntity::getProperty(
 //        return qMakePair(QVariant(getData().verticalAlignment), RPropertyAttributes(RPropertyAttributes::AffectsOtherProperties));
         return qMakePair(QVariant(getData().verticalAlignment), RPropertyAttributes());
     }
-    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 
@@ -158,15 +159,19 @@ void RTextBasedEntity::exportEntity(RExporter& e, bool preview, bool forceSelect
     Q_UNUSED(preview);
 
     if (e.isTextRenderedAsText()) {
-        // export text:
+        // export text as text and return part that cannot be rendered as text as paths:
         QList<RPainterPath> paths = e.exportText(getData(), forceSelected);
 
         // export part of text that can only be rendered as painter paths (CAD fonts):
-        e.exportPainterPaths(paths);
+        e.exportPainterPaths(paths, getPosition().z);
     }
     else {
-        e.exportPainterPathSource(getData());
+        e.exportPainterPathSource(getData(), getPosition().z);
     }
+}
+
+QSharedPointer<REntity> RTextBasedEntity::scaleNonUniform(const RVector& scaleFactors, const RVector& center) {
+    return QSharedPointer<REntity>();
 }
 
 void RTextBasedEntity::print(QDebug dbg) const {

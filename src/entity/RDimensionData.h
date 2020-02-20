@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -57,6 +57,8 @@ public:
         return RS::EntityDimension;
     }
     virtual RBox getBoundingBox(bool ignoreEmpty=false) const;
+
+    virtual RVector getPointOnEntity() const;
 
     virtual bool isValid() const;
     virtual bool isSane() const;
@@ -137,12 +139,44 @@ public:
         update();
     }
 
+    bool isArrow1Flipped() const {
+        return arrow1Flipped;
+    }
+    void setArrow1Flipped(bool on) {
+        arrow1Flipped = on;
+    }
+    bool isArrow2Flipped() const {
+        return arrow2Flipped;
+    }
+    void setArrow2Flipped(bool on) {
+        arrow2Flipped = on;
+    }
+
+    bool isExtLineFix() const {
+        return extLineFix;
+    }
+    void setExtLineFix(bool on) {
+        extLineFix = on;
+    }
+
+    double getExtLineFixLength() const {
+        return extLineFixLength;
+    }
+    void setExtLineFixLength(double v) {
+        extLineFixLength = v;
+    }
+
+    void adjustExtensionLineFixLength(RLine& extLine1, RLine& extLine2, bool addDimExe = true) const;
+
+    bool hasSpaceForArrows() const;
+
     virtual double getDistanceTo(const RVector& point, bool limited = true, double range = 0.0, bool draft = false, double strictRange = RMAXDOUBLE) const;
     virtual bool intersectsWith(const RShape& shape) const;
 
     virtual QList<RRefPoint> getReferencePoints(RS::ProjectionRenderingHint hint = RS::RenderTop) const;
 
-    virtual bool moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint);
+    virtual bool clickReferencePoint(const RVector& referencePoint);
+    virtual bool moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
 
     virtual bool move(const RVector& offset);
     virtual bool rotate(double rotation, const RVector& center);
@@ -230,11 +264,18 @@ protected:
 
     double linearFactor;
     double dimScaleOverride;
+    bool arrow1Flipped;
+    bool arrow2Flipped;
+
+    bool extLineFix;
+    double extLineFixLength;
 
     mutable bool dirty;
     mutable RTextData textData;
     mutable RBox boundingBox;
     mutable double dimLineLength;
+    mutable RVector arrow1Pos;
+    mutable RVector arrow2Pos;
 
     /** True if the textPosition should be automatically calculated. */
     mutable bool autoTextPos;

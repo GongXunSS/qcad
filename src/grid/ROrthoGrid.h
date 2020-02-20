@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -65,10 +65,10 @@ public:
     // any angle.
     //void updateGrid(REntity& entity);
 
-    bool isIsometric() const;
+    virtual bool isIsometric() const;
     void setIsometric(bool on);
 
-    RS::IsoProjectionType getProjection() const;
+    virtual RS::IsoProjectionType getProjection() const;
     void setProjection(RS::IsoProjectionType p);
 
     static QList<RVector> getIdealGridSpacing(RGraphicsView& view, int minPixelSpacing, const RVector& minSpacing, const RVector& minMetaSpacing);

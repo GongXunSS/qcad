@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -41,7 +41,7 @@ ExAddLayer.prototype.beginEvent = function() {
     var linetypeId = document.getLinetypeId("CONTINUOUS");
     var layer = new RLayer(document, "MyLayer", false, false, new RColor("red"), linetypeId, RLineweight.Weight000);
     op.addObject(layer);
-    EAction.handleUserMessage(qsTr("Added layer 'MyLayer'"));
+    EAction.handleUserMessage(qsTr("Added layer \"MyLayer\""));
     di.applyOperation(op);
 
     // make the new layer the current layer:

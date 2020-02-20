@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -40,6 +40,7 @@ class RDocument;
 class RDocumentInterface;
 class RFocusListener;
 class RGraphicsView;
+class RKeyListener;
 class RLayerListener;
 class RMdiArea;
 class RMdiChildQt;
@@ -89,6 +90,10 @@ public:
         bool onlyChanges=false,
         RS::EntityType entityTypeFilter = RS::EntityAll
     );
+    virtual void postPropertyEvent(RPropertyTypeId propertyTypeId,
+        const QVariant& value,
+        RS::EntityType entityTypeFilter = RS::EntityAll
+    );
     virtual void postCloseEvent();
 
     RMdiChildQt* getMdiChild();
@@ -121,6 +126,12 @@ public:
     }
     QList<QToolBar*> getToolBars() {
         return findChildren<QToolBar*>();
+    }
+
+    void clearKeyLog();
+
+    QString getKeyLog() const {
+        return keyLog;
     }
 
 public slots:
@@ -188,6 +199,9 @@ protected:
     RMdiArea* mdiArea;
 
     int disableCounter;
+
+    QString keyLog;
+    QTime keyTimeOut;
 
 //private:
 //    bool objectWasDestroyed;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./core" filename="RMainWindow.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,6 +24,7 @@
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"core_global.h"</cpp:file></cpp:include>
 
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>&lt;QMutex&gt;</cpp:file></cpp:include>
+<class_decl>class <name>QKeyEvent</name>;</class_decl>
 
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"REntityExportListener.h"</cpp:file></cpp:include>
 <cpp:include>#<cpp:directive>include</cpp:directive> <cpp:file>"RExportListener.h"</cpp:file></cpp:include>
@@ -42,6 +43,7 @@
 <class_decl>class <name>REntity</name>;</class_decl>
 <class_decl>class <name>RFocusListener</name>;</class_decl>
 <class_decl>class <name>RGraphicsView</name>;</class_decl>
+<class_decl>class <name>RKeyListener</name>;</class_decl>
 <class_decl>class <name>RLayerListener</name>;</class_decl>
 <class_decl>class <name>RNewDocumentListener</name>;</class_decl>
 <class_decl>class <name>RPenListener</name>;</class_decl>
@@ -111,10 +113,10 @@
     )</parameter_list> <specifier>= 0</specifier>;</function_decl>
     <function_decl><type><name>virtual</name> <name>void</name></type> <name>postCloseEvent</name><parameter_list>()</parameter_list> <specifier>= 0</specifier>;</function_decl>
     <comment type="line">//virtual void postPropertyEvent() = 0;</comment>
-<comment type="line">//    virtual void postPropertyEvent(RPropertyTypeId propertyTypeId,</comment>
-<comment type="line">//        const QVariant&amp; value,</comment>
-<comment type="line">//        RS::EntityType entityTypeFilter = RS::EntityAll</comment>
-<comment type="line">//    ) = 0;</comment>
+    <function_decl><type><name>virtual</name> <name>void</name></type> <name>postPropertyEvent</name><parameter_list>(<param><decl><type><name>RPropertyTypeId</name></type> <name>propertyTypeId</name></decl></param>,
+        <param><decl><type><name>const</name> <name>QVariant</name>&amp;</type> <name>value</name></decl></param>,
+        <param><decl><type><name><name>RS</name>::<name>EntityType</name></name></type> <name>entityTypeFilter</name> =<init> <expr><name><name>RS</name>::<name>EntityAll</name></name></expr></init></decl></param>
+    )</parameter_list> <specifier>= 0</specifier>;</function_decl>
 
     <function_decl><type><name>void</name></type> <name>addPropertyListener</name><parameter_list>(<param><decl><type><name>RPropertyListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>removePropertyListener</name><parameter_list>(<param><decl><type><name>RPropertyListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
@@ -151,7 +153,7 @@
 
     <function_decl><type><name>void</name></type> <name>addNewDocumentListener</name><parameter_list>(<param><decl><type><name>RNewDocumentListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>removeNewDocumentListener</name><parameter_list>(<param><decl><type><name>RNewDocumentListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
-    <function_decl><type><name>void</name></type> <name>notifyNewDocumentListeners</name><parameter_list>(<param><decl><type><name>RDocument</name>*</type> <name>document</name></decl></param>, <param><decl><type><name>RTransaction</name>*</type> <name>transaction</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>notifyNewDocumentListeners</name><parameter_list>(<param><decl><type><name>RDocument</name>*</type> <name>document</name></decl></param>, <param><decl><type><name>RTransaction</name>*</type> <name>transaction</name></decl></param>, <param><decl><type><name>bool</name></type> <name>beforeLoad</name></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name>void</name></type> <name>addSnapListener</name><parameter_list>(<param><decl><type><name>RSnapListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>removeSnapListener</name><parameter_list>(<param><decl><type><name>RSnapListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
@@ -160,6 +162,10 @@
     <function_decl><type><name>void</name></type> <name>addFocusListener</name><parameter_list>(<param><decl><type><name>RFocusListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>removeFocusListener</name><parameter_list>(<param><decl><type><name>RFocusListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>notifyFocusListeners</name><parameter_list>(<param><decl><type><name>RDocumentInterface</name>*</type> <name>documentInterface</name></decl></param>)</parameter_list>;</function_decl>
+
+    <function_decl><type><name>void</name></type> <name>addKeyListener</name><parameter_list>(<param><decl><type><name>RKeyListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>removeKeyListener</name><parameter_list>(<param><decl><type><name>RKeyListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>notifyKeyListeners</name><parameter_list>(<param><decl><type><name>QKeyEvent</name>*</type> <name>event</name></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name>void</name></type> <name>addViewFocusListener</name><parameter_list>(<param><decl><type><name>RViewFocusListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>removeViewFocusListener</name><parameter_list>(<param><decl><type><name>RViewFocusListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
@@ -177,8 +183,8 @@
 
     <function_decl><type><name>void</name></type> <name>addLayerListener</name><parameter_list>(<param><decl><type><name>RLayerListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>removeLayerListener</name><parameter_list>(<param><decl><type><name>RLayerListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
-    <function_decl><type><name>void</name></type> <name>notifyLayerListeners</name><parameter_list>(<param><decl><type><name>RDocumentInterface</name>*</type> <name>documentInterface</name></decl></param>)</parameter_list>;</function_decl>
-    <function_decl><type><name>void</name></type> <name>notifyLayerListenersCurrentLayer</name><parameter_list>(<param><decl><type><name>RDocumentInterface</name>*</type> <name>documentInterface</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>notifyLayerListeners</name><parameter_list>(<param><decl><type><name>RDocumentInterface</name>*</type> <name>documentInterface</name></decl></param>, <param><decl><type><name>QList<argument_list>&lt;<argument><name><name>RLayer</name>::<name>Id</name></name></argument>&gt;</argument_list></name>&amp;</type> <name>layerIds</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>void</name></type> <name>notifyLayerListenersCurrentLayer</name><parameter_list>(<param><decl><type><name>RDocumentInterface</name>*</type> <name>documentInterface</name></decl></param>, <param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>previousLayerId</name></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name>void</name></type> <name>addBlockListener</name><parameter_list>(<param><decl><type><name>RBlockListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>removeBlockListener</name><parameter_list>(<param><decl><type><name>RBlockListener</name>*</type> <name>l</name></decl></param>)</parameter_list>;</function_decl>
@@ -305,6 +311,7 @@
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RInterTransactionListener</name>*</argument>&gt;</argument_list></name></type> <name>interTransactionListeners</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RNewDocumentListener</name>*</argument>&gt;</argument_list></name></type> <name>newDocumentListeners</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RSnapListener</name>*</argument>&gt;</argument_list></name></type> <name>snapListeners</name></decl>;</decl_stmt>
+    <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RKeyListener</name>*</argument>&gt;</argument_list></name></type> <name>keyListeners</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RFocusListener</name>*</argument>&gt;</argument_list></name></type> <name>focusListeners</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RViewFocusListener</name>*</argument>&gt;</argument_list></name></type> <name>viewFocusListeners</name></decl>;</decl_stmt>
     <decl_stmt><decl><type><name>QList<argument_list>&lt;<argument><name>RPreferencesListener</name>*</argument>&gt;</argument_list></name></type> <name>preferencesListeners</name></decl>;</decl_stmt>

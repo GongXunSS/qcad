@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -44,6 +44,7 @@ function Projection(guiAction) {
     // segmented into line segments:
     this.segmentation = false;
     this.segmentLength = 1.0;
+    this.retainTexts = false;
 
     // force flat projection (for aux constructions):
     this.flat = false;
@@ -55,6 +56,18 @@ Projection.includeBasePath = includeBasePath;
 Projection.State = {
     SettingReferencePoint : 0,
     SettingTargetPoint : 1
+};
+
+Projection.getMenu = function() {
+    var menu = EAction.getSubMenu(
+        Modify.getMenu(),
+        14800, 100,
+        Projection.getTitle(),
+        "ModifyProjectionMenu",
+        Projection.includeBasePath + "/Projection.svg"
+    );
+    menu.setProperty("scriptFile", Projection.includeBasePath + "/Projection.js");
+    return menu;
 };
 
 Projection.getToolBar = function() {
@@ -72,7 +85,7 @@ Projection.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         action.setIcon(Projection.includeBasePath + "/Projection.svg");
-        action.setStatusTip(qsTr("Show projection tools"));
+        //action.setStatusTip(qsTr("Show projection tools"));
         action.setDefaultShortcut(new QKeySequence("w,j"));
         action.setNoState();
         action.setDefaultCommands(["projectmenu"]);
@@ -95,12 +108,6 @@ Projection.getTitle = function() {
 
 Projection.prototype.getTitle = function() {
     return Projection.getTitle();
-};
-
-Projection.init = function() {
-    Projection.getToolBar();
-    Projection.getCadToolBarPanel();
-    Projection.getToolMatrixPanel();
 };
 
 Projection.prototype.beginEvent = function() {
@@ -223,14 +230,30 @@ Projection.prototype.postTransform = function(entity) {
  * Callback function for Transform.getOperation. Generic for all projections.
  * \param k Ignored
  */
-Projection.prototype.transform = function(entity, k, op, preview, forceNew) {
+Projection.prototype.transform = function(entity, k, op, preview, flags) {
     var i;
 
     this.preTransform(entity);
 
+    if (this.retainTexts && isTextBasedEntity(entity)) {
+        // don't explode text, only project position:
+        var e = entity.clone();
+        e.setSelected(false);
+        var p = e.getAlignmentPoint();
+        //qDebug("p before:", p);
+        //qDebug("ap:", e.getAlignmentPoint());
+        this.project(p);
+        //qDebug("p after:", p);
+        //e.setPosition(p);
+        e.setAlignmentPoint(p);
+        flags = flags | RAddObjectsOperation.UseAttributes;
+        op.addObject(e, flags);
+        return;
+    }
+
     // shapes that represent this entity:
     var shapes = entity.getShapes();
-    this.addTransformedShapes(entity, shapes, op, preview, forceNew);
+    this.addTransformedShapes(entity, shapes, op, preview, flags);
 
     // text data that is part of this entity (dimension label):
     if (isDimensionEntity(entity) && isFunction(entity.getTextData)) {
@@ -241,7 +264,7 @@ Projection.prototype.transform = function(entity, k, op, preview, forceNew) {
                 continue;
             }
             shapes = painterPaths[i].getShapes();
-            this.addTransformedShapes(entity, shapes, op, preview, forceNew);
+            this.addTransformedShapes(entity, shapes, op, preview, flags);
         }
     }
 };
@@ -254,10 +277,46 @@ Projection.prototype.transform = function(entity, k, op, preview, forceNew) {
  * \param shapes Array The transformed shapes
  * \param op RAddObjectsOperation Operation
  */
-Projection.prototype.addTransformedShapes = function(entity, shapes, op, preview, forceNew) {
-    for (var i=0; i<shapes.length; i++) {
-        var s = this.projectShape(shapes[i].data(), preview);
-        for (var n=0; n<s.length; n++) {
+Projection.prototype.addTransformedShapes = function(entity, shapes, op, preview, flags) {
+    var i, s, n;
+
+    if (isHatchEntity(entity) && entity.isSolid()) {
+        var hd = entity.getData();
+        hd.clearBoundary();
+        hd.newLoop();
+
+        for (i=0; i<shapes.length; i++) {
+            s = this.projectShape(shapes[i].data(), preview);
+            for (n=0; n<s.length; n++) {
+                if (isNull(s[n])) {
+                    debugger;
+                }
+
+                s[n].simplify(0.01);
+
+                hd.addBoundary(s[n], true);
+            }
+        }
+
+        var e = entity.clone();
+        e.setData(hd);
+        e.setSelected(false);
+
+//        for (i=0; i<hd.getLoopCount(); i++) {
+//            s = hd.getLoopBoundary(i);
+//            qDebug("hatch boundary:", s);
+//        }
+
+        //e.getData().getDocument().getStorage().setObjectId(e, RObject.INVALID_ID);
+        flags = flags | RAddObjectsOperation.UseAttributes | RAddObjectsOperation.ForceNew;
+        //flags = flags | RAddObjectsOperation.UseAttributes;
+        op.addObject(e, flags);
+        return;
+    }
+
+    for (i=0; i<shapes.length; i++) {
+        s = this.projectShape(shapes[i].data(), preview);
+        for (n=0; n<s.length; n++) {
             if (isNull(s[n])) {
                 debugger;
             }
@@ -269,7 +328,8 @@ Projection.prototype.addTransformedShapes = function(entity, shapes, op, preview
 
             e.copyAttributesFrom(entity);
             //e.move(this.targetPoint);
-            op.addObject(e, false, forceNew);
+            flags = flags | RAddObjectsOperation.UseAttributes;
+            op.addObject(e, flags);
         }
     }
 };
@@ -295,7 +355,7 @@ Projection.prototype.trimShape = function(shape) {
  * chosen reference point.
  */
 Projection.prototype.project = function(p) {
-    return p;
+    return;
 }
 
 /**
@@ -347,11 +407,15 @@ Projection.prototype.projectShape = function(shape, preview, trim) {
             if (!preview && this.segmentLength>RS.PointTolerance) {
                 numSegments = Math.ceil(l/this.segmentLength);
             }
+            if (numSegments>1000) {
+                // avoid huge number of segments / crash:
+                numSegments = 1000;
+            }
 
             var polyline = ShapeAlgorithms.lineOrArcToPolyline(shape, numSegments);
             var projectedPl = this.projectShape(polyline, preview, trim)[0];
             if (!isNull(projectedPl)) {
-                projectedPl.simplify();
+                projectedPl.simplify(0.01);
                 ret.push(projectedPl);
             }
             this.segmentation = true;
@@ -477,6 +541,9 @@ Projection.prototype.projectShape = function(shape, preview, trim) {
             // iterate through projected shapes (trimming might lead to gaps):
             for (k=0; k<s.length; k++) {
                 var seg = s[k];
+                if (isFunction(seg.data)) {
+                    seg = seg.data();
+                }
 
                 var gotGap = pl.countVertices()>0 &&
                     !pl.getEndPoint().equalsFuzzy(seg.getStartPoint());
@@ -507,6 +574,7 @@ Projection.prototype.projectShape = function(shape, preview, trim) {
                     }
                     else if (gotGap){
                         pl = new RPolyline();
+                        //qDebug("seg:", seg);
                         pl.appendShape(seg);
                         addPl = true;
                     }
@@ -522,7 +590,7 @@ Projection.prototype.projectShape = function(shape, preview, trim) {
     }
 
     return [];
-}
+};
 
 Projection.prototype.slotRotateCCW = function() {
     this.rotation += 90;
@@ -540,4 +608,17 @@ Projection.prototype.slotSegmentLengthChanged = function(l) {
     this.segmentLength = l;
     this.clearCache();
     this.updatePreview(true);
+};
+
+Projection.prototype.slotRetainTextsChanged = function(v) {
+    this.retainTexts = v;
+    this.clearCache();
+    this.updatePreview(true);
+};
+
+Projection.init = function() {
+    Projection.getMenu();
+    Projection.getToolBar();
+    Projection.getCadToolBarPanel();
+    Projection.getToolMatrixPanel();
 };

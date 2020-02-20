@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -62,6 +62,11 @@ public:
     static RPropertyTypeId PropertyLowerTolerance;
     static RPropertyTypeId PropertyMeasuredValue;
     static RPropertyTypeId PropertyFontName;
+    static RPropertyTypeId PropertyArrow1Flipped;
+    static RPropertyTypeId PropertyArrow2Flipped;
+
+    static RPropertyTypeId PropertyExtLineFix;
+    static RPropertyTypeId PropertyExtLineFixLength;
 
     static RPropertyTypeId PropertyDimScale;
     static RPropertyTypeId PropertyDimBlockName;
@@ -94,11 +99,11 @@ public:
         return new RDimOrdinateEntity(*this);
     }
 
-    bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
+    virtual bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
         RTransaction* transaction=NULL);
-    QPair<QVariant, RPropertyAttributes> getProperty(
+    virtual QPair<QVariant, RPropertyAttributes> getProperty(
             RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
 
     virtual RDimOrdinateData& getData() {
         return data;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./snap" filename="RRestrictHorizontal.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -38,7 +38,7 @@
 </private><public>public:
     <constructor><name>RRestrictHorizontal</name><parameter_list>(<param><decl><type><name>RDocumentInterface</name>*</type> <name>documentInterface</name> =<init> <expr><name>NULL</name></expr></init></decl></param>)</parameter_list>
         <member_list>: <call><name>RRestrictOrthogonal</name><argument_list>(<argument><expr><name>documentInterface</name></expr></argument>)</argument_list></call> </member_list><block>{
-        <expr_stmt><expr><name>mode</name> = <name>Horizonal</name></expr>;</expr_stmt>
+        <expr_stmt><expr><name>mode</name> = <name><name>RS</name>::<name>OrthoHorizonal</name></name></expr>;</expr_stmt>
     }</block></constructor>
     <destructor><specifier>virtual</specifier> <name>~RRestrictHorizontal</name><parameter_list>()</parameter_list> <block>{}</block></destructor>
 </public>}</block>;</class>

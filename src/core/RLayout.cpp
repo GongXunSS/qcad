@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -189,7 +189,7 @@ bool RLayout::setProperty(RPropertyTypeId propertyTypeId,
 
 QPair<QVariant, RPropertyAttributes> RLayout::getProperty(
         RPropertyTypeId& propertyTypeId,
-        bool humanReadable, bool noAttributes) {
+        bool humanReadable, bool noAttributes, bool showOnRequest) {
 
     if (propertyTypeId == PropertyName) {
         return qMakePair(QVariant(name), RPropertyAttributes());
@@ -307,11 +307,7 @@ QPair<QVariant, RPropertyAttributes> RLayout::getProperty(
         return qMakePair(QVariant(canonicalMediaName), RPropertyAttributes());
     }
 
-    return RObject::getProperty(propertyTypeId, humanReadable, noAttributes);
-}
-
-bool RLayout::isSelectedForPropertyEditing() {
-    return false;
+    return RObject::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 void RLayout::print(QDebug dbg) const {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Dimension.js");
+include("scripts/Draw/Dimension/Dimension.js");
 
 /**
  * \class Leader
@@ -70,7 +70,7 @@ Leader.prototype.setState = function(state) {
         var trNextVertex = qsTr("Next vertex");
         this.setCommandPrompt(trNextVertex);
         this.setLeftMouseTip(trNextVertex);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         EAction.showSnapTools();
         break;
     }

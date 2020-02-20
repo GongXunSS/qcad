@@ -4,13 +4,13 @@ SUBDIRS = \
     core \
     entity \
     grid \
+    scripts \
     snap \
     operations \
     stemmer \
     spatialindex \
     gui \
-    io \
-    zip
+    io
 
 !r_mobile {
     SUBDIRS += \

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Dimension.js");
+include("scripts/Draw/Dimension/Dimension.js");
 
 /**
  * \class DimRegen
@@ -64,7 +64,7 @@ DimRegen.prototype.beginEvent = function() {
         msg = qsTr("No dimension entities with custom label positions selected.");
     }
     else {
-        msg = qsTr("Reset label position of %1 dimension(s).").arg(counter);
+        msg = qsTr("Label position of %n dimension(s) was reset.", "", counter);
     }
 
     EAction.handleUserMessage(msg);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -116,7 +116,7 @@ void RImporter::endImport() {
     if (RMainWindow::hasMainWindow() && counter>0) {
         blockNames = blockNames.toSet().toList();
         RMainWindow::getMainWindow()->handleUserWarning(
-            QString("Grounded %1 recursive block references in blocks: %2")
+            QString("Grounded %1 recursive block reference(s) in blocks: %2")
                 .arg(counter)
                 .arg(blockNames.join(", "))
         );

@@ -1,11 +1,13 @@
 TEMPLATE = subdirs
 SUBDIRS = \
-    ts \
+    dir \
     BlockExamples \
     CommandLineExamples \
     DrawExamples \
+    ExMinimal \
     IOExamples \
     LayerExamples \
     ListenerExamples \
     MathExamples \
+    ModifyExamples \
     QtExamples

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -79,13 +79,13 @@ public:
         return new RBlockReferenceEntity(*this);
     }
 
-    virtual QSet<RPropertyTypeId> getPropertyTypeIds() const;
+    virtual QSet<RPropertyTypeId> getPropertyTypeIds(RPropertyAttributes::Option option = RPropertyAttributes::NoOptions) const;
 
     virtual bool setProperty(RPropertyTypeId propertyTypeId,
             const QVariant& value, RTransaction* transaction=NULL);
     virtual QPair<QVariant, RPropertyAttributes> getProperty(
             RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
 
 //    virtual void setSelected(bool on);
 
@@ -173,11 +173,18 @@ public:
         data.update(entityId);
     }
 
-    QSharedPointer<REntity> queryEntity(REntity::Id entityId) const {
-        return data.queryEntity(entityId);
+    QSharedPointer<REntity> queryEntity(REntity::Id entityId, bool transform = false) const {
+        return data.queryEntity(entityId, transform);
     }
 
     bool applyTransformationTo(REntity& entity) const {
+        return data.applyTransformationTo(entity);
+    }
+
+    /**
+     * \nonscriptable
+     */
+    bool applyTransformationTo(QSharedPointer<REntity>& entity) const {
         return data.applyTransformationTo(entity);
     }
 

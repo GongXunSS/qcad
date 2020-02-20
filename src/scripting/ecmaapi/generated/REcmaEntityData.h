@@ -55,6 +55,9 @@
         getType
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        isPointType
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         isValid
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -73,7 +76,13 @@
         getBoundingBox
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        copyAttributesFrom
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         to2D
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setZ
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getBoundingBoxes
@@ -107,6 +116,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getLayerId
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setLayerName
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getLayerName
@@ -181,6 +193,9 @@
         getCenterPoints
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getArcReferencePoints
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getPointsWithDistanceToEnd
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -203,6 +218,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         intersectsWith
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        clickReferencePoint
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         moveReferencePoint

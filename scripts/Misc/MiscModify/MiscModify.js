@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Misc.js");
+include("scripts/Misc/Misc.js");
 
 /**
  * \class MiscModify
@@ -33,7 +33,7 @@ MiscModify.includeBasePath = includeBasePath;
 MiscModify.getMenu = function() {
     var menu = EAction.getSubMenu(
         Misc.getMenu(),
-        51100, 400,
+        51100, 350,
         MiscModify.getTitle(),
         "MiscModifyMenu"
     );
@@ -56,11 +56,11 @@ MiscModify.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         //action.setIcon(MiscModify.includeBasePath + "/MiscModify.svg");
-        action.setStatusTip(qsTr("Show misc modification tools"));
+        //action.setStatusTip(qsTr("Show misc modification tools"));
         action.setNoState();
         action.setDefaultCommands(["miscmodifymenu"]);
         action.setGroupSortOrder(90);
-        action.setSortOrder(400);
+        action.setSortOrder(350);
         action.setWidgetNames(["MiscToolsPanel"]);
     }
 

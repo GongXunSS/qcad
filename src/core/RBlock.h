@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -48,6 +48,7 @@ public:
     static RPropertyTypeId PropertyHandle;
     static RPropertyTypeId PropertyName;
     static RPropertyTypeId PropertyFrozen;
+    static RPropertyTypeId PropertyPixelUnit;
     static RPropertyTypeId PropertyOriginX;
     static RPropertyTypeId PropertyOriginY;
     static RPropertyTypeId PropertyOriginZ;
@@ -94,6 +95,14 @@ public:
         }
     }
 
+    bool isPixelUnit() const {
+        return pixelUnit;
+    }
+
+    void setPixelUnit(bool on) {
+        pixelUnit = on;
+    }
+
     void setOrigin(const RVector& origin) {
         this->origin = origin;
     }
@@ -121,11 +130,11 @@ public:
     QString getLayoutName() const;
 
     virtual QPair<QVariant, RPropertyAttributes> getProperty(RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
     virtual bool setProperty(RPropertyTypeId propertyTypeId,
             const QVariant& value, RTransaction* transaction=NULL);
 
-    virtual bool isSelectedForPropertyEditing();
+    virtual void setCustomProperty(const QString& title, const QString& key, const QVariant& value);
 
 public:
     static const QString modelSpaceName;
@@ -141,6 +150,7 @@ private:
     QString name;
     bool frozen;
     bool anonymous;
+    bool pixelUnit;
     RVector origin;
     RLayout::Id layoutId;
 };

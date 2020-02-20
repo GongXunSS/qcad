@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -37,6 +37,7 @@ DimensionSettings.dimx = [
             ["DIMGAP", RS.DIMGAP, 0.25],
             ["DIMASZ", RS.DIMASZ, 1.0],
             ["DIMSCALE", RS.DIMSCALE, undefined],
+            ["DIMDLI", RS.DIMDLI, 2.0],
         ];
 
 /**
@@ -54,7 +55,7 @@ DimensionSettings.updateUnit = function(unit) {
     // (re-)init unit labels:
     var unitSymbol = "";
     unitSymbol = RUnit.unitToName(DimensionSettings.unit);
-    for (var i=1; i<=5; i++) {
+    for (var i=1; i<=6; i++) {
         var w = widgets["DimUnit" + i];
         if (isNull(w)) {
             continue;
@@ -390,7 +391,7 @@ DimensionSettings.keepProportions = function(value, widgets) {
  */
 DimensionSettings.updateLinearFormatFromUnit = function(widgets) {
     var linearFormat = widgets["LinearFormat"].currentIndex+1;
-    if ((DimensionSettings.unit!==RS.Inch && DimensionSettings.unit!==RS.Foot) &&
+    if (DimensionSettings.unit!==RS.Inch &&
         (linearFormat===RS.ArchitecturalStacked || linearFormat===RS.Engineering)) {
 
         widgets["LinearFormat"].currentIndex = 1;
@@ -402,9 +403,9 @@ DimensionSettings.showLinearFormatWarning = function() {
     var appWin = EAction.getMainWindow();
     QMessageBox.warning(appWin,
                         qsTr("Unit / Format"),
-                        qsTr("The drawing unit must be 'Inch' or 'Foot' to display dimension labels in "
-                             + "formats 'Architectural' or 'Engineering'. "
-                             + "Format changed to 'Decimal'."));
+                        qsTr("The drawing unit must be \"Inch\" to display dimension labels in "
+                             + "formats \"Architectural\" or \"Engineering\". "
+                             + "Format changed to \"Decimal\"."));
 };
 
 /**

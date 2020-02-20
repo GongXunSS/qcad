@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -65,7 +65,7 @@ ShapePolygonPP.prototype.setState = function(state) {
         var trCorner2 = qsTr("Corner point");
         this.setCommandPrompt(trCorner2);
         this.setLeftMouseTip(trCorner2);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         break;
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,16 +17,17 @@
  * along with QCAD.
  */
 
-include("../File.js");
+include("scripts/File/File.js");
 include("../Save/Save.js");
 include("scripts/Widgets/ViewportWidget/ViewportWidget.js");
 include("../AutoSave/AutoSave.js");
+include("scripts/Reset/Reset.js");
 
-if (new QFileInfo("scripts/DefaultAction.js").exists()) {
+if (exists("scripts/DefaultAction.js")) {
     include("scripts/DefaultAction.js");
 }
 
-if (new QFileInfo("scripts/Navigation/DefaultNavigation.js").exists()) {
+if (exists("scripts/Navigation/DefaultNavigation.js")) {
     include("scripts/Navigation/DefaultNavigation.js");
 }
 
@@ -142,7 +143,7 @@ NewFile.createMdiChild = function(fileName, nameFilter, uiFile, graphicsSceneCla
 
     // create document:
     var storage = new RMemoryStorage();
-    var spatialIndex = new RSpatialIndexNavel();
+    var spatialIndex = createSpatialIndex();
     var document = new RDocument(storage, spatialIndex);
     var documentInterface = new RDocumentInterface(document);
 
@@ -228,7 +229,7 @@ NewFile.createMdiChild = function(fileName, nameFilter, uiFile, graphicsSceneCla
     }
 
     var mdiChild = new RMdiChildQt();
-    mdiChild.windowIcon = new QIcon("scripts/qcad_icon.png");
+    mdiChild.windowIcon = new QIcon(autoPath("scripts/qcad_icon.png"));
     mdiChild.setDocumentInterface(documentInterface);
     var flags = new Qt.WindowFlags(Qt.FramelessWindowHint);
     mdiChild.setWindowFlags(flags);
@@ -244,32 +245,10 @@ NewFile.createMdiChild = function(fileName, nameFilter, uiFile, graphicsSceneCla
 
     var viewports = ViewportWidget.getViewports(mdiChild, documentInterface);
     mdiChild.viewports = viewports;
-    //qDebug("initViewports");
     ViewportWidget.initializeViewports(viewports, uiFile, graphicsSceneClass);
-    //qDebug("initViewports: done");
     NewFile.updateTitle(mdiChild);
 
-    // set up default action:
-    var defaultGuiAction = RGuiAction.getByScriptFile("scripts/Reset/Reset.js");
-    var defaultActionFile = RSettings.getStringValue("NewFile/DefaultAction", "");
-    var defaultActionFileInfo = new QFileInfo(defaultActionFile);
-    if (!defaultActionFileInfo.exists()) {
-        defaultActionFileInfo = new QFileInfo(":/" + defaultActionFile);
-    }
-    var defaultAction = undefined;
-    if (defaultActionFile.length>0 && defaultActionFileInfo.exists()) {
-        include(defaultActionFile);
-        var defaultActionClass = new QFileInfo(defaultActionFile).baseName();
-        if (defaultActionFile.length>0 && typeof(global[defaultActionClass])!=="undefined") {
-            defaultAction = new global[defaultActionClass](defaultGuiAction);
-        }
-    }
-    if (isNull(defaultAction) && typeof(DefaultAction)!=="undefined") {
-        defaultAction = new DefaultAction(defaultGuiAction);
-    }
-    if (!isNull(defaultAction)) {
-        documentInterface.setDefaultAction(defaultAction);
-    }
+    NewFile.setupDefaultAction(documentInterface);
 
     ViewportWidget.initEventHandler(viewports);
 
@@ -284,13 +263,13 @@ NewFile.createMdiChild = function(fileName, nameFilter, uiFile, graphicsSceneCla
     // Qt 5 / Unity bug workaround:
     // breaks Ubuntu Unity menu on start:
     if (RS.getSystemId()!=="linux" || !RSettings.isQt(5) || appWin.property("starting")!==true) {
-        appWin.enabled = false;
+        appWin.disable();
     }
     for (var i=0; i<5; i++) {
         QCoreApplication.processEvents();
     }
     if (!appWin.enabled) {
-        appWin.enabled = true;
+        appWin.enable();
     }
 
     //qDebug("subWindowActivated");
@@ -486,3 +465,63 @@ NewFile.closeRequested = function(mdiChild) {
     EAction.activateMainWindow();
 };
 
+/**
+ * Setup default action for the given document interface.
+ */
+NewFile.setupDefaultAction = function(documentInterface) {
+    var defaultAction = NewFile.getDefaultAction();
+    if (!isNull(defaultAction)) {
+        documentInterface.setDefaultAction(defaultAction);
+    }
+};
+
+/**
+ * Returns name of default action class.
+ */
+NewFile.getDefaultActionClass = function() {
+    var defaultActionClass = "DefaultAction";
+
+    var defaultActionFile = RSettings.getStringValue("NewFile/DefaultAction", "");
+    if (defaultActionFile.length===0) {
+        return defaultActionClass;
+    }
+
+    var defaultActionFileInfo = new QFileInfo(defaultActionFile);
+    if (!defaultActionFileInfo.exists()) {
+        defaultActionFileInfo = new QFileInfo(":/" + defaultActionFile);
+    }
+    if (defaultActionFileInfo.exists()) {
+        include(defaultActionFile);
+        defaultActionClass = new QFileInfo(defaultActionFile).baseName();
+    }
+    else {
+        qWarning("custom default action class not found:", defaultActionFile);
+    }
+
+    return defaultActionClass;
+};
+
+/**
+ * Returns new default action as configured in settings ("NewFile/DefaultAction")
+ * or instance of DefaultAction.
+ */
+NewFile.getDefaultAction = function(useGuiAction) {
+    if (isNull(useGuiAction)) {
+        useGuiAction = true;
+    }
+
+    // set up default action:
+    var defaultGuiAction = undefined;
+    if (useGuiAction) {
+        defaultGuiAction = RGuiAction.getByScriptFile("scripts/Reset/Reset.js");
+    }
+    var defaultActionClass = NewFile.getDefaultActionClass();
+    var defaultAction = undefined;
+    if (typeof(global[defaultActionClass])!=="undefined") {
+        defaultAction = new global[defaultActionClass](defaultGuiAction);
+        if (isFunction(global[defaultActionClass].init)) {
+            global[defaultActionClass].init();
+        }
+    }
+    return defaultAction;
+};

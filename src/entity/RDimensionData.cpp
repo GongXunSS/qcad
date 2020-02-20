@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -33,8 +33,14 @@ RDimensionData::RDimensionData(RDocument* document) :
     textAngle(0.0),
     linearFactor(1.0),
     dimScaleOverride(0.0),
+    arrow1Flipped(false),
+    arrow2Flipped(false),
+    extLineFix(false),
+    extLineFixLength(0.0),
     dirty(true),
     dimLineLength(0.0),
+    arrow1Pos(RVector::invalid),
+    arrow2Pos(RVector::invalid),
     autoTextPos(true) {
 
 }
@@ -84,8 +90,14 @@ RDimensionData::RDimensionData(const RVector& definitionPoint,
       textAngle(angle),
       linearFactor(1.0),
       dimScaleOverride(0.0),
+      arrow1Flipped(false),
+      arrow2Flipped(false),
+      extLineFix(false),
+      extLineFixLength(0.0),
       dirty(true),
       dimLineLength(0.0),
+      arrow1Pos(RVector::invalid),
+      arrow2Pos(RVector::invalid),
       autoTextPos(true) {
 
 }
@@ -100,12 +112,47 @@ RBox RDimensionData::getBoundingBox(bool ignoreEmpty) const {
     return boundingBox;
 }
 
+RVector RDimensionData::getPointOnEntity() const {
+    QList<QSharedPointer<RShape> > shapes = getShapes();
+    if (shapes.isEmpty()) {
+        return RVector::invalid;
+    }
+
+    return shapes.first()->getStartPoint();
+}
+
 bool RDimensionData::isValid() const {
     return REntityData::isValid() && definitionPoint.isValid();
 }
 
 bool RDimensionData::isSane() const {
     return REntityData::isSane() && definitionPoint.isSane();
+}
+
+void RDimensionData::adjustExtensionLineFixLength(RLine& extLine1, RLine& extLine2, bool addDimExe) const {
+    // extension lines with fixed length:
+    if (isExtLineFix()) {
+        double extLineLen = getExtLineFixLength();
+        if (RMath::fuzzyCompare(extLineLen, 0.0)) {
+            // value of 0 for extension line fixed length means fixed length is off:
+            return;
+        }
+
+        if (addDimExe) {
+            double dimexe = getDimexe();
+            extLineLen += dimexe;
+        }
+        if (extLine1.isValid()) {
+            extLine1.setLength(qMin(extLine1.getLength(), extLineLen), false);
+        }
+        if (extLine2.isValid()) {
+            extLine2.setLength(qMin(extLine2.getLength(), extLineLen), false);
+        }
+    }
+}
+
+bool RDimensionData::hasSpaceForArrows() const {
+    return dimLineLength >= getDimasz()*2.5;
 }
 
 double RDimensionData::getDistanceTo(const RVector& point, bool limited, double range, bool draft, double strictRange) const {
@@ -137,11 +184,32 @@ QList<RRefPoint> RDimensionData::getReferencePoints(RS::ProjectionRenderingHint 
     ret.append(definitionPoint);
     ret.append(getTextPosition());
 
+    if (arrow1Pos.isValid()) {
+        ret.append(RRefPoint(arrow1Pos, RRefPoint::Arrow));
+    }
+    if (arrow2Pos.isValid()) {
+        ret.append(RRefPoint(arrow2Pos, RRefPoint::Arrow));
+    }
+
     return ret;
 }
 
-bool RDimensionData::moveReferencePoint(const RVector& referencePoint,
-        const RVector& targetPoint) {
+bool RDimensionData::clickReferencePoint(const RVector& referencePoint) {
+    if (referencePoint.equalsFuzzy(arrow1Pos)) {
+        arrow1Flipped = arrow2Flipped = !arrow1Flipped;
+        update();
+        return true;
+    }
+    if (referencePoint.equalsFuzzy(arrow2Pos)) {
+        arrow1Flipped = arrow2Flipped = !arrow2Flipped;
+        update();
+        return true;
+    }
+    return false;
+}
+
+bool RDimensionData::moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers) {
+    Q_UNUSED(modifiers)
 
     if (referencePoint.equalsFuzzy(definitionPoint)) {
         definitionPoint = targetPoint;
@@ -333,12 +401,24 @@ QList<QSharedPointer<RShape> > RDimensionData::getDimensionLineShapes(
     double dimtxt = getDimtxt();
     // text distance to line (DIMGAP)
     double dimgap = getDimgap();
+    // arrow size:
+    double dimasz = getDimasz();
+    bool archTick = useArchTick();
 
     // length of dimension line:
     dimLineLength = p1.getDistanceTo(p2);
 
     // do we have to put the arrows outside of the line?
-    bool outsideArrows = (dimLineLength < getDimasz()*2.5);
+    bool outsideArrow1 = !hasSpaceForArrows();
+    bool outsideArrow2 = outsideArrow1;
+
+    // force flipping arrows (against logic above):
+    if (isArrow1Flipped()) {
+        outsideArrow1 = !outsideArrow1;
+    }
+    if (isArrow2Flipped()) {
+        outsideArrow2 = !outsideArrow2;
+    }
 
     // arrow angles:
     double arrowAngle1, arrowAngle2;
@@ -346,30 +426,48 @@ QList<QSharedPointer<RShape> > RDimensionData::getDimensionLineShapes(
     // Create dimension line:
     RLine dimensionLine(p1, p2);
 
-    if (outsideArrows==false) {
+    if (outsideArrow1==false) {
         arrowAngle1 = dimensionLine.getDirection2();
-        arrowAngle2 = RMath::getNormalizedAngle(arrowAngle1+M_PI);
-    } else {
+    }
+    else {
         arrowAngle1 = dimensionLine.getDirection1();
-        arrowAngle2 = RMath::getNormalizedAngle(arrowAngle1+M_PI);
+    }
 
-        // extend dimension line outside arrows
-        RVector dir;
-        dir.setPolar(getDimasz()*2, arrowAngle2);
-        dimensionLine.setStartPoint(p1 + dir);
-        dimensionLine.setEndPoint(p2 - dir);
+    if (outsideArrow2==false) {
+        arrowAngle2 = dimensionLine.getDirection1();
+    }
+    else {
+        arrowAngle2 = dimensionLine.getDirection2();
+    }
+
+    // extend dimension line outside arrows
+    RVector dir;
+    dir.setPolar(getDimasz()*2, dimensionLine.getDirection1());
+    if (outsideArrow1) {
+        dimensionLine.setStartPoint(p1 - dir);
+    }
+    if (outsideArrow2) {
+        dimensionLine.setEndPoint(p2 + dir);
     }
 
     ret.append(QSharedPointer<RShape>(new RLine(dimensionLine)));
 
+    arrow1Pos = RVector::invalid;
     if (arrow1) {
         QList<QSharedPointer<RShape> > arrow = getArrow(p1, arrowAngle1);
         ret.append(arrow);
+        if (!archTick) {
+            arrow1Pos = p1 + RVector::createPolar(dimasz, arrowAngle1 + M_PI);
+        }
     }
 
+    arrow2Pos = RVector::invalid;
     if (arrow2) {
         QList<QSharedPointer<RShape> > arrow = getArrow(p2, arrowAngle2);
         ret.append(arrow);
+        if (!archTick) {
+            arrow2Pos = p2 + RVector::createPolar(dimasz, arrowAngle2 + M_PI);
+        }
     }
 
     double dimAngle1 = dimensionLine.getDirection1();

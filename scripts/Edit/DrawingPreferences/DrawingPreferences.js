@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Edit.js");
+include("scripts/Edit/Edit.js");
 include("../AbstractPreferences.js");
 
 function DrawingPreferences(guiAction, initialClassName) {

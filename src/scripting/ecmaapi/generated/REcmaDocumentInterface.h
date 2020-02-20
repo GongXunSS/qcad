@@ -61,6 +61,9 @@
         getGraphicsViewWithFocus
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getGraphicsSceneWithFocus
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         addCoordinateListener
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -76,6 +79,15 @@
         notifyLayerListeners
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        addTransactionListener
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        removeTransactionListener
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        notifyTransactionListeners
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         clear
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -86,6 +98,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setDefaultAction
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getDefaultAction
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setCurrentAction
@@ -235,6 +250,12 @@
         exportFile
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        tagState
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        undoToTag
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         undo
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -260,6 +281,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         snap
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        restrictOrtho
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getClosestEntity

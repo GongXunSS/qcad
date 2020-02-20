@@ -109,6 +109,9 @@
         postCloseEvent
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        postPropertyEvent
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         addPropertyListener
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -197,6 +200,15 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         notifyFocusListeners
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        addKeyListener
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        removeKeyListener
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        notifyKeyListeners
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         addViewFocusListener

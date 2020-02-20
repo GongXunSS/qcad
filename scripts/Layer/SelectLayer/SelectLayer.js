@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,8 +17,8 @@
  * along with QCAD.
  */
 
-include("../Layer.js");
- 
+include("scripts/library.js");
+include("scripts/Layer/Layer.js");
 
 /**
  * \class SelectLayer
@@ -42,17 +42,36 @@ SelectLayer.prototype.beginEvent = function() {
 };
 
 SelectLayer.prototype.selectLayer = function(layer) {
+    return this.selectLayers([layer]);
+};
+
+SelectLayer.prototype.selectLayers = function(layers) {
+    var ret = true;
     var doc = this.getDocument();
     var di = this.getDocumentInterface();
-    if (layer.isOffOrFrozen()) {
-        return false;
+
+    var num;
+    var ids = [];
+    for (var i=0; i<layers.length; i++) {
+        var layer = layers[i];
+        if (layer.isOffOrFrozen()) {
+            ret = false;
+        }
+        else {
+            ids = ids.concat(doc.queryLayerEntities(layer.getId()));
+        }
     }
 
-    var ids = doc.queryLayerEntities(layer.getId());
-    if (this.select) {
-        di.selectEntities(ids, true);
+    if (ids.length>0) {
+        if (this.select) {
+            num = di.selectEntities(ids, true);
+            EAction.handleUserMessage(qsTr("%1 entities added to selection.").arg(num));
+        }
+        else {
+            num = di.deselectEntities(ids);
+            EAction.handleUserMessage(qsTr("%1 entities removed from selection.").arg(num));
+        }
     }
-    else {
-        di.deselectEntities(ids);
-    }
+
+    return ret;
 };

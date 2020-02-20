@@ -67,6 +67,9 @@
 
     // public methods:
     static  QScriptValue
+        operator_assign
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getShapeType
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -85,7 +88,7 @@
         createBezierFromSmallArc
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        to2D
+        setZ
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getVectorProperties
@@ -152,6 +155,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         hasFitPoints
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getFitPointAt
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getKnotVector
@@ -268,6 +274,9 @@
         getPointsWithDistanceToEnd
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getPointCloud
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         getVectorTo
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -293,6 +302,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         reverse
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        stretch
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getTransformed

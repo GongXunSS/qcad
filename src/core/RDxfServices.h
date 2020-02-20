@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -50,6 +50,8 @@ public:
     RDxfServices();
 
     void reset();
+
+    static QString getSafeBlockName(QString& blockName);
 
     void fixBlockName(QString& blockName);
     void fixLayerName(QString& layerName);

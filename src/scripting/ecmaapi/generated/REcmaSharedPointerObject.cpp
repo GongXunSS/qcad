@@ -61,6 +61,8 @@
             
             REcmaHelper::registerFunction(&engine, proto, clone, "clone");
             
+            REcmaHelper::registerFunction(&engine, proto, mustAlwaysClone, "mustAlwaysClone");
+            
             REcmaHelper::registerFunction(&engine, proto, getDocument, "getDocument");
             
             REcmaHelper::registerFunction(&engine, proto, setDocument, "setDocument");
@@ -77,6 +79,14 @@
             
             REcmaHelper::registerFunction(&engine, proto, setProtected, "setProtected");
             
+            REcmaHelper::registerFunction(&engine, proto, isInvisible, "isInvisible");
+            
+            REcmaHelper::registerFunction(&engine, proto, setInvisible, "setInvisible");
+            
+            REcmaHelper::registerFunction(&engine, proto, isSelected, "isSelected");
+            
+            REcmaHelper::registerFunction(&engine, proto, setSelected, "setSelected");
+            
             REcmaHelper::registerFunction(&engine, proto, isUndone, "isUndone");
             
             REcmaHelper::registerFunction(&engine, proto, getPropertyTypeIds, "getPropertyTypeIds");
@@ -88,8 +98,6 @@
             REcmaHelper::registerFunction(&engine, proto, setProperty, "setProperty");
             
             REcmaHelper::registerFunction(&engine, proto, hasPropertyType, "hasPropertyType");
-            
-            REcmaHelper::registerFunction(&engine, proto, isSelectedForPropertyEditing, "isSelectedForPropertyEditing");
             
             REcmaHelper::registerFunction(&engine, proto, hasCustomProperties, "hasCustomProperties");
             
@@ -130,6 +138,10 @@
     
             REcmaHelper::registerFunction(&engine, &ctor, init, "init");
             
+            REcmaHelper::registerFunction(&engine, &ctor, setCustomPropertyAttributes, "setCustomPropertyAttributes");
+            
+            REcmaHelper::registerFunction(&engine, &ctor, getCustomPropertyAttributes, "getCustomPropertyAttributes");
+            
 
     // static properties:
     
@@ -155,6 +167,14 @@
             
             ctor.setProperty("PropertyProtected",
                 qScriptValueFromValue(&engine, RObject::PropertyProtected),
+                QScriptValue::SkipInEnumeration | QScriptValue::ReadOnly);
+            
+            ctor.setProperty("PropertySelected",
+                qScriptValueFromValue(&engine, RObject::PropertySelected),
+                QScriptValue::SkipInEnumeration | QScriptValue::ReadOnly);
+            
+            ctor.setProperty("PropertyInvisible",
+                qScriptValueFromValue(&engine, RObject::PropertyInvisible),
                 QScriptValue::SkipInEnumeration | QScriptValue::ReadOnly);
             
 
@@ -188,6 +208,16 @@
 
     ctor.setProperty("Protect",
     QScriptValue(RObject::Protect),
+    QScriptValue::ReadOnly);
+
+
+    ctor.setProperty("Selected",
+    QScriptValue(RObject::Selected),
+    QScriptValue::ReadOnly);
+
+
+    ctor.setProperty("Invisible",
+    QScriptValue(RObject::Invisible),
     QScriptValue::ReadOnly);
 
 
@@ -381,6 +411,55 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaSharedPointerObject::clone", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaSharedPointerObject::mustAlwaysClone
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerObject::mustAlwaysClone", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerObject::mustAlwaysClone";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RObject* self = 
+                        getSelf("mustAlwaysClone", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->mustAlwaysClone();
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RObject.mustAlwaysClone().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerObject::mustAlwaysClone", context, engine);
             return result;
         }
          QScriptValue
@@ -873,6 +952,214 @@
             return result;
         }
          QScriptValue
+        REcmaSharedPointerObject::isInvisible
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerObject::isInvisible", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerObject::isInvisible";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RObject* self = 
+                        getSelf("isInvisible", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isInvisible();
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RObject.isInvisible().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerObject::isInvisible", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaSharedPointerObject::setInvisible
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerObject::setInvisible", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerObject::setInvisible";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RObject* self = 
+                        getSelf("setInvisible", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    bool
+                    a0 =
+                    (bool)
+                    
+                    context->argument( 0 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->setInvisible(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RObject.setInvisible().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerObject::setInvisible", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaSharedPointerObject::isSelected
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerObject::isSelected", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerObject::isSelected";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RObject* self = 
+                        getSelf("isSelected", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isSelected();
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RObject.isSelected().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerObject::isSelected", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaSharedPointerObject::setSelected
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerObject::setSelected", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerObject::setSelected";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RObject* self = 
+                        getSelf("setSelected", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    bool
+                    a0 =
+                    (bool)
+                    
+                    context->argument( 0 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->setSelected(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RObject.setSelected().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerObject::setSelected", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaSharedPointerObject::isUndone
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -955,6 +1242,49 @@
     QSet < RPropertyTypeId > cppResult =
         
                self->getPropertyTypeIds();
+        // return type: QSet < RPropertyTypeId >
+                // QSet (convert to QVariantList):
+                result = REcmaHelper::setToScriptValue(engine, cppResult);
+
+                
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RPropertyAttributes::Option */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is reference
+                    RPropertyAttributes::Option*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RPropertyAttributes::Option*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if( ap0 == NULL ){
+                           return REcmaHelper::throwError("RObject: Argument 0 is not of type RPropertyAttributes::Option*.",
+                               context);                    
+                    }
+                    RPropertyAttributes::Option& a0 = *ap0;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QSet < RPropertyTypeId >'
+    QSet < RPropertyTypeId > cppResult =
+        
+               self->getPropertyTypeIds(a0);
         // return type: QSet < RPropertyTypeId >
                 // QSet (convert to QVariantList):
                 result = REcmaHelper::setToScriptValue(engine, cppResult);
@@ -1261,6 +1591,105 @@
 
 
         
+    
+    if( context->argumentCount() ==
+    4 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RPropertyTypeId */
+     && (
+            context->argument(1).isBool()
+        ) /* type: bool */
+     && (
+            context->argument(2).isBool()
+        ) /* type: bool */
+     && (
+            context->argument(3).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RPropertyTypeId*
+                    ap0 =
+                    qscriptvalue_cast<
+                    RPropertyTypeId*
+                        >(
+                        context->argument(
+                        0
+                        )
+                    );
+                    if (ap0 == NULL) {
+                           return REcmaHelper::throwError("RObject: Argument 0 is not of type RPropertyTypeId.",
+                               context);                    
+                    }
+                    RPropertyTypeId 
+                    a0 = 
+                    *ap0;
+                
+                    // argument isStandardType
+                    bool
+                    a1 =
+                    (bool)
+                    
+                    context->argument( 1 ).
+                    toBool();
+                
+                    // argument isStandardType
+                    bool
+                    a2 =
+                    (bool)
+                    
+                    context->argument( 2 ).
+                    toBool();
+                
+                    // argument isStandardType
+                    bool
+                    a3 =
+                    (bool)
+                    
+                    context->argument( 3 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QPair < QVariant , RPropertyAttributes >'
+    QPair < QVariant , RPropertyAttributes > cppResult =
+        
+               self->getProperty(a0
+        ,
+    a1
+        ,
+    a2
+        ,
+    a3);
+        // return type: QPair < QVariant , RPropertyAttributes >
+                // Pair of ...:
+                //result = REcmaHelper::pairToScriptValue(engine, cppResult);
+                QVariantList vl;
+                QVariant v;
+                
+                    // first type of pair is variant:
+                    if (QString(cppResult.first.typeName())=="RLineweight::Lineweight") {
+                        v.setValue((int)cppResult.first.value<RLineweight::Lineweight>());
+                    }
+                    else {
+                        v.setValue(cppResult.first);
+                    }
+                  
+
+                vl.append(v);
+                v.setValue(cppResult.second);
+                vl.append(v);
+                result = qScriptValueFromValue(engine, vl);
+            
+    } else
+
+
+        
             {
                return REcmaHelper::throwError("Wrong number/types of arguments for RObject.getProperty().",
                    context);
@@ -1520,55 +1949,6 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaSharedPointerObject::hasPropertyType", context, engine);
-            return result;
-        }
-         QScriptValue
-        REcmaSharedPointerObject::isSelectedForPropertyEditing
-        (QScriptContext* context, QScriptEngine* engine) 
-        
-        {
-            //REcmaHelper::functionStart("REcmaSharedPointerObject::isSelectedForPropertyEditing", context, engine);
-            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerObject::isSelectedForPropertyEditing";
-            //QCoreApplication::processEvents();
-
-            QScriptValue result = engine->undefinedValue();
-            
-                    // public function: can be called from ECMA wrapper of ECMA shell:
-                    RObject* self = 
-                        getSelf("isSelectedForPropertyEditing", context);
-                  
-
-                //Q_ASSERT(self!=NULL);
-                if (self==NULL) {
-                    return REcmaHelper::throwError("self is NULL", context);
-                }
-                
-    
-    if( context->argumentCount() ==
-    0
-    ){
-    // prepare arguments:
-    
-    // end of arguments
-
-    // call C++ function:
-    // return type 'bool'
-    bool cppResult =
-        
-               self->isSelectedForPropertyEditing();
-        // return type: bool
-                // standard Type
-                result = QScriptValue(cppResult);
-            
-    } else
-
-
-        
-            {
-               return REcmaHelper::throwError("Wrong number/types of arguments for RObject.isSelectedForPropertyEditing().",
-                   context);
-            }
-            //REcmaHelper::functionEnd("REcmaSharedPointerObject::isSelectedForPropertyEditing", context, engine);
             return result;
         }
          QScriptValue
@@ -2473,7 +2853,70 @@
             context->argument(1).isString()
         ) /* type: QString */
      && (
-            context->argument(2).isArray()
+            context->argument(2).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is pointer
+                    RObject * a0 = NULL;
+
+                    a0 = 
+                        REcmaHelper::scriptValueTo<RObject >(
+                            context->argument(0)
+                        );
+                    
+                    if (a0==NULL && 
+                        !context->argument(0).isNull()) {
+                        return REcmaHelper::throwError("RObject: Argument 0 is not of type RObject *RObject *.", context);                    
+                    }
+                
+                    // argument isStandardType
+                    QString
+                    a1 =
+                    (QString)
+                    
+                    context->argument( 1 ).
+                    toString();
+                
+                    // argument isStandardType
+                    bool
+                    a2 =
+                    (bool)
+                    
+                    context->argument( 2 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->copyCustomPropertiesFrom(a0
+        ,
+    a1
+        ,
+    a2);
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    4 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RObject * */
+     && (
+            context->argument(1).isString()
+        ) /* type: QString */
+     && (
+            context->argument(2).isBool()
+        ) /* type: bool */
+     && (
+            context->argument(3).isArray()
         ) /* type: QStringList */
     
     ){
@@ -2500,13 +2943,21 @@
                     context->argument( 1 ).
                     toString();
                 
+                    // argument isStandardType
+                    bool
+                    a2 =
+                    (bool)
+                    
+                    context->argument( 2 ).
+                    toBool();
+                
                     // argument isArray
                     QStringList
-                    a2;
+                    a3;
                     REcmaHelper::fromScriptValue(
                         engine,
-                        context->argument(2),
-                        a2
+                        context->argument(3),
+                        a3
                     );
                 
     // end of arguments
@@ -2518,7 +2969,196 @@
         ,
     a1
         ,
-    a2);
+    a2
+        ,
+    a3);
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    5 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RObject * */
+     && (
+            context->argument(1).isString()
+        ) /* type: QString */
+     && (
+            context->argument(2).isBool()
+        ) /* type: bool */
+     && (
+            context->argument(3).isArray()
+        ) /* type: QStringList */
+     && (
+            context->argument(4).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is pointer
+                    RObject * a0 = NULL;
+
+                    a0 = 
+                        REcmaHelper::scriptValueTo<RObject >(
+                            context->argument(0)
+                        );
+                    
+                    if (a0==NULL && 
+                        !context->argument(0).isNull()) {
+                        return REcmaHelper::throwError("RObject: Argument 0 is not of type RObject *RObject *.", context);                    
+                    }
+                
+                    // argument isStandardType
+                    QString
+                    a1 =
+                    (QString)
+                    
+                    context->argument( 1 ).
+                    toString();
+                
+                    // argument isStandardType
+                    bool
+                    a2 =
+                    (bool)
+                    
+                    context->argument( 2 ).
+                    toBool();
+                
+                    // argument isArray
+                    QStringList
+                    a3;
+                    REcmaHelper::fromScriptValue(
+                        engine,
+                        context->argument(3),
+                        a3
+                    );
+                
+                    // argument isStandardType
+                    QString
+                    a4 =
+                    (QString)
+                    
+                    context->argument( 4 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->copyCustomPropertiesFrom(a0
+        ,
+    a1
+        ,
+    a2
+        ,
+    a3
+        ,
+    a4);
+    } else
+
+
+        
+    
+    if( context->argumentCount() ==
+    6 && (
+            context->argument(0).isVariant() || 
+            context->argument(0).isQObject() || 
+            context->argument(0).isNull()
+        ) /* type: RObject * */
+     && (
+            context->argument(1).isString()
+        ) /* type: QString */
+     && (
+            context->argument(2).isBool()
+        ) /* type: bool */
+     && (
+            context->argument(3).isArray()
+        ) /* type: QStringList */
+     && (
+            context->argument(4).isString()
+        ) /* type: QString */
+     && (
+            context->argument(5).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument is pointer
+                    RObject * a0 = NULL;
+
+                    a0 = 
+                        REcmaHelper::scriptValueTo<RObject >(
+                            context->argument(0)
+                        );
+                    
+                    if (a0==NULL && 
+                        !context->argument(0).isNull()) {
+                        return REcmaHelper::throwError("RObject: Argument 0 is not of type RObject *RObject *.", context);                    
+                    }
+                
+                    // argument isStandardType
+                    QString
+                    a1 =
+                    (QString)
+                    
+                    context->argument( 1 ).
+                    toString();
+                
+                    // argument isStandardType
+                    bool
+                    a2 =
+                    (bool)
+                    
+                    context->argument( 2 ).
+                    toBool();
+                
+                    // argument isArray
+                    QStringList
+                    a3;
+                    REcmaHelper::fromScriptValue(
+                        engine,
+                        context->argument(3),
+                        a3
+                    );
+                
+                    // argument isStandardType
+                    QString
+                    a4 =
+                    (QString)
+                    
+                    context->argument( 4 ).
+                    toString();
+                
+                    // argument isStandardType
+                    QString
+                    a5 =
+                    (QString)
+                    
+                    context->argument( 5 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->copyCustomPropertiesFrom(a0
+        ,
+    a1
+        ,
+    a2
+        ,
+    a3
+        ,
+    a4
+        ,
+    a5);
     } else
 
 
@@ -2528,6 +3168,152 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaSharedPointerObject::copyCustomPropertiesFrom", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaSharedPointerObject::setCustomPropertyAttributes
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerObject::setCustomPropertyAttributes", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerObject::setCustomPropertyAttributes";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+    
+    if( context->argumentCount() ==
+    3 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+     && (
+            context->argument(1).isString()
+        ) /* type: QString */
+     && (
+            context->argument(2).isVariant() || 
+            context->argument(2).isQObject() || 
+            context->argument(2).isNull()
+        ) /* type: RPropertyAttributes */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+                    // argument isStandardType
+                    QString
+                    a1 =
+                    (QString)
+                    
+                    context->argument( 1 ).
+                    toString();
+                
+                    // argument isCopyable and has default constructor and isSimpleClass 
+                    RPropertyAttributes*
+                    ap2 =
+                    qscriptvalue_cast<
+                    RPropertyAttributes*
+                        >(
+                        context->argument(
+                        2
+                        )
+                    );
+                    if (ap2 == NULL) {
+                           return REcmaHelper::throwError("RObject: Argument 2 is not of type RPropertyAttributes.",
+                               context);                    
+                    }
+                    RPropertyAttributes 
+                    a2 = 
+                    *ap2;
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    RObject::
+       setCustomPropertyAttributes(a0
+        ,
+    a1
+        ,
+    a2);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RObject.setCustomPropertyAttributes().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerObject::setCustomPropertyAttributes", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaSharedPointerObject::getCustomPropertyAttributes
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaSharedPointerObject::getCustomPropertyAttributes", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaSharedPointerObject::getCustomPropertyAttributes";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+    
+    if( context->argumentCount() ==
+    2 && (
+            context->argument(0).isString()
+        ) /* type: QString */
+     && (
+            context->argument(1).isString()
+        ) /* type: QString */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    QString
+                    a0 =
+                    (QString)
+                    
+                    context->argument( 0 ).
+                    toString();
+                
+                    // argument isStandardType
+                    QString
+                    a1 =
+                    (QString)
+                    
+                    context->argument( 1 ).
+                    toString();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'RPropertyAttributes'
+    RPropertyAttributes cppResult =
+        RObject::
+       getCustomPropertyAttributes(a0
+        ,
+    a1);
+        // return type: RPropertyAttributes
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RObject.getCustomPropertyAttributes().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaSharedPointerObject::getCustomPropertyAttributes", context, engine);
             return result;
         }
          QScriptValue

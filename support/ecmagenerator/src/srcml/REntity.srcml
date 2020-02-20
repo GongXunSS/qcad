@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./core" filename="REntity.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -43,6 +43,7 @@
 <class_decl>class <name>REntity</name>;</class_decl>
 <class_decl>class <name>RBlockReferenceEntity</name>;</class_decl>
 <class_decl>class <name>RExporter</name>;</class_decl>
+<class_decl>class <name>RViewportData</name>;</class_decl>
 
 <cpp:ifndef>#<cpp:directive>ifndef</cpp:directive> <name>RDEFAULT_QSET_INT</name></cpp:ifndef>
 <cpp:define>#<cpp:directive>define</cpp:directive> <name>RDEFAULT_QSET_INT</name> <name>QSet</name>&lt;int&gt;()</cpp:define>
@@ -111,8 +112,13 @@
         <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>getType</name><argument_list>()</argument_list></call></expr>;</return>
     }</block></function>
 
+    <function><type><name>virtual</name> <name>bool</name></type> <name>isPointType</name><parameter_list>()</parameter_list> <specifier>const</specifier> <block>{
+        <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>isPointType</name><argument_list>()</argument_list></call></expr>;</return>
+    }</block></function>
+
     <function_decl><type><name>static</name> <name>bool</name></type> <name>isComplex</name><parameter_list>(<param><decl><type><name>const</name> <name><name>RS</name>::<name>EntityType</name></name></type> <name>type</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>static</name> <name>bool</name></type> <name>isDimension</name><parameter_list>(<param><decl><type><name>const</name> <name><name>RS</name>::<name>EntityType</name></name></type> <name>type</name></decl></param>)</parameter_list>;</function_decl>
+    <function_decl><type><name>static</name> <name>bool</name></type> <name>isTextBased</name><parameter_list>(<param><decl><type><name>const</name> <name><name>RS</name>::<name>EntityType</name></name></type> <name>type</name></decl></param>)</parameter_list>;</function_decl>
 
     <comment type="block">/**
      * \return Reference to the data object of the entity.
@@ -152,7 +158,7 @@
     <comment type="block">/**
      * \copydoc REntityData::isSelected
      */</comment>
-    <function><type><name>bool</name></type> <name>isSelected</name><parameter_list>()</parameter_list> <specifier>const</specifier> <block>{
+    <function><type><name>virtual</name> <name>bool</name></type> <name>isSelected</name><parameter_list>()</parameter_list> <specifier>const</specifier> <block>{
         <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>isSelected</name><argument_list>()</argument_list></call></expr>;</return>
     }</block></function>
 
@@ -189,6 +195,13 @@
      */</comment>
     <function><type><name>void</name></type> <name>setLayerId</name><parameter_list>(<param><decl><type><name><name>RLayer</name>::<name>Id</name></name></type> <name>layerId</name></decl></param>)</parameter_list> <block>{
         <expr_stmt><expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>setLayerId</name><argument_list>(<argument><expr><name>layerId</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+    }</block></function>
+
+    <comment type="block">/**
+     * \copydoc REntityData::setLayerName
+     */</comment>
+    <function><type><name>void</name></type> <name>setLayerName</name><parameter_list>(<param><decl><type><name>const</name> <name>QString</name>&amp;</type> <name>n</name></decl></param>)</parameter_list> <block>{
+        <expr_stmt><expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>setLayerName</name><argument_list>(<argument><expr><name>n</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
     }</block></function>
 
     <comment type="block">/**
@@ -268,9 +281,6 @@
      * \copydoc REntityData::setLinetypeScale
      */</comment>
     <function><type><name>void</name></type> <name>setLinetypeScale</name><parameter_list>(<param><decl><type><name>double</name></type> <name>linetypeScale</name></decl></param>)</parameter_list> <block>{
-        <if>if <condition>(<expr><name>linetypeScale</name>&lt;0.0</expr>)</condition><then> <block>{
-            <expr_stmt><expr><call><name>qDebug</name><argument_list>()</argument_list></call> &lt;&lt; "setLinetypeScale to -1"</expr>;</expr_stmt>
-        }</block></then></if>
         <expr_stmt><expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>setLinetypeScale</name><argument_list>(<argument><expr><name>linetypeScale</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
     }</block></function>
 
@@ -314,6 +324,7 @@
         <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>getColor</name><argument_list>()</argument_list></call></expr>;</return>
     }</block></function>
 
+    <function_decl><type><name>RColor</name></type> <name>getColor</name><parameter_list>(<param><decl><type><name>const</name> <name>RColor</name>&amp;</type> <name>unresolvedColor</name></decl></param>, <param><decl><type><name>const</name> <name>QStack<argument_list>&lt;<argument><name>REntity</name>*</argument>&gt;</argument_list></name>&amp;</type> <name>blockRefStack</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>RColor</name></type> <name>getColor</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>resolve</name></decl></param>, <param><decl><type><name>const</name> <name>QStack<argument_list>&lt;<argument><name>REntity</name>*</argument>&gt;</argument_list></name>&amp;</type> <name>blockRefStack</name></decl></param>)</parameter_list>;</function_decl>
 
     <function><type><name>RColor</name></type> <name>getDisplayColor</name><parameter_list>()</parameter_list> <block>{
@@ -335,6 +346,13 @@
      */</comment>
     <function><type><name>virtual</name> <name>void</name></type> <name>to2D</name><parameter_list>()</parameter_list> <block>{
         <expr_stmt><expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>to2D</name><argument_list>()</argument_list></call></expr>;</expr_stmt>
+    }</block></function>
+
+    <comment type="block">/**
+     * \copydoc REntityData::setZ
+     */</comment>
+    <function><type><name>virtual</name> <name>void</name></type> <name>setZ</name><parameter_list>(<param><decl><type><name>double</name></type> <name>z</name></decl></param>)</parameter_list> <block>{
+        <expr_stmt><expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>setZ</name><argument_list>(<argument><expr><name>z</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
     }</block></function>
 
     <comment type="block">/**
@@ -494,11 +512,17 @@
     }</block></function>
 
     <comment type="block">/**
+     * \copydoc REntityData::clickReferencePoint
+     */</comment>
+    <function><type><name>virtual</name> <name>bool</name></type> <name>clickReferencePoint</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>referencePoint</name></decl></param>)</parameter_list> <block>{
+        <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>clickReferencePoint</name><argument_list>(<argument><expr><name>referencePoint</name></expr></argument>)</argument_list></call></expr>;</return>
+    }</block></function>
+
+    <comment type="block">/**
      * \copydoc REntityData::moveReferencePoint
      */</comment>
-    <function><type><name>virtual</name> <name>bool</name></type> <name>moveReferencePoint</name><parameter_list>(
-        <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>referencePoint</name></decl></param>, <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>targetPoint</name></decl></param>)</parameter_list> <block>{
-        <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>moveReferencePoint</name><argument_list>(<argument><expr><name>referencePoint</name></expr></argument>, <argument><expr><name>targetPoint</name></expr></argument>)</argument_list></call></expr>;</return>
+    <function><type><name>virtual</name> <name>bool</name></type> <name>moveReferencePoint</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>referencePoint</name></decl></param>, <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>targetPoint</name></decl></param>, <param><decl><type><name><name>Qt</name>::<name>KeyboardModifiers</name></name></type> <name>modifiers</name> =<init> <expr><name><name>Qt</name>::<name>NoModifier</name></name></expr></init></decl></param>)</parameter_list> <block>{
+        <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>moveReferencePoint</name><argument_list>(<argument><expr><name>referencePoint</name></expr></argument>, <argument><expr><name>targetPoint</name></expr></argument>, <argument><expr><name>modifiers</name></expr></argument>)</argument_list></call></expr>;</return>
     }</block></function>
 
     <comment type="block">/**
@@ -518,23 +542,29 @@
     <comment type="block">/**
      * \copydoc REntityData::scale
      */</comment>
-    <function><type><name>virtual</name> <name>bool</name></type> <name>scale</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>scaleFactors</name></decl></param>,
-        <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name> =<init> <expr><name>RDEFAULT_RVECTOR</name></expr></init></decl></param>)</parameter_list> <block>{
-
+    <function><type><name>virtual</name> <name>bool</name></type> <name>scale</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>scaleFactors</name></decl></param>, <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name> =<init> <expr><name>RDEFAULT_RVECTOR</name></expr></init></decl></param>)</parameter_list> <block>{
         <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>scale</name><argument_list>(<argument><expr><name>scaleFactors</name></expr></argument>, <argument><expr><name>center</name></expr></argument>)</argument_list></call></expr>;</return>
     }</block></function>
 
     <comment type="block">/**
+     * \copydoc REntityData::scaleNonUniform
+     */</comment>
+    <function_decl><type><name>virtual</name> <name>QSharedPointer<argument_list>&lt;<argument><name>REntity</name></argument>&gt;</argument_list></name></type> <name>scaleNonUniform</name><parameter_list>(<param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>scaleFactors</name></decl></param>, <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name> =<init> <expr><name>RDEFAULT_RVECTOR</name></expr></init></decl></param>)</parameter_list>;</function_decl>
+
+    <comment type="block">/**
      * \copydoc REntityData::scale
      */</comment>
-    <function><type><name>virtual</name> <name>bool</name></type> <name>scale</name><parameter_list>(<param><decl><type><name>double</name></type> <name>scaleFactor</name></decl></param>,
-        <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name> =<init> <expr><name>RDEFAULT_RVECTOR</name></expr></init></decl></param>)</parameter_list> <block>{
-
+    <function><type><name>virtual</name> <name>bool</name></type> <name>scale</name><parameter_list>(<param><decl><type><name>double</name></type> <name>scaleFactor</name></decl></param>, <param><decl><type><name>const</name> <name>RVector</name>&amp;</type> <name>center</name> =<init> <expr><name>RDEFAULT_RVECTOR</name></expr></init></decl></param>)</parameter_list> <block>{
         <return>return <expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>scale</name><argument_list>(<argument><expr><name>scaleFactor</name></expr></argument>, <argument><expr><name>center</name></expr></argument>)</argument_list></call></expr>;</return>
     }</block></function>
 
     <function><type><name>virtual</name> <name>void</name></type> <name>scaleVisualProperties</name><parameter_list>(<param><decl><type><name>double</name></type> <name>scaleFactor</name></decl></param>)</parameter_list> <block>{
         <expr_stmt><expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>scaleVisualProperties</name><argument_list>(<argument><expr><name>scaleFactor</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+    }</block></function>
+
+    <function><type><name>virtual</name> <name>void</name></type> <name>setViewportContext</name><parameter_list>(<param><decl><type><name>const</name> <name>RViewportData</name>&amp;</type></decl></param>)</parameter_list> <block>{
+        <comment type="line">// MSVC does not compile this:</comment>
+        <comment type="line">//Q_UNUSED(vp);</comment>
     }</block></function>
 
     <comment type="block">/**
@@ -600,23 +630,18 @@
      */</comment>
     <function_decl><type><name>virtual</name> <name>void</name></type> <name>exportEntity</name><parameter_list>(<param><decl><type><name>RExporter</name>&amp;</type> <name>e</name></decl></param>, <param><decl><type><name>bool</name></type> <name>preview</name> =<init> <expr><name>false</name></expr></init></decl></param>, <param><decl><type><name>bool</name></type> <name>forceSelected</name>=<init><expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier> <specifier>= 0</specifier>;</function_decl>
 
-    <comment type="line">// from RObject:</comment>
-    <function><type><name>virtual</name> <name>bool</name></type> <name>isSelectedForPropertyEditing</name><parameter_list>()</parameter_list> <block>{
-        <return>return <expr><call><name>isSelected</name><argument_list>()</argument_list></call></expr>;</return>
-    }</block></function>
-
     <function><type><name>virtual</name> <name>void</name></type> <name>setAutoUpdatesBlocked</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>on</name></decl></param>)</parameter_list> <block>{
         <expr_stmt><expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>setAutoUpdatesBlocked</name><argument_list>(<argument><expr><name>on</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
     }</block></function>
 
     <function_decl><type><name>virtual</name> <name>QPair<argument_list>&lt;<argument><name>QVariant</name></argument>, <argument><name>RPropertyAttributes</name></argument>&gt;</argument_list></name></type> <name>getProperty</name><parameter_list>(
             <param><decl><type><name>RPropertyTypeId</name>&amp;</type> <name>propertyTypeId</name></decl></param>,
-            <param><decl><type><name>bool</name></type> <name>humanReadable</name> =<init> <expr><name>false</name></expr></init></decl></param>, <param><decl><type><name>bool</name></type> <name>noAttributes</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list>;</function_decl>
+            <param><decl><type><name>bool</name></type> <name>humanReadable</name> =<init> <expr><name>false</name></expr></init></decl></param>, <param><decl><type><name>bool</name></type> <name>noAttributes</name> =<init> <expr><name>false</name></expr></init></decl></param>, <param><decl><type><name>bool</name></type> <name>showOnRequest</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name>virtual</name> <name>bool</name></type> <name>setProperty</name><parameter_list>(<param><decl><type><name>RPropertyTypeId</name></type> <name>propertyTypeId</name></decl></param>,
             <param><decl><type><name>const</name> <name>QVariant</name>&amp;</type> <name>value</name></decl></param>, <param><decl><type><name>RTransaction</name>*</type> <name>transaction</name>=<init><expr><name>NULL</name></expr></init></decl></param>)</parameter_list>;</function_decl>
 
-    <function_decl><type><name>virtual</name> <name>bool</name></type> <name>isVisible</name><parameter_list>()</parameter_list> <specifier>const</specifier>;</function_decl>
+    <function_decl><type><name>virtual</name> <name>bool</name></type> <name>isVisible</name><parameter_list>(<param><decl><type><name><name>RBlock</name>::<name>Id</name></name></type> <name>blockId</name> =<init> <expr><name><name>RBlock</name>::<name>INVALID_ID</name></name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
     <function_decl><type><name>virtual</name> <name>bool</name></type> <name>isEditable</name><parameter_list>(<param><decl><type><name>bool</name></type> <name>allowInvisible</name> =<init> <expr><name>false</name></expr></init></decl></param>)</parameter_list> <specifier>const</specifier>;</function_decl>
 
     <function><type><name>virtual</name> <name>int</name></type> <name>getComplexity</name><parameter_list>()</parameter_list> <specifier>const</specifier> <block>{
@@ -626,6 +651,7 @@
 </public><protected>protected:
     <comment type="block">/**
      * \copydoc REntityData::setParentId
+     * Use RStorage::setEntityParentId instead.
      */</comment>
     <function><type><name>void</name></type> <name>setParentId</name><parameter_list>(<param><decl><type><name><name>REntity</name>::<name>Id</name></name></type> <name>parentId</name></decl></param>)</parameter_list> <block>{
         <expr_stmt><expr><call><name>getData</name><argument_list>()</argument_list></call>.<call><name>setParentId</name><argument_list>(<argument><expr><name>parentId</name></expr></argument>)</argument_list></call></expr>;</expr_stmt>

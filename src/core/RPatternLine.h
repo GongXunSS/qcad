@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -32,6 +32,7 @@
  *
  * \ingroup core
  * \scriptable
+ * \copyable
  * \hasStreamOperator
  */
 class QCADCORE_EXPORT RPatternLine {
@@ -43,8 +44,20 @@ public:
 
     RPainterPath getPainterPath() const;
     bool hasDots() const;
-    QList<RLine> getLines() const;
+    QList<RLine> getLines(bool includeDashes = false) const;
     double getLength() const;
+    double getAngle() const {
+        return angle;
+    }
+    RVector getOffset() const {
+        return offset;
+    }
+    RVector getBasePoint() const {
+        return basePoint;
+    }
+    QList<double> getDashes() const {
+        return dashes;
+    }
     void scale(double f);
     void rotate(double a);
 };

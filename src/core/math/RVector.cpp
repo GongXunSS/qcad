@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -61,7 +61,7 @@ bool RVector::isValid() const {
 }
 
 bool RVector::isZero() const {
-    return getMagnitude()<RS::PointTolerance;
+    return fabs(x)<RS::PointTolerance && fabs(y)<RS::PointTolerance && fabs(z)<RS::PointTolerance;
 }
 
 bool RVector::isSane() const {
@@ -261,7 +261,7 @@ bool RVector::equalsFuzzy2D(const RVector& v, double tol) const {
  */
 double RVector::getDistanceTo(const RVector& v) const {
     if (!valid || !v.valid) {
-        return RMAXDOUBLE;
+        return RNANDOUBLE;
     } else {
         return (*this - v).getMagnitude();
     }
@@ -272,7 +272,7 @@ double RVector::getDistanceTo(const RVector& v) const {
  */
 double RVector::getDistanceTo2D(const RVector& v) const {
     if (!valid || !v.valid) {
-        return RMAXDOUBLE;
+        return RNANDOUBLE;
     } else {
         return (*this - v).getMagnitude2D();
     }
@@ -331,6 +331,12 @@ RVector RVector::rotate(double rotation, const RVector& center) {
     return *this;
 }
 
+RVector RVector::getRotated(double rotation, const RVector& center) const {
+    RVector ret = *this;
+    ret.rotate(rotation, center);
+    return ret;
+}
+
 RVector RVector::rotate3D(const RLine& axis, double rotation) {
     RVector off = -axis.getStartPoint();
     RVector ret = *this;
@@ -384,6 +390,12 @@ RVector RVector::scale(const RVector& factors, const RVector& center) {
     return *this;
 }
 
+RVector RVector::getScaled(const RVector& factors, const RVector& center) const {
+    RVector ret = *this;
+    ret.scale(factors, center);
+    return ret;
+}
+
 void RVector::scaleList(QList<RVector>& list, double factor, const RVector& center) {
     for (int i=0; i<list.length(); i++) {
         list[i].scale(factor, center);
@@ -413,6 +425,12 @@ RVector RVector::mirror(const RLine& axis) {
     }
 
     return *this;
+}
+
+RVector RVector::getMirrored(const RLine& axis) const {
+    RVector ret = *this;
+    ret.mirror(axis);
+    return ret;
 }
 
 RVector RVector::mirror(const RVector& axis1, const RVector& axis2) {
@@ -679,6 +697,10 @@ RVector RVector::getNegated() const {
     return RVector(-x, -y, -z, valid);
 }
 
+RVector RVector::getAbsolute() const {
+    return RVector(fabs(x), fabs(y), fabs(z));
+}
+
 /**
  * Normalizes this vector and returns a reference to this vector.
  */
@@ -756,13 +778,17 @@ bool RVector::operator ==(const RVector& v) const {
 }
 
 bool RVector::containsFuzzy(const QList<RVector>& vectors, const RVector& v, double tol) {
+    return findFirstFuzzy(vectors, v, tol)!=-1;
+}
+
+int RVector::findFirstFuzzy(const QList<RVector>& vectors, const RVector& v, double tol) {
     for (int i=0; i<vectors.length(); i++) {
         if (v.equalsFuzzy(vectors[i], tol)) {
-            return true;
+            return i;
         }
     }
 
-    return false;
+    return -1;
 }
 
 /**
@@ -1193,7 +1219,7 @@ RVector operator*(double s, const RVector& v) {
  * Stream operator for QDebug
  */
 QDebug operator<<(QDebug dbg, const RVector& v) {
-    dbg.nospace() << "RVector(" << v.x << ", " << v.y << ", " << v.z << ", " << v.valid << ")";
+    dbg.nospace() << QString("RVector(%1, %2, %3, %4)").arg(v.x, 0, 'f').arg(v.y, 0, 'f').arg(v.z, 0, 'f').arg(v.valid);
     return dbg;
 }
 

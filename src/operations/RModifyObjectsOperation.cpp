@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -77,7 +77,17 @@ void RModifyObjectsOperation::transformSelection(RTransformation* transformation
                 entity->move(translationOffset * k);
             }
 
-            addObject(entity, useCurrentAttributes, !move);
+            //QSet<RPropertyTypeId> props = entity->getPropertyTypeIds(RPropertyAttributes::Location);
+
+            RAddObjectsOperation::Flags flags = RAddObjectsOperation::GeometryOnly;
+            if (!useCurrentAttributes) {
+                flags = flags | RAddObjectsOperation::UseAttributes;
+            }
+            if (!move) {
+                flags = flags | RAddObjectsOperation::ForceNew;
+            }
+
+            addObject(entity, flags);
         }
         endCycle();
     }

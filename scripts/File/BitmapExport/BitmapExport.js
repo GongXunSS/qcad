@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../File.js");
+include("scripts/File/File.js");
 include("BitmapExportWorker.js");
 include("scripts/Tools/arguments.js");
 
@@ -75,12 +75,12 @@ BitmapExport.prototype.beginEvent = function() {
         print("Error: cannot save file: ", bmpFileName);
         print("Error: ", res[1]);
         appWin.handleUserWarning(
-                qsTr("Error while generating Bitmap file '%1': %2")
+                qsTr("Error while generating bitmap file \"%1\": %2")
                     .arg(bmpFileName).arg(res[1]));
     }
     else {
         appWin.handleUserMessage(
-                qsTr("Bitmap file has been exported to '%1'").arg(bmpFileName));
+                qsTr("Bitmap file has been exported to \"%1\"").arg(bmpFileName));
     }
 
     this.terminate();
@@ -91,17 +91,8 @@ BitmapExport.prototype.getFilename = function() {
 
     var drawingFileName = this.getDocument().getFileName();
     var lastUsedExtension = RSettings.getStringValue("BitmapExport/Extension", "bmp");
-    var initialPath = "";
-    //var initialFile = "";
-    if (drawingFileName.length === 0) {
-        fi = new QFileInfo(QDir.homePath());
-        initialPath = fi.absoluteFilePath() + QDir.separator
-                + stripDirtyFlag(EAction.getMdiChild().windowTitle) + "." + lastUsedExtension;;
-        //initialFile = fi.completeBaseName();
-    } else {
-        fi = new QFileInfo(drawingFileName);
-        initialPath = fi.path() + QDir.separator + fi.completeBaseName() + "." + lastUsedExtension;
-    }
+
+    var initialPath = File.getInitialSaveAsPath(drawingFileName, lastUsedExtension);
 
     var formats = QImageWriter.supportedImageFormats();
     var filters = [];
@@ -164,6 +155,7 @@ BitmapExport.prototype.getProperties = function() {
 
     var whiteRadio = this.dialog.findChild("WhiteBackground");
     var blackRadio = this.dialog.findChild("BlackBackground");
+    var transparentRadio = this.dialog.findChild("TransparentBackground");
 
     var monoRadio = this.dialog.findChild("ColorMonochrome");
     var grayRadio = this.dialog.findChild("ColorGrayscale");
@@ -171,6 +163,8 @@ BitmapExport.prototype.getProperties = function() {
 
     var antiAliasingCheckbox = this.dialog.findChild("AntiAliasing");
 
+    var selectionCheckbox = this.dialog.findChild("Selection");
+    selectionCheckbox.toggled.connect(this, "selectionChanged");
     var weightMarginCheckbox = this.dialog.findChild("WeightMargin");
 
     widthEdit.valueChanged.connect(
@@ -204,9 +198,13 @@ BitmapExport.prototype.getProperties = function() {
     if (whiteRadio.checked) {
         ret["backgroundColor"] = new QColor("white");
     }
-    else {
+    else if (blackRadio.checked) {
         ret["backgroundColor"] = new QColor("black");
     }
+    else {
+        ret["backgroundColor"] = new QColor("#000000ff");
+    }
+
     ret["margin"] = RMath.eval(marginCombo.currentText);
     ret["antialiasing"] = antiAliasingCheckbox.checked;
     if (monoRadio.checked) {
@@ -216,11 +214,24 @@ BitmapExport.prototype.getProperties = function() {
       ret["grayscale"] = true;
     }
 
-    ret["noweightmargin"] = !weightMarginCheckbox.checked
+    ret["noWeightMargin"] = !weightMarginCheckbox.checked;
+
+    if (selectionCheckbox.checked) {
+        var doc = this.getDocument();
+        ret["entityIds"] = doc.querySelectedEntities();
+    }
 
     this.dialog.destroy();
     EAction.activateMainWindow();
     return ret;
+};
+
+BitmapExport.prototype.selectionChanged = function(value) {
+    this.documentWidth = undefined;
+    this.documentHeight = undefined;
+
+    var resolutionCombo = this.dialog.findChild("Resolution");
+    this.resolutionChanged(resolutionCombo.currentText);
 };
 
 BitmapExport.prototype.resolutionChanged = function(str) {
@@ -235,11 +246,19 @@ BitmapExport.prototype.resolutionChanged = function(str) {
 
     var widthEdit = this.dialog.findChild("Width");
     var heightEdit = this.dialog.findChild("Height");
+    var selectionCheckbox = this.dialog.findChild("Selection");
 
     if (isNull(this.documentWidth) || isNull(this.documentHeight)) {
         var document = this.getDocument();
-        this.documentWidth = document.getBoundingBox(true, true).getWidth();
-        this.documentHeight = document.getBoundingBox(true, true).getHeight();
+        var bb;
+        if (selectionCheckbox.checked) {
+            bb = document.getSelectionBox();
+        }
+        else {
+            bb = document.getBoundingBox(true, true);
+        }
+        this.documentWidth = bb.getWidth();
+        this.documentHeight = bb.getHeight();
     }
 
     widthEdit.setValue(Math.ceil(res * this.documentWidth));
@@ -252,6 +271,13 @@ BitmapExport.prototype.exportBitmap = function(di, fileName, properties) {
     var view = di.getLastKnownViewWithFocus();
     var scene = view.getScene();
 
-    return exportBitmap(di.getDocument(), scene, fileName, properties);
+    var ret = exportBitmap(di.getDocument(), scene, fileName, properties);
+
+    // restore selection before export:
+    if (!isNull(properties["entityids"])) {
+        di.selectEntities(properties["entityids"]);
+    }
+
+    return ret;
 };
 

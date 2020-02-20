@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -29,11 +29,13 @@
 
 
 RGraphicsView::RGraphicsView(RGraphicsScene* scene) :
+      exporting(false),
       printing(false),
       printPreview(false),
       printPointSize(1.0, 1.0),
       colorMode(RGraphicsView::FullColor),
       hairlineMode(false),
+      hairlineMinimumMode(false),
       scene(NULL),
       grid(NULL),
       navigationAction(NULL),
@@ -204,14 +206,35 @@ void RGraphicsView::autoZoom(int margin, bool ignoreEmpty, bool ignoreLineweight
     zoomTo(bb, (margin!=-1 ? margin : getMargin()));
 }
 
-bool RGraphicsView::zoomToSelection() {
+bool RGraphicsView::zoomToSelection(int margin) {
     RDocument* document = getDocument();
     if (document == NULL) {
         return false;
     }
     RBox selectionBox = document->getSelectionBox();
     if (selectionBox.isValid() && (selectionBox.getWidth()>RS::PointTolerance || selectionBox.getHeight()>RS::PointTolerance)) {
-        zoomTo(selectionBox, getMargin());
+        zoomTo(selectionBox, (margin!=-1 ? margin : getMargin()));
+        return true;
+    }
+    return false;
+}
+
+bool RGraphicsView::zoomToEntities(const QSet<REntity::Id>& ids, int margin) {
+    RDocument* document = getDocument();
+    if (document == NULL) {
+        return false;
+    }
+    RBox bb;
+    QSet<REntity::Id>::const_iterator it;
+    for (it=ids.constBegin(); it!=ids.constEnd(); it++) {
+        REntity::Id id = *it;
+        QSharedPointer<REntity> e = document->queryEntityDirect(id);
+        if (!e.isNull()) {
+            bb.growToInclude(e->getBoundingBox());
+        }
+    }
+    if (bb.isValid() && (bb.getWidth()>RS::PointTolerance || bb.getHeight()>RS::PointTolerance)) {
+        zoomTo(bb, (margin!=-1 ? margin : getMargin()));
         return true;
     }
     return false;
@@ -260,8 +283,8 @@ void RGraphicsView::zoomOut() {
  * Zooms in by factor 1.2. The given \c center point stays
  * at the same position.
  */
-void RGraphicsView::zoomIn(const RVector& center) {
-    zoom(center, 1.2);
+void RGraphicsView::zoomIn(const RVector& center, double factor) {
+    zoom(center, factor);
 }
 
 
@@ -270,8 +293,11 @@ void RGraphicsView::zoomIn(const RVector& center) {
  * Zooms out by factor 1.0/1.2. The given \c center point stays
  * at the same position.
  */
-void RGraphicsView::zoomOut(const RVector& center) {
-    zoom(center, 1.0/1.2);
+void RGraphicsView::zoomOut(const RVector& center, double factor) {
+    if (factor<RS::PointTolerance) {
+        return;
+    }
+    zoom(center, 1.0/factor);
 }
 
 
@@ -542,7 +568,6 @@ void RGraphicsView::handleKeyPressEvent(QKeyEvent& event) {
     if (navigationAction != NULL) {
         navigationAction->keyPressEvent(event);
     }
-    event.ignore();
 }
 
 void RGraphicsView::handleKeyReleaseEvent(QKeyEvent& event) {
@@ -753,15 +778,19 @@ RRefPoint RGraphicsView::getClosestReferencePoint(const RVector& screenPosition,
 
     double minDist = (double) range;
 
-    QMultiMap<REntity::Id, RRefPoint>& referencePoints = scene->getReferencePoints();
-    QMultiMap<REntity::Id, RRefPoint>::iterator it;
+    QMap<REntity::Id, QList<RRefPoint> >& referencePoints = scene->getReferencePoints();
+    QMap<REntity::Id, QList<RRefPoint> >::iterator it;
     for (it = referencePoints.begin(); it != referencePoints.end(); it++) {
-        RVector rp = mapToView(*it);
+        QList<RRefPoint>& list = it.value();
 
-        double dist = screenPosition.getDistanceTo(rp);
-        if (dist < minDist) {
-            minDist = dist;
-            ret = *it;
+        for (int i=0; i<list.length(); i++) {
+            RVector rp = mapToView(list[i]);
+
+            double dist = screenPosition.getDistanceTo(rp);
+            if (dist < minDist) {
+                minDist = dist;
+                ret = list[i];
+            }
         }
     }
 
@@ -895,6 +924,18 @@ int RGraphicsView::getMargin() {
     return margin;
 }
 
+void RGraphicsView::setExporting(bool on) {
+    exporting = on;
+}
+
+bool RGraphicsView::isExporting() const {
+    return exporting;
+}
+
+bool RGraphicsView::isPrintingOrExporting() const {
+    return isPrinting() || isExporting();
+}
+
 void RGraphicsView::setPrinting(bool on) {
     printing = on;
 }
@@ -931,6 +972,14 @@ bool RGraphicsView::getHairlineMode() {
     return hairlineMode;
 }
 
+void RGraphicsView::setHairlineMinimumMode(bool on) {
+    hairlineMinimumMode = on;
+}
+
+bool RGraphicsView::getHairlineMinimumMode() {
+    return hairlineMinimumMode;
+}
+
 QList<RTextLabel> RGraphicsView::getTextLabels() {
     return textLabels;
 }
@@ -955,13 +1004,13 @@ bool RGraphicsView::isPathVisible(const RPainterPath &path) const {
 
     if (featureSize>RS::PointTolerance) {
         // paths feature size is too small to be displayed (display real text):
-        if (!isPrinting() && featureSizePx<=textHeightThreshold) {
+        if (!isPrintingOrExporting() && featureSizePx<=textHeightThreshold) {
             return false;
         }
     }
     else if (featureSize<-RS::PointTolerance) {
         // paths feature size is too large to be displayed (bounding box):
-        if (isPrinting() || featureSizePx>textHeightThreshold) {
+        if (isPrintingOrExporting() || featureSizePx>textHeightThreshold) {
             return false;
         }
     }

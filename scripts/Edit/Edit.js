@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,7 @@
  * \brief This module contains ECMAScript implementations of the editing tools
  * (copy, paste, undo, redo, delete, ...)
  */
-include("../EAction.js");
+include("scripts/EAction.js");
 
 /**
  * \class Edit
@@ -67,7 +67,7 @@ Edit.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(false);
         action.setIcon(Edit.includeBasePath + "/Edit.svg");
-        action.setStatusTip(qsTr("Show edit tools"));
+        //action.setStatusTip(qsTr("Show edit tools"));
         action.setNoState();
         action.setDefaultCommands(["editmenu"]);
         action.setGroupSortOrder(10);

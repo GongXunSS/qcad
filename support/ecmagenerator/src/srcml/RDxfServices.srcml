@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <unit xmlns="http://www.sdml.info/srcML/src" xmlns:cpp="http://www.sdml.info/srcML/cpp" language="C++" dir="./core" filename="RDxfServices.h"><comment type="block">/**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -51,6 +51,8 @@
     <constructor_decl><name>RDxfServices</name><parameter_list>()</parameter_list>;</constructor_decl>
 
     <function_decl><type><name>void</name></type> <name>reset</name><parameter_list>()</parameter_list>;</function_decl>
+
+    <function_decl><type><name>static</name> <name>QString</name></type> <name>getSafeBlockName</name><parameter_list>(<param><decl><type><name>QString</name>&amp;</type> <name>blockName</name></decl></param>)</parameter_list>;</function_decl>
 
     <function_decl><type><name>void</name></type> <name>fixBlockName</name><parameter_list>(<param><decl><type><name>QString</name>&amp;</type> <name>blockName</name></decl></param>)</parameter_list>;</function_decl>
     <function_decl><type><name>void</name></type> <name>fixLayerName</name><parameter_list>(<param><decl><type><name>QString</name>&amp;</type> <name>layerName</name></decl></param>)</parameter_list>;</function_decl>

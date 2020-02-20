@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  *
  * This file is part of the QCAD project.
  *
@@ -139,6 +139,7 @@ void RShapesExporter::exportShapesBetween(int i1, const RVector& p1, int i2, con
         if (i!=i1 && i!=i2) {
             // whole shape is between points:
             exporter.exportShapeSegment(shapes[i], angle);
+            continue;
         }
 
         QSharedPointer<RShape> shape = QSharedPointer<RShape>(shapes[i]->clone());

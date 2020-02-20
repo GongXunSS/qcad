@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -28,11 +28,18 @@ LinetypeSettings.getPreferencesCategory = function(appPreferences) {
 };
 
 LinetypeSettings.initPreferences = function(pageWidget, calledByPrefDialog, document, preferencesAction) {
-    var linetypeScaleEdit = pageWidget.findChild("Scale");
+    if (isNull(document)) {
+        return;
+    }
 
-    if (!isNull(document)) {
-        linetypeScaleEdit.setValue(document.getLinetypeScale());
-        linetypeScaleEdit.setProperty("Loaded", true);
+    var linetypeScaleEdit = pageWidget.findChild("Scale");
+    linetypeScaleEdit.setValue(document.getLinetypeScale());
+    linetypeScaleEdit.setProperty("Loaded", true);
+
+    if (hasPlugin("DWG")) {
+        var psltscale = pageWidget.findChild("PSLTSCALE");
+        psltscale.checked = !document.getKnownVariable(RS.PSLTSCALE, false);
+        psltscale.setProperty("Loaded", true);
     }
 };
 
@@ -44,4 +51,10 @@ LinetypeSettings.savePreferences = function(pageWidget, calledByPrefDialog, docu
     var linetypeScaleEdit = pageWidget.findChild("Scale");
     document.setLinetypeScale(linetypeScaleEdit.getValue(), transaction);
     linetypeScaleEdit.setProperty("Saved", true);
+
+    if (hasPlugin("DWG")) {
+        var psltscale = pageWidget.findChild("PSLTSCALE");
+        document.setKnownVariable(RS.PSLTSCALE, !psltscale.checked);
+        psltscale.setProperty("Saved", true);
+    }
 };

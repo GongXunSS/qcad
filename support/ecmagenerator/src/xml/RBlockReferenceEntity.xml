@@ -41,7 +41,13 @@ xmlns:rs="http://www.ribbonsoft.com">
     specifier="public" isStatic="false" isVirtual="true"
     isScriptOverwritable="true">
       <variant returnType="QSet &lt; RPropertyTypeId &gt;"
-      isPureVirtual="false" />
+      isPureVirtual="false">
+        <arg type="RPropertyAttributes::Option"
+        typeName="RPropertyAttributes::Option" name="option"
+        hasDefault="true"
+        default="RPropertyAttributes :: NoOptions"
+        isConst="false" />
+      </variant>
     </method>
     <method name="setProperty" cppName="setProperty"
     specifier="public" isStatic="false" isVirtual="true"
@@ -67,6 +73,8 @@ xmlns:rs="http://www.ribbonsoft.com">
         <arg type="bool" typeName="bool" name="humanReadable"
         hasDefault="true" default="false" isConst="false" />
         <arg type="bool" typeName="bool" name="noAttributes"
+        hasDefault="true" default="false" isConst="false" />
+        <arg type="bool" typeName="bool" name="showOnRequest"
         hasDefault="true" default="false" isConst="false" />
       </variant>
     </method>
@@ -211,6 +219,8 @@ xmlns:rs="http://www.ribbonsoft.com">
       isPureVirtual="false">
         <arg type="REntity::Id" typeName="REntity::Id"
         name="entityId" isConst="false" />
+        <arg type="bool" typeName="bool" name="transform"
+        hasDefault="true" default="false" isConst="false" />
       </variant>
     </method>
     <method name="applyTransformationTo"

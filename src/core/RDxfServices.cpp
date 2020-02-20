@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -124,6 +124,13 @@ void RDxfServices::detectVersion2Format(const QString& fileName) {
 
         file.close();
     }
+}
+
+QString RDxfServices::getSafeBlockName(QString& blockName) {
+    QString ret = blockName;
+    ret.replace(QRegExp("[<>/\":;?*|,=`\\\\\n]"), "_");
+    ret.replace(QChar(0x0083), "_");
+    return ret;
 }
 
 void RDxfServices::fixBlockName(QString& blockName) {

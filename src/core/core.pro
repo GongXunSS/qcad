@@ -30,6 +30,7 @@ SOURCES += \
     RImporter.cpp \
     RInputEvent.cpp \
     RLayer.cpp \
+    RLayerState.cpp \
     RLayout.cpp \
     RLinetype.cpp \
     RLinetypeList.cpp \
@@ -160,6 +161,7 @@ HEADERS = \
     RInterTransactionListener.h \
     RInputEvent.h \
     RLayer.h \
+    RLayerState.h \
     RLayout.h \
     RLayerListener.h \
     RLinetype.h \
@@ -264,12 +266,19 @@ HEADERS = \
     math/RRay.h \
     math/RRefPoint.h \
     math/RShape.h \
+    math/RShapeProxy.h \
     math/RSpline.h \
     math/RSplineProxy.h \
     math/RTextLabel.h \
     math/RTriangle.h \
     math/RVector.h \
     math/RXLine.h
+
+macx {
+    OBJECTIVE_SOURCES += $$PWD/detectmacdarkmode.mm
+    OBJECTIVE_HEADERS += $$PWD/detectmacdarkmode.h
+}
+
 TEMPLATE = lib
 
 r_static_libs {
@@ -282,6 +291,7 @@ else {
 NAME = $${RLIBNAME}core
 TARGET = $${NAME}
 RESOURCES = resources/core.qrc
+RC_FILE = core.rc
 OTHER_FILES += core.dox math/math.dox
 DEFINES += QCADCORE_LIBRARY
 
@@ -293,7 +303,7 @@ win32 {
 }
 
 macx {
-    QMAKE_LFLAGS += -framework ApplicationServices
+    QMAKE_LFLAGS += -framework ApplicationServices -framework Foundation
 }
 
 linux-g++* {

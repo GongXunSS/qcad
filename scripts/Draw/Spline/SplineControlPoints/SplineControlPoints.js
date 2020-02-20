@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Spline.js");
+include("scripts/Draw/Spline/Spline.js");
 
 /**
  * \class SplineControlPoints
@@ -70,7 +70,7 @@ SplineControlPoints.prototype.setState = function(state) {
         this.setCommandPrompt(trNextPoint);
         this.setLeftMouseTip(trNextPoint);
         if (this.spline.isValid()) {
-            this.setRightMouseTip(qsTr("Done"));
+            this.setRightMouseTip(EAction.trDone);
         }
         else {
             this.setRightMouseTip(EAction.trCancel);

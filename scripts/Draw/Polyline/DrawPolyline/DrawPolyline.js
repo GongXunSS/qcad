@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * Various changes added 2014 by Robert S.
  *
@@ -39,10 +39,11 @@ function DrawPolyline(guiAction) {
     this.redoList = [];
     this.sweep = 0.0;
 
-    this.setUiOptions("DrawPolyline.ui");
+    this.setUiOptions(DrawPolyline.includeBasePath + "/DrawPolyline.ui");
 }
 
 DrawPolyline.prototype = new Polyline();
+DrawPolyline.includeBasePath = includeBasePath;
 
 DrawPolyline.State = {
     SettingFirstVertex : 0,
@@ -79,7 +80,7 @@ DrawPolyline.prototype.initState = function(state) {
         var trNextVertex = qsTr("Next vertex");
         this.setCommandPrompt(trNextVertex);
         this.setLeftMouseTip(trNextVertex);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         EAction.showSnapTools();
         break;
     }

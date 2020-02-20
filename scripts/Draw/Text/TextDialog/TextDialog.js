@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -55,8 +55,8 @@ function TextDialog(mode) {
     this.sourceEdit = undefined;
 
     this.actionTextBold = undefined;
-    //this.actionTextUnderline = undefined;
     this.actionTextItalic = undefined;
+    this.actionTextUnderline = undefined;
 
     this.actionSubscript = undefined;
     this.actionSuperscript = undefined;
@@ -122,12 +122,18 @@ TextDialog.prototype.show =  function(textDataIn) {
     }
 
     this.dialog = WidgetFactory.createDialog(TextDialog.basePath, "TextDialog.ui", EAction.getMainWindow());
-    this.dialog.windowIcon = new QIcon(autoIconPath(TextDialog.basePath + "/../Text.svg"));
 
     // initialize dialog controls:
     this.textEdit = this.dialog.findChild("Text");
     this.sourceEdit = this.dialog.findChild("Source");
     this.tabWidget = this.dialog.findChild("TabWidget");
+
+    // brighter background of text area in dark mode:
+    if (RSettings.hasDarkGuiBackground()) {
+        var p = this.textEdit.palette;
+        p.setColor(QPalette.Active, QPalette.Base, new QColor(Qt.gray));
+        this.textEdit.palette = p;
+    }
 
     // main font combo box:
     var comboMainFont = this.dialog.findChild("MainFont");
@@ -252,6 +258,7 @@ TextDialog.prototype.show =  function(textDataIn) {
         editMainHeight.setValue(textDataIn.getTextHeight());
         this.sourceEdit.setPlainText(textDataIn.getEscapedText());
         this.updateRichText(true);
+        //qDebug("this.sourceEdit:", this.sourceEdit.plainText);
         if (textDataIn.getVAlign()==RS.VAlignTop) {
             if (textDataIn.getHAlign()==RS.HAlignLeft || textDataIn.getHAlign()==RS.HAlignFit || textDataIn.getHAlign()==RS.HAlignAlign) {
                 buttonTopLeft.checked = true;
@@ -394,6 +401,7 @@ TextDialog.prototype.show =  function(textDataIn) {
     }
 
     this.mainFontChanged();
+
     this.colorChanged(this.textEdit.textColor());
     this.colorChanged(this.initialColor);
 
@@ -547,7 +555,6 @@ TextDialog.prototype.setupTextActions = function() {
     this.actionTextItalic.checkable = true;
     this.dialog.findChild("Italic").setDefaultAction(this.actionTextItalic);
 
-    /*
     this.actionTextUnderline = new QAction(new QIcon(autoIconPath(TextDialog.basePath + "/Underline.svg")), qsTr("&Underline"), this.dialog);
     this.actionTextUnderline.shortcut = Qt.CTRL + Qt.Key_U;
     var underline = new QFont();
@@ -556,7 +563,6 @@ TextDialog.prototype.setupTextActions = function() {
     this.actionTextUnderline.triggered.connect(this, "textUnderline");
     this.actionTextUnderline.checkable = true;
     this.dialog.findChild("Underline").setDefaultAction(this.actionTextUnderline);
-    */
 
     this.actionSubscript = new QAction(new QIcon(autoIconPath(TextDialog.basePath + "/Subscript.svg")), qsTr("&Subscript"), this.dialog);
     this.actionSubscript.shortcut = new QKeySequence(Qt.ShiftModifier | Qt.ControlModifier | Qt.Key_B);
@@ -646,14 +652,9 @@ TextDialog.prototype.mainFontChanged = function() {
     var previousMainFont = this.mainFont;
     this.mainFont = font;
 
-    //qDebug("\n\nHTML after altering DOM: \n", dom.toString(-1), "\n\n");
-
     font.setPointSizeF(font.pointSizeF() * this.fontHeightFactor);
     this.textEdit.font = font;
     document.defaultFont = font;
-
-    //qDebug("\n\nnew html 1: ", dom.toString(-1));
-    //html = dom.toString(-1);
 
     //qDebug("\n\nHTML after setting default font: \n", html, "\n\n");
 
@@ -780,13 +781,11 @@ TextDialog.prototype.textItalic = function() {
 /**
  * Called when user clicks underline button.
  */
-/*
 TextDialog.prototype.textUnderline = function() {
     var fmt = new QTextCharFormat();
     fmt.setFontUnderline(this.actionTextUnderline.checked);
     this.mergeFormatOnWordOrSelection(fmt);
 };
-*/
 
 /**
  * Called when user clicks subscript button.
@@ -928,18 +927,20 @@ TextDialog.prototype.fontChanged = function(font) {
 
     this.actionTextBold.setChecked(font.bold());
     this.actionTextItalic.setChecked(font.italic());
-    //this.actionTextUnderline.setChecked(font.underline());
+    this.actionTextUnderline.setChecked(font.underline());
 };
 
 /**
  * Called when user changes the current color or the color under the cursor changed.
  */
 TextDialog.prototype.colorChanged = function(c) {
-    // make sure that very bright text is readable:
-    if (c.lightness()>240) {
-        var p = this.textEdit.palette;
-        p.setColor(QPalette.Active, QPalette.Base, new QColor(Qt.lightGray));
-        this.textEdit.palette = p;
+    if (!RSettings.hasDarkGuiBackground()) {
+        // make sure that very bright text is readable:
+        if (c.lightness()>240) {
+            var p = this.textEdit.palette;
+            p.setColor(QPalette.Active, QPalette.Base, new QColor(Qt.lightGray));
+            this.textEdit.palette = p;
+        }
     }
 
     var pix = new QPixmap(16, 16);
@@ -997,7 +998,9 @@ TextDialog.prototype.updateSource = function(force) {
         var textDocument = new QTextDocument();
         textDocument.setHtml(html);
         textDocument.defaultFont = this.getTextDocument().defaultFont;
-        var source = RTextBasedData.toEscapedText(textDocument, this.initialColor, this.fontHeightFactor);
+        var cbSimpleText = this.dialog.findChild("SimpleText");
+        var source = RTextBasedData.toEscapedText(textDocument, this.initialColor, this.fontHeightFactor, cbSimpleText.checked);
+        //qDebug("source: \n\n", source, "\n\n");
         this.sourceEdit.setPlainText(source);
         this.getTextDocument().modified = false;
     }
@@ -1012,7 +1015,7 @@ TextDialog.prototype.updateRichText = function(force) {
         source = source.replace("\n", "\\P");
         var richText = RTextBasedData.toRichText(source, this.getMainFont(), this.fontHeightFactor);
         //richText = richText.replace("<html>", "<html xmlns='http://www.w3.org/1999/xhtml' xml:space='preserve'>");
-        //qDebug("HTML: \n\n", richText, "\n\n");
+        //qDebug("richText: \n\n", richText, "\n\n");
         this.textEdit.setHtml(richText);
         //qDebug("HTML from text edit: \n\n", this.textEdit.html, "\n\n");
         this.getSourceDocument().modified = false;

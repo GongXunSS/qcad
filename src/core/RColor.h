@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -30,7 +30,9 @@
 #include <QIcon>
 #include <QDebug>
 
+#ifndef RDEFAULT_QSIZE_ICON
 #define RDEFAULT_QSIZE_ICON QSize(32,10)
+#endif
 
 /**
  * Color. Fixed RGBA or ByLayer or ByBlock.
@@ -72,6 +74,7 @@ public:
     int getColorIndex() const;
 
     static void removeColor(const QString& cn);
+    static void addColor(const QString& cn, const RColor& c);
     static RColor createFromCadIndex(const QString& code) {
         return createFromCadIndex(code.toInt());
     }

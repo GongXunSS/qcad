@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -19,7 +19,7 @@
 
 include("../NewFile/NewFile.js");
 
-if (new QFileInfo("scripts/File/AutoSave/AutoSave.js")) {
+if (exists("scripts/File/AutoSave/AutoSave.js")) {
     include("scripts/File/AutoSave/AutoSave.js");
 }
 
@@ -41,8 +41,9 @@ OpenFile.prototype = new NewFile();
 OpenFile.prototype.beginEvent = function() {
     File.prototype.beginEvent.call(this);
 
-    var filters = RFileImporterRegistry.getFilterStrings();
-    if (filters.length===0) {
+    var filterStrings = RFileImporterRegistry.getFilterStrings();
+    filterStrings = translateFilterStrings(filterStrings);
+    if (filterStrings.length===0) {
         EAction.handleUserWarning(qsTr("No import filters have been found. Aborting..."));
         return;
     }
@@ -72,9 +73,9 @@ OpenFile.prototype.beginEvent = function() {
             RSettings.getDocumentsLocation());
     var appWin = EAction.getMainWindow();
     var fileDialog = new QFileDialog(appWin, qsTr("Open Drawing"), lastOpenFileDir, "");
-    var allFilter = filters[0];
-    filters = new Array(qsTr("All Files") + " (*)").concat(filters);
-    fileDialog.setNameFilters(filters);
+    var allFilter = filterStrings[0];
+    filterStrings = new Array(qsTr("All Files") + " (*)").concat(filterStrings);
+    fileDialog.setNameFilters(filterStrings);
     fileDialog.selectNameFilter(allFilter);
     fileDialog.setOption(QFileDialog.DontUseNativeDialog, getDontUseNativeDialog());
     if (!isNull(QFileDialog.DontUseCustomDirectoryIcons)) {
@@ -90,8 +91,10 @@ OpenFile.prototype.beginEvent = function() {
 
     if (!fileDialog.exec()) {
         fileDialog.destroy();
+        EAction.activateMainWindow();
         return;
     }
+    EAction.activateMainWindow();
     RSettings.setValue("OpenFile/Path", fileDialog.directory().absolutePath());
     
     var fileNames = fileDialog.selectedFiles();
@@ -100,5 +103,6 @@ OpenFile.prototype.beginEvent = function() {
         NewFile.createMdiChild(fileNames[i], nameFilter);
     }
     fileDialog.destroy();
+    EAction.activateMainWindow();
 };
 

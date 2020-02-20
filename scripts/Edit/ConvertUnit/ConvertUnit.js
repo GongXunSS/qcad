@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  *
  * This file is part of the QCAD project.
  *
@@ -86,7 +86,7 @@ ConvertUnit.convert = function(di, fromUnit, toUnit) {
         return [1, qsTr("Nothing to be done.")];
     }
     if (fromUnit === RS.None || toUnit === RS.None) {
-        return [1, qsTr("Unit '%1' selected - Nothing to be done").arg(RUnit.unitToName(RS.None))];
+        return [1, qsTr("Unit \"%1\" selected. Nothing to be done").arg(RUnit.unitToName(RS.None))];
     }
 
     var factor = RUnit.convert(1.0, fromUnit, toUnit);
@@ -117,10 +117,21 @@ ConvertUnit.convert = function(di, fromUnit, toUnit) {
             continue;
         }
 
+        var blockId = entity.getBlockId();
+        var block = doc.queryBlockDirect(blockId);
+        if (!isNull(block) && block.isPixelUnit()) {
+            // don't touch entities in pixel unit blocks:
+            continue;
+        }
+
         // don't scale block references as block content is scaled instead:
         if (isBlockReferenceEntity(entity)) {
             var p = entity.getPosition();
             entity.setPosition(p.operator_multiply(factor));
+            var cs = entity.getColumnSpacing();
+            entity.setColumnSpacing(cs*factor);
+            var rs = entity.getRowSpacing();
+            entity.setRowSpacing(rs*factor);
         } else if (isViewportEntity(entity)) {
             var s = entity.getScale();
             entity.scale(factor);
@@ -201,7 +212,7 @@ ConvertUnit.convert = function(di, fromUnit, toUnit) {
 
     //var offset = Print.getOffset(doc);
     //offset.scale(factor);
-    //Print.setOffset(doc, offset);
+    //Print.setOffset(di, offset);
 
     doc.rebuildSpatialIndex();
 

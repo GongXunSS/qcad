@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -23,7 +23,7 @@
  *
  * \brief This module contains ECMAScript implementations of various dimensioning tools.
  */
-include("../Draw.js");
+include("scripts/Draw/Draw.js");
 
 /**
  * \class Dimension
@@ -54,7 +54,7 @@ Dimension.prototype.initUiOptions = function(resume, optionsToolBar) {
 
     // for some dimensions (e.g. leader), no standard dimensions toolbar
     // is shown:
-    if (!this.uiFile.contains("../Dimension.ui")) {
+    if (this.uiFile.join(",").indexOf("/Dimension.ui")===-1) {
         return;
     }
 
@@ -91,9 +91,18 @@ Dimension.prototype.initUiOptions = function(resume, optionsToolBar) {
     if (!isNull(doc)) {
         var block = doc.queryCurrentBlock();
         if (!isNull(block) && block.hasLayout() && block.isModelSpace()) {
-            var cbAuto = optionsToolBar.findChild("AutoScaleAction");
-            if (!isNull(cbAuto)) {
-                cbAuto.visible = false;
+            var cbAutoAction = optionsToolBar.findChild("AutoScaleAction");
+            if (!isNull(cbAutoAction)) {
+                cbAutoAction.visible = false;
+                var cbAuto = optionsToolBar.findChild("AutoScale");
+                cbAuto.checked = false;
+                if (!resume) {
+                    // don't (re-)initialize or save state of auto checkbox:
+                    cbAuto.setProperty("Loaded", true);
+                    cbAuto.setProperty("Saved", true);
+                }
+                var scaleCombo = optionsToolBar.findChild("Scale");
+                scaleCombo.setEnabled(true);
             }
         }
     }
@@ -144,7 +153,7 @@ Dimension.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         action.setIcon(Dimension.includeBasePath + "/Dimension.svg");
-        action.setStatusTip(qsTr("Show dimension tools"));
+        //action.setStatusTip(qsTr("Show dimension tools"));
         action.setDefaultShortcut(new QKeySequence("w,d"));
         action.setNoState();
         action.setDefaultCommands(["dimensionmenu"]);

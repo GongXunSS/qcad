@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -69,6 +69,11 @@ public:
     /** \return the name of this pattern. */
     const QString getName() const {
         return name;
+    }
+
+    /** \return the description of this pattern. */
+    const QString getDescription() const {
+        return description;
     }
 
     /**

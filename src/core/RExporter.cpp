@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -58,16 +58,11 @@ RExporter::RExporter()
       pixelUnit(false),
       clipping(false),
       pixelWidth(false),
+      penCapStyle(Qt::RoundCap),
+      //combineTransforms(true),
       projectionRenderingHint(RS::RenderThreeD) {
 
-    currentPen.setColor(Qt::white);
-    currentPen.setWidth(3);
-    currentPen.setCapStyle(Qt::RoundCap);
-    currentPen.setJoinStyle(Qt::RoundJoin);
-    currentPen.setStyle(Qt::SolidLine);
-
-    currentBrush.setColor(Qt::white);
-    currentBrush.setStyle(Qt::SolidPattern);
+    init();
 }
 
 RExporter::RExporter(RDocument& document, RMessageHandler *messageHandler, RProgressHandler *progressHandler)
@@ -83,23 +78,35 @@ RExporter::RExporter(RDocument& document, RMessageHandler *messageHandler, RProg
       pixelUnit(false),
       clipping(false),
       pixelWidth(false),
+      penCapStyle(Qt::RoundCap),
+      //combineTransforms(true),
       projectionRenderingHint(RS::RenderThreeD) {
 
     Q_UNUSED(messageHandler)
     Q_UNUSED(progressHandler)
 
-    currentPen.setColor(Qt::white);
-    currentPen.setWidth(3);
-    currentPen.setCapStyle(Qt::RoundCap);
-    currentPen.setJoinStyle(Qt::RoundJoin);
-
-    currentBrush.setColor(Qt::white);
-    currentBrush.setStyle(Qt::SolidPattern);
+    init();
 }
 
 
 
 RExporter::~RExporter() {
+}
+
+void RExporter::init() {
+    currentPen.setColor(Qt::white);
+    currentPen.setWidth(3);
+    currentPen.setStyle(Qt::SolidLine);
+
+    currentBrush.setColor(Qt::white);
+    currentBrush.setStyle(Qt::SolidPattern);
+
+    // init pen cap style (usually round):
+    //int v = RSettings::getIntValue("GraphicsView/PenCapStyle", Qt::RoundCap);
+    //penCapStyle = (Qt::PenCapStyle)v;
+    currentPen.setCapStyle(penCapStyle);
+    // needed when exporting polyline to bitmap:
+    currentPen.setJoinStyle(Qt::RoundJoin);
 }
 
 QString RExporter::getErrorMessage() const {
@@ -214,7 +221,7 @@ bool RExporter::getClipping() const {
  */
 void RExporter::setPen(const QPen& pen) {
     currentPen = pen;
-    currentPen.setCapStyle(Qt::RoundCap);
+    currentPen.setCapStyle(penCapStyle);
     currentPen.setJoinStyle(Qt::RoundJoin);
 }
 
@@ -309,9 +316,20 @@ QBrush RExporter::getBrush() {
     return currentBrush;
 }
 
+RColor RExporter::getColor(const RColor& unresolvedColor) {
+    REntity* currentEntity = getEntity();
+    if (currentEntity == NULL) {
+        qWarning() << "no current entity";
+        return RColor();
+    }
+
+    return currentEntity->getColor(unresolvedColor, blockRefViewportStack);
+}
+
 RColor RExporter::getColor(bool resolve) {
     REntity* currentEntity = getEntity();
     if (currentEntity == NULL) {
+        qWarning() << "no current entity";
         return RColor();
     }
 
@@ -465,6 +483,7 @@ bool RExporter::exportDocument() {
     }
     exportLinetypes();
     exportLayers();
+    exportLayerStates();
     exportBlocks();
     exportViews();
     if (isVisualExporter()) {
@@ -510,6 +529,7 @@ void RExporter::exportEntities(bool allBlocks, bool undone) {
     QSet<REntity::Id> ids = document->queryAllEntities(undone, allBlocks);
 
     // 20110815: ordered export (TODO: optional?):
+    // needed for order of block contents (DXF export tests)
     QList<REntity::Id> list = document->getStorage().orderBackToFront(ids);
 
     QList<REntity::Id>::iterator it;
@@ -533,10 +553,22 @@ void RExporter::exportLayers() {
     }
 }
 
+void RExporter::exportLayerStates() {
+    QSet<RLayerState::Id> ids = document->queryAllLayerStates();
+    QSet<RLayerState::Id>::iterator it;
+    for (it = ids.begin(); it != ids.end(); it++) {
+        QSharedPointer<RLayerState> ls = document->queryLayerStateDirect(*it);
+        if (!ls.isNull()) {
+            exportLayerState(*ls);
+        }
+    }
+}
+
 void RExporter::exportBlocks() {
     QSet<RBlock::Id> ids = document->queryAllBlocks();
-    QSet<RBlock::Id>::iterator it;
-    for (it = ids.begin(); it != ids.end(); it++) {
+    QList<RBlock::Id> idsSorted = document->sortBlocks(ids.toList());
+    QList<RBlock::Id>::iterator it;
+    for (it = idsSorted.begin(); it != idsSorted.end(); it++) {
         QSharedPointer<RBlock> e = document->queryBlock(*it);
         if (!e.isNull()) {
             exportBlock(*e);
@@ -623,7 +655,7 @@ void RExporter::exportEntity(REntity& entity, bool preview, bool allBlocks, bool
 
     // entity not on current block and allBlocks==false, break:
     if (!allBlocks && doc->getCurrentBlockId()!=entity.getBlockId()) {
-        qDebug() << "entity not on current block";
+        qDebug() << "entity on block " << entity.getBlockId() << "[" << entity.getBlockName() << "]" << " (not on current block" << doc->getCurrentBlockId() << "[" << doc->getCurrentBlockName() <<  "])";
         //unexportEntity(entity.getId());
         return;
     }
@@ -820,7 +852,10 @@ bool RExporter::isEntitySelected() {
     }
 }
 
-
+bool RExporter::isPatternContinuous(const RLinetypePattern& p) {
+    return !p.isValid() || p.getNumDashes()<=1 ||
+           draftMode || getScreenBasedLinetypes() || twoColorSelectedMode;
+}
 
 /**
  * This is called for entities for which an export was requested
@@ -983,7 +1018,7 @@ double RExporter::exportLine(const RLine& line, double offset) {
 
         // check if we're on the line already
         // (since we might start before the line due to pattern offset):
-        if (nextTotal > 0.0) {
+        if (nextTotal > -RS::PointTolerance) {
             dash = RLine(cursor, cursor + vp[i]);
 
             if (!isGap) {
@@ -1236,7 +1271,7 @@ void RExporter::exportArcSegment(const RArc& arc, bool allowForZeroLength) {
     double segmentLength;
     if (pixelSizeHint>0.0) {
         // approximate arc with segments with the length of 2 pixels:
-        segmentLength = pixelSizeHint * 2;
+        segmentLength = getCurrentPixelSizeHint() * 2;
     }
     else {
         segmentLength = arc.getRadius() / 40.0;
@@ -1353,7 +1388,7 @@ void RExporter::exportEllipse(const REllipse& ellipse, double offset) {
         if (a1>a2-RS::AngleTolerance) {
             a2+=2*M_PI;
         }
-        for(a=a1+aStep; a<=a2; a+=aStep) {
+        for (a=a1+aStep; a<=a2; a+=aStep) {
             vp.set(cp.x+cos(a)*radius1,
                    cp.y+sin(a)*radius2);
             vp.rotate(angle, vc);
@@ -1364,7 +1399,7 @@ void RExporter::exportEllipse(const REllipse& ellipse, double offset) {
         if (a1<a2+RS::AngleTolerance) {
             a2-=2*M_PI;
         }
-        for(a=a1-aStep; a>=a2; a-=aStep) {
+        for (a=a1-aStep; a>=a2; a-=aStep) {
             vp.set(cp.x+cos(a)*radius1,
                    cp.y+sin(a)*radius2);
             vp.rotate(angle, vc);
@@ -1387,11 +1422,7 @@ void RExporter::exportEllipse(const REllipse& ellipse, double offset) {
 void RExporter::exportPolyline(const RPolyline& polyline, bool polylineGen, double offset) {
     RLinetypePattern p = getLinetypePattern();
 
-    bool continuous = false;
-    if (getEntity() == NULL || !p.isValid() || p.getNumDashes() <= 1 || draftMode || getScreenBasedLinetypes() || twoColorSelectedMode) {
-        continuous = true;
-    }
-
+    bool continuous = getEntity()==NULL || isPatternContinuous(p);
     if (!continuous) {
         p.scale(getLineTypePatternScale(p));
 
@@ -1438,10 +1469,7 @@ void RExporter::exportSplineSegment(const RSpline& spline) {
 void RExporter::exportSpline(const RSpline& spline, double offset) {
     RLinetypePattern p = getLinetypePattern();
 
-    bool continuous = false;
-    if (getEntity() == NULL || !p.isValid() || p.getNumDashes() <= 1 || draftMode || getScreenBasedLinetypes() || twoColorSelectedMode) {
-        continuous = true;
-    }
+    bool continuous = getEntity()==NULL || isPatternContinuous(p);
 
     p.scale(getLineTypePatternScale(p));
     double patternLength = p.getPatternLength();
@@ -1509,7 +1537,7 @@ void RExporter::exportExplodable(const RExplodable& explodable, double offset) {
     QList<QSharedPointer<RShape> > sub = explodable.getExploded();
 
     RLinetypePattern p = getLinetypePattern();
-    if (!p.isValid() || p.getNumDashes() <= 1 || draftMode || getScreenBasedLinetypes() || twoColorSelectedMode) {
+    if (isPatternContinuous(p)) {
         for (int i=0; i<sub.length(); i++) {
             QSharedPointer<RLine> lineP = sub[i].dynamicCast<RLine>();
             if (!lineP.isNull()) {
@@ -1551,12 +1579,14 @@ void RExporter::exportExplodable(const RExplodable& explodable, double offset) {
     }
 }
 
-void RExporter::exportPainterPathSource(const RPainterPathSource& pathSource) {
-    exportPainterPaths(pathSource.getPainterPaths(false, pixelSizeHint));
+void RExporter::exportPainterPathSource(const RPainterPathSource& pathSource, double z) {
+    exportPainterPaths(pathSource.getPainterPaths(false, pixelSizeHint), z);
 }
 
-void RExporter::exportPainterPaths(const QList<RPainterPath>& paths) {
+void RExporter::exportPainterPaths(const QList<RPainterPath>& paths, double z) {
     Q_UNUSED(paths)
+    Q_UNUSED(z)
+
     // TODO: split up painter paths into line semgents, splines (?), arcs...
 }
 
@@ -1587,6 +1617,36 @@ QList<RPainterPath> RExporter::exportText(const RTextBasedData& text, bool force
 void RExporter::exportClipRectangle(const RBox& clipRectangle, bool forceSelected) {
     Q_UNUSED(clipRectangle)
     Q_UNUSED(forceSelected)
+}
+
+void RExporter::exportTransform(const QTransform& t) {
+    Q_UNUSED(t)
+}
+
+void RExporter::exportEndTransform() {
+}
+
+void RExporter::exportTranslation(const RVector& offset) {
+    Q_UNUSED(offset)
+}
+
+void RExporter::exportEndTranslation() {
+}
+
+void RExporter::exportRotation(double angle) {
+    Q_UNUSED(angle)
+
+}
+
+void RExporter::exportEndRotation() {
+}
+
+void RExporter::exportScale(const RVector& factors) {
+    blockScales.push(qMax(qAbs(factors.x), qAbs(factors.y)));
+}
+
+void RExporter::exportEndScale() {
+    blockScales.pop();
 }
 
 double RExporter::getLineTypePatternScale(const RLinetypePattern& p) const {
@@ -1770,4 +1830,21 @@ void RExporter::exportShapeSegment(QSharedPointer<RShape> shape, double angle) {
     }
 
     // TODO: ellipse
+}
+
+/**
+ * \return pixel size hint in context of current block.
+ */
+double RExporter::getCurrentPixelSizeHint() const {
+    double ret = pixelSizeHint;
+
+    // adjust pixel size hint, based on block context:
+    for (int i=0; i<blockScales.size(); i++) {
+        // blockScale array contains absolute values:
+        if (blockScales[i]>RS::PointTolerance) {
+            ret /= blockScales[i];
+        }
+    }
+
+    return ret;
 }

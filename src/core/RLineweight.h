@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -30,13 +30,17 @@
 #include <QMap>
 #include <QList>
 
+#ifndef RDEFAULT_QSIZE_ICON
+#define RDEFAULT_QSIZE_ICON QSize(32,10)
+#endif
+
 /**
  * \scriptable
  * \copyable
  */
 class QCADCORE_EXPORT RLineweight {
 
-    Q_DECLARE_TR_FUNCTIONS(RLineweight);
+    Q_DECLARE_TR_FUNCTIONS(RLineweight)
 
 public:
     enum Lineweight {
@@ -73,7 +77,7 @@ public:
 public:
     RLineweight();
     static QList<QPair<QString, RLineweight::Lineweight> > getList(bool onlyFixed);
-    static QIcon getIcon(RLineweight::Lineweight color);
+    static QIcon getIcon(RLineweight::Lineweight color, const QSize& size = RDEFAULT_QSIZE_ICON);
     static QString getName(RLineweight::Lineweight lineweight);
 
 private:
@@ -83,7 +87,8 @@ private:
 private:
     static bool isInitialized;
     static QList<QPair<QString, RLineweight::Lineweight> > list;
-    static QMap<RLineweight::Lineweight, QIcon> iconMap;
+    //static QMap<RLineweight::Lineweight, QIcon> iconMap;
+    static QMap<QPair<RLineweight::Lineweight, QPair<int, int> >, QIcon> iconMap;
 
 };
 

@@ -1,5 +1,7 @@
 include( ../../shared.pri )
 
+QT += concurrent
+
 SOURCES += \
     RShortcutLineEdit.cpp \
     RCharacterWidget.cpp \
@@ -19,8 +21,10 @@ SOURCES += \
     RLinetypeCombo.cpp \
     RLinetypeComboDelegate.cpp \
     RLineweightCombo.cpp \
+    RListView.cpp \
     RListWidget.cpp \
     RMainWindowQt.cpp \
+    RMathComboBox.cpp \
     RMathLineEdit.cpp \
     RMdiArea.cpp \
     RMdiChildQt.cpp \
@@ -53,6 +57,7 @@ HEADERS += \
     RListView.h \
     RListWidget.h \
     RMainWindowQt.h \
+    RMathComboBox.h \
     RMathLineEdit.h \
     RMdiArea.h \
     RMdiChildQt.h \
@@ -85,4 +90,5 @@ NAME = $${RLIBNAME}gui
 TARGET = $${NAME}
 OTHER_FILES += gui.dox
 DEFINES += QCADGUI_LIBRARY
+RC_FILE = gui.rc
 !win32:include( ../../shared_ts.pri )

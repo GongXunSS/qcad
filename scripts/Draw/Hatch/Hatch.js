@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,7 @@
  * \brief This module contains ECMAScript implementations of various 
  * hatch and fill drawing tools.
  */
-include("../Draw.js");
+include("scripts/Draw/Draw.js");
 
 /**
  * \class Hatch
@@ -74,7 +74,7 @@ Hatch.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         action.setIcon(Hatch.includeBasePath + "/Hatch.svg");
-        action.setStatusTip(qsTr("Show hatch tools"));
+        //action.setStatusTip(qsTr("Show hatch tools"));
         action.setDefaultShortcut(new QKeySequence("w,x"));
         action.setNoState();
         action.setDefaultCommands(["hatchmenu"]);

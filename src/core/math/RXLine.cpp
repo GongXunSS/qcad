@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -56,9 +56,9 @@ RBox RXLine::getBoundingBox() const {
     );
 }
 
-void RXLine::to2D() {
-    basePoint.z = 0.0;
-    directionVector.z = 0.0;
+void RXLine::setZ(double z) {
+    basePoint.z = z;
+    directionVector.z = z;
 }
 
 QList<RVector> RXLine::getVectorProperties() const {
@@ -130,7 +130,16 @@ RS::Ending RXLine::getTrimEnd(const RVector& trimPoint, const RVector& clickPoin
 }
 
 double RXLine::getDistanceFromStart(const RVector& p) const {
-    return basePoint.getDistanceTo(p);
+    double ret = basePoint.getDistanceTo(p);
+
+    RVector p2 = getClosestPointOnShape(p, false);
+    double angle = basePoint.getAngleTo(p2);
+    if (RMath::isSameDirection(getAngle(), angle, M_PI/2)) {
+        return ret;
+    }
+    else {
+        return -ret;
+    }
 }
 
 RVector RXLine::getBasePoint() const {
@@ -176,6 +185,11 @@ QList<RVector> RXLine::getCenterPoints() const {
 QList<RVector> RXLine::getPointsWithDistanceToEnd(double distance, int from) const {
     Q_UNUSED(distance)
     Q_UNUSED(from)
+    return QList<RVector>();
+}
+
+QList<RVector> RXLine::getPointCloud(double segmentLength) const {
+    Q_UNUSED(segmentLength)
     return QList<RVector>();
 }
 

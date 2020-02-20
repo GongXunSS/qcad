@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -40,7 +40,7 @@ ExLayerCustomProperty.prototype.beginEvent = function() {
     var layer = document.queryLayer("0");
     layer.setCustomProperty(RSettings.getAppId(), "MyCustomProperty", "Custom Property Value");
     op.addObject(layer);
-    EAction.handleUserMessage(qsTr("Added custom property 'MyCustomProperty' to layer '0'."));
+    EAction.handleUserMessage(qsTr("Added custom property \"MyCustomProperty\" to layer \"0\"."));
     di.applyOperation(op);
 
     this.terminate();

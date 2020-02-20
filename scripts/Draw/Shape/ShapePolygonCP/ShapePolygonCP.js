@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -27,6 +27,7 @@ include("../Shape.js");
 function ShapePolygonCP(guiAction) {
     Shape.call(this, guiAction);
 
+    this.numberOfCorners = undefined;
     this.center = undefined;
     this.corner = undefined;
 
@@ -65,7 +66,7 @@ ShapePolygonCP.prototype.setState = function(state) {
         var trCornerPoint = qsTr("Corner point");
         this.setCommandPrompt(trCornerPoint);
         this.setLeftMouseTip(trCornerPoint);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         break;
     }
 

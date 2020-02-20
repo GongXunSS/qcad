@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -66,9 +66,10 @@ void RPointEntity::init() {
     RPointEntity::PropertyColor.generateId(typeid(RPointEntity), REntity::PropertyColor);
     RPointEntity::PropertyDisplayedColor.generateId(typeid(RPointEntity), REntity::PropertyDisplayedColor);
     RPointEntity::PropertyDrawOrder.generateId(typeid(RPointEntity), REntity::PropertyDrawOrder);
-    RPointEntity::PropertyPositionX.generateId(typeid(RPointEntity), QT_TRANSLATE_NOOP("REntity", "Position"), QT_TRANSLATE_NOOP("REntity", "X"));
-    RPointEntity::PropertyPositionY.generateId(typeid(RPointEntity), QT_TRANSLATE_NOOP("REntity", "Position"), QT_TRANSLATE_NOOP("REntity", "Y"));
-    RPointEntity::PropertyPositionZ.generateId(typeid(RPointEntity), QT_TRANSLATE_NOOP("REntity", "Position"), QT_TRANSLATE_NOOP("REntity", "Z"));
+
+    RPointEntity::PropertyPositionX.generateId(typeid(RPointEntity), QT_TRANSLATE_NOOP("REntity", "Position"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RPointEntity::PropertyPositionY.generateId(typeid(RPointEntity), QT_TRANSLATE_NOOP("REntity", "Position"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RPointEntity::PropertyPositionZ.generateId(typeid(RPointEntity), QT_TRANSLATE_NOOP("REntity", "Position"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
 }
 
 bool RPointEntity::setProperty(RPropertyTypeId propertyTypeId,
@@ -81,7 +82,7 @@ bool RPointEntity::setProperty(RPropertyTypeId propertyTypeId,
 }
 
 QPair<QVariant, RPropertyAttributes> RPointEntity::getProperty(
-        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes) {
+        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes, bool showOnRequest) {
     if (propertyTypeId == PropertyPositionX) {
         return qMakePair(QVariant(data.position.x), RPropertyAttributes());
     } else if (propertyTypeId == PropertyPositionY) {
@@ -89,7 +90,7 @@ QPair<QVariant, RPropertyAttributes> RPointEntity::getProperty(
     } else if (propertyTypeId == PropertyPositionZ) {
         return qMakePair(QVariant(data.position.z), RPropertyAttributes());
     }
-    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 

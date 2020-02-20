@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -90,6 +90,7 @@ ExFileExporter.prototype.exportFile = function(fileName, nameFilter, setFileName
     }
 
     var ts = new QTextStream(file);
+    ts.setCodec("UTF-8");
     ts.writeString("Example");
 
     file.close();
@@ -118,7 +119,7 @@ ExRegisterFileExporter.prototype.beginEvent = function() {
     QMessageBox.information(
         appWin,
         qsTr("Info"),
-        qsTr("Registered a file exporter for file type '.example'. Use File > Save As to see the filter in action.")
+        qsTr("Registered a file exporter for file type \".example\". Use File > Save As to see the filter in action.")
     );
 };
 

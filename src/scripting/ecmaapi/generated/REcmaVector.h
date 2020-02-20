@@ -147,13 +147,22 @@
         rotate
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getRotated
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         rotate3D
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         scale
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getScaled
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         mirror
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getMirrored
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         flipHorizontal
@@ -228,6 +237,9 @@
         getNegated
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        getAbsolute
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         dot
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -268,6 +280,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         containsFuzzy
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        findFirstFuzzy
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getMinimum

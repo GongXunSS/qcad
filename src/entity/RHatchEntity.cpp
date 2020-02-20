@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -83,15 +83,15 @@ void RHatchEntity::init() {
 
     RHatchEntity::PropertyPatternName.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Pattern"), QT_TRANSLATE_NOOP("REntity", "Name"));
     RHatchEntity::PropertyEntityPattern.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Pattern"), QT_TRANSLATE_NOOP("REntity", "From Entity"));
-    RHatchEntity::PropertyAngle.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Pattern"), QT_TRANSLATE_NOOP("REntity", "Angle"));
-    RHatchEntity::PropertyScaleFactor.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Pattern"), QT_TRANSLATE_NOOP("REntity", "Scale"));
+    RHatchEntity::PropertyAngle.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Pattern"), QT_TRANSLATE_NOOP("REntity", "Angle"), false, RPropertyAttributes::Geometry);
+    RHatchEntity::PropertyScaleFactor.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Pattern"), QT_TRANSLATE_NOOP("REntity", "Scale"), false, RPropertyAttributes::Geometry);
 
     RHatchEntity::PropertyOriginX.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Origin"), QT_TRANSLATE_NOOP("REntity", "X"));
     RHatchEntity::PropertyOriginY.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Origin"), QT_TRANSLATE_NOOP("REntity", "Y"));
 
-    RHatchEntity::PropertyVertexNX.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Vertex"), QT_TRANSLATE_NOOP("REntity", "X"));
-    RHatchEntity::PropertyVertexNY.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Vertex"), QT_TRANSLATE_NOOP("REntity", "Y"));
-    RHatchEntity::PropertyVertexNZ.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Vertex"), QT_TRANSLATE_NOOP("REntity", "Z"));
+    RHatchEntity::PropertyVertexNX.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Vertex"), QT_TRANSLATE_NOOP("REntity", "X"), false, RPropertyAttributes::Geometry);
+    RHatchEntity::PropertyVertexNY.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Vertex"), QT_TRANSLATE_NOOP("REntity", "Y"), false, RPropertyAttributes::Geometry);
+    RHatchEntity::PropertyVertexNZ.generateId(typeid(RHatchEntity), QT_TRANSLATE_NOOP("REntity", "Vertex"), QT_TRANSLATE_NOOP("REntity", "Z"), false, RPropertyAttributes::Geometry);
 }
 
 bool RHatchEntity::setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
@@ -258,7 +258,7 @@ RVector RHatchEntity::setComponent(const RVector& p, double v, RObject::XYZ xyz)
 }
 
 QPair<QVariant, RPropertyAttributes> RHatchEntity::getProperty(
-        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes) {
+        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes, bool showOnRequest) {
 
     if (propertyTypeId == PropertySolid) {
         //return qMakePair(QVariant(data.solid), RPropertyAttributes(RPropertyAttributes::AffectsOtherProperties));
@@ -354,7 +354,7 @@ QPair<QVariant, RPropertyAttributes> RHatchEntity::getProperty(
         return qMakePair(v, RPropertyAttributes(RPropertyAttributes::List));
     }
 
-    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return REntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 
@@ -380,8 +380,15 @@ void RHatchEntity::print(QDebug dbg) const {
         QList<QSharedPointer<RShape> > loop = data.boundary.at(i);
         for (int k=0; k<loop.size(); ++k) {
             QSharedPointer<RShape> shape = loop.at(k);
-            dbg.nospace() << *shape << "\n";
+            dbg.nospace() << "   " << shape->getStartPoint() << ", " << shape->getEndPoint() << "\n";
         }
     }
     dbg.nospace() << ")";
+}
+
+void RHatchEntity::setViewportContext(const RViewportData& vp) {
+    // apply viewport transforms:
+    RVector offs =  vp.getViewCenter()*vp.getScale() + vp.getViewTarget()*vp.getScale() - data.getOriginPoint()*vp.getScale();
+    offs.rotate(vp.getRotation());
+    data.setOriginPoint(vp.getCenter() - offs);
 }

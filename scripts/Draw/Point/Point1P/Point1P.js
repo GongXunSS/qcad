@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QCAD.
  */
-include("../Point.js");
+include("scripts/Draw/Point/Point.js");
 
 /**
  * \class Point1P

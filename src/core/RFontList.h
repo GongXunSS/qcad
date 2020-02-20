@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -39,7 +39,7 @@ public:
 
     static QStringList getNames();
     static QString getSubName(const QString& resName);
-    static RFont* get(const QString& resName);
+    static RFont* get(const QString& resName, bool substitute = true);
     static bool isCadFont(const QString& fontName, const QString& fontFile);
 
 private:

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 include("scripts/sprintf.js");
-include("../Widgets.js");
+include("scripts/Widgets/Widgets.js");
 include("ListViewEventHandler.js");
 include("ItemDelegate.js");
 include("FileIconProvider.js");
@@ -202,7 +202,6 @@ LibraryBrowser.getSourceList = function() {
     }
 
     sourceList = sourceList.unique();
-    qDebug("sourceList: ", sourceList);
 
     return sourceList;
 };
@@ -307,6 +306,9 @@ LibraryBrowser.initFileSystemTab = function() {
             var menu = LibraryBrowser.createItemContextMenu(dirTree, filePath, undefined, index);
             menu.exec(QCursor.pos());
         });
+
+    dirTree.installEventFilter(new REventFilter(QEvent.KeyPress.valueOf(), true));
+    dirTree.installEventFilter(new REventFilter(QEvent.KeyRelease.valueOf(), true));
 };
 
 LibraryBrowser.updateFileSystemTab = function() {
@@ -1737,7 +1739,7 @@ LibraryBrowser.createItemContextMenu = function(itemView, filePath, itemId, inde
                 action = new RGuiAction(text, menu);
                 action.setData(filePath);
                 action.setRequiresDocument(false);
-                action.setScriptFile("scripts/File/OpenFile/OpenFile.js");
+                action.setScriptFile(LibraryBrowser.includeBasePath + "/../../../scripts/File/OpenFile/OpenFile.js");
                 action.setIcon(icon);
                 action.addToMenu(menu);
             }

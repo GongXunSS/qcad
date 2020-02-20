@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -61,8 +61,8 @@ QList<RRefPoint> RDimDiametricData::getReferencePoints(RS::ProjectionRenderingHi
     return ret;
 }
 
-bool RDimDiametricData::moveReferencePoint(const RVector& referencePoint,
-        const RVector& targetPoint) {
+bool RDimDiametricData::moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers) {
+    Q_UNUSED(modifiers)
 
     bool ret = false;
 
@@ -92,7 +92,7 @@ bool RDimDiametricData::moveReferencePoint(const RVector& referencePoint,
     }
 
     if (!ret) {
-        ret = RDimensionData::moveReferencePoint(referencePoint, targetPoint);
+        ret = RDimensionData::moveReferencePoint(referencePoint, targetPoint, modifiers);
     }
 
     if (ret) {

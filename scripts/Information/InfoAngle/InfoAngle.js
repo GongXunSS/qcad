@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Information.js");
+include("scripts/Information/Information.js");
 
 /**
  * \class InfoAngle
@@ -76,7 +76,7 @@ InfoAngle.prototype.setState = function(state) {
         var trSecondLine = qsTr("Specify second line");
         this.setCommandPrompt(trSecondLine);
         this.setLeftMouseTip(trSecondLine);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         break;
     }
 
@@ -161,10 +161,23 @@ InfoAngle.prototype.pickEntity = function(event, preview) {
                 op.destroy();
             }
 
-            this.setState(InfoAngle.State.SettingFirstShape);
             if (!isNull(this.arc)) {
-                var angleText = this.formatAngularResultCmd(this.arc.getAngleLength());
+                var value = this.arc.getAngleLength();
+                var angleText = this.formatAngularResultCmd(value);
                 EAction.getMainWindow().handleUserInfo(qsTr("Angle:") + " " + angleText);
+
+                if (this.autoTerminate) {
+                    this.updateLineEdit(RMath.rad2deg(value));
+                    this.setNoState(false);
+                    this.terminate();
+                    return;
+                }
+                else {
+                    this.setState(InfoAngle.State.SettingFirstShape);
+                }
+            }
+            else {
+                this.setState(InfoAngle.State.SettingFirstShape);
             }
         }
         break;

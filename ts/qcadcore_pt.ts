@@ -186,7 +186,7 @@ Parsec</translatorcomment>
 <context>
     <name>RColor</name>
     <message>
-        <location filename="../src/core/RColor.cpp" line="+287"/>
+        <location filename="../src/core/RColor.cpp" line="+288"/>
         <source>By Layer</source>
         <translatorcomment>--exact match--
 --file: qcadguiqt_pt.ts--
@@ -383,7 +383,12 @@ Indique a posição [ângulo/comprimento]</translatorcomment>
         <translation>Posição</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="+62"/>
+        <location filename="../src/core/RBlock.cpp" line="+65"/>
+        <source>Pixel Unit</source>
+        <translation>Pixel unidade</translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <location filename="../src/core/RBlockReferenceEntity.cpp" line="-2"/>
         <location line="+3"/>
         <location filename="../src/core/RLayout.cpp" line="+82"/>
@@ -495,8 +500,13 @@ Insira o ângulo da linha de dimensão:</translatorcomment>
         <translation>Espaçamento de Linha</translation>
     </message>
     <message>
-        <location filename="../src/core/REntity.cpp" line="+86"/>
-        <location filename="../src/core/RObject.cpp" line="+61"/>
+        <location line="+3"/>
+        <source>Attributes</source>
+        <translation>Atributos</translation>
+    </message>
+    <message>
+        <location filename="../src/core/REntity.cpp" line="+91"/>
+        <location filename="../src/core/RObject.cpp" line="+68"/>
         <source>Type</source>
         <translatorcomment>--exact match--
 --file: pt_PT.po--
@@ -505,7 +515,7 @@ Tipo Ordinal</translatorcomment>
         <translation>Tipo</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlockReferenceEntity.cpp" line="-11"/>
+        <location filename="../src/core/RBlockReferenceEntity.cpp" line="-14"/>
         <source>Block</source>
         <translatorcomment>--exact match--
 --file: Block_pt.ts--
@@ -530,7 +540,7 @@ Lista de Camadas</translatorcomment>
     </message>
     <message>
         <location line="+1"/>
-        <location filename="../src/core/RLayer.cpp" line="+99"/>
+        <location filename="../src/core/RLayer.cpp" line="+102"/>
         <source>Linetype</source>
         <translatorcomment>--google--</translatorcomment>
         <translation>Tipo de Linha</translation>
@@ -602,7 +612,7 @@ Abre diálogo de cores</translatorcomment>
     </message>
     <message>
         <location filename="../src/core/RObject.cpp" line="-1"/>
-        <location filename="../src/core/RPropertyTypeId.cpp" line="+108"/>
+        <location filename="../src/core/RPropertyTypeId.cpp" line="+151"/>
         <source>Custom</source>
         <translation>Personalizado</translation>
     </message>
@@ -615,6 +625,16 @@ Abre diálogo de cores</translatorcomment>
         <location line="+1"/>
         <source>Protected</source>
         <translation>Protegido</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Selected</source>
+        <translation>Selecionada</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Invisible</source>
+        <translation>Invisível</translation>
     </message>
     <message>
         <location filename="../src/core/REntity.cpp" line="+2"/>
@@ -661,7 +681,7 @@ Abre diálogo de cores</translatorcomment>
     <message>
         <location line="+1"/>
         <source>Font Name</source>
-        <translation>Nome da Fonte</translation>
+        <translation>Nome da fonte</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -738,8 +758,9 @@ Abre diálogo de cores</translatorcomment>
         <translation>Overall</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlock.cpp" line="-5"/>
+        <location filename="../src/core/RBlock.cpp" line="-6"/>
         <location filename="../src/core/RLayer.cpp" line="-8"/>
+        <location filename="../src/core/RLayerState.cpp" line="+46"/>
         <location filename="../src/core/RLayout.cpp" line="-24"/>
         <source>Name</source>
         <translation>Nome</translation>
@@ -829,7 +850,7 @@ Abre diálogo de cores</translatorcomment>
         <translation type="vanished">Margens de trama</translation>
     </message>
     <message>
-        <location filename="../src/core/RBlockReferenceData.cpp" line="+571"/>
+        <location filename="../src/core/RBlockReferenceData.cpp" line="+852"/>
         <source>Circular (recursive) block referencing detected:</source>
         <translation>Foi detectada uma referência de bloco circular (recursiva):</translation>
     </message>
@@ -842,7 +863,7 @@ Abre diálogo de cores</translatorcomment>
 <context>
     <name>RGuiAction</name>
     <message>
-        <location filename="../src/core/RGuiAction.cpp" line="+180"/>
+        <location filename="../src/core/RGuiAction.cpp" line="+186"/>
         <source>Requires selection</source>
         <translatorcomment>--google--</translatorcomment>
         <translation>Requer uma seleção</translation>
@@ -1038,7 +1059,7 @@ Borda (grande)</translatorcomment>
         <translation type="vanished">Margem (grande)</translation>
     </message>
     <message>
-        <location filename="../src/core/RLinetype.cpp" line="+48"/>
+        <location filename="../src/core/RLinetype.cpp" line="+52"/>
         <source>Name</source>
         <translation>Nome</translation>
     </message>
@@ -1061,7 +1082,7 @@ Borda (grande)</translatorcomment>
 <context>
     <name>RLinetypePattern</name>
     <message>
-        <location filename="../src/core/RLinetypePattern.cpp" line="+856"/>
+        <location filename="../src/core/RLinetypePattern.cpp" line="+869"/>
         <source>By Layer</source>
         <translation>Pela Camada</translation>
     </message>

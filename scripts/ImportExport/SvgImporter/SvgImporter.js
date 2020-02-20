@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -77,6 +77,16 @@ SvgHandler.rxTransform = new RegExp(
         "[,\\s]+" +
         "([+-]?\\d*\\.?\\d*)" +      // match 15
         "[\\s]*" +
+    "\\)" +
+    "|" +
+    "(rotate)\\s*\\(" +              // match 16
+        "\\s*" +
+        "([+-]?\\d*\\.?\\d*)" +      // match 17
+        "[,\\s]+" +
+        "([+-]?\\d*\\.?\\d*)" +      // match 18
+        "[,\\s]+" +
+        "([+-]?\\d*\\.?\\d*)" +      // match 19
+        "[\\s]*" +
     "\\)",
     "gim"
 );
@@ -97,22 +107,28 @@ SvgHandler.prototype.getTransform = function(str) {
 
         if (!isNull(match[1]) && match[1].toLowerCase()==="translate") {
             t = new QTransform();
-            t.translate(match[2], match[3]);
+            t.translate(parseFloat(match[2]), parseFloat(match[3]));
         }
         else if (!isNull(match[4]) && match[4].toLowerCase()==="rotate") {
             t = new QTransform();
-            t.rotate(match[5]);
+            t.rotate(parseFloat(match[5]));
         }
         else if (!isNull(match[6]) && match[6].toLowerCase()==="matrix") {
             t = new QTransform(
-                        match[7], match[8], 0.0,
-                        match[9], match[10], 0.0,
-                        match[11], match[12], 1.0
+                        parseFloat(match[7]), parseFloat(match[8]), 0.0,
+                        parseFloat(match[9]), parseFloat(match[10]), 0.0,
+                        parseFloat(match[11]), parseFloat(match[12]), 1.0
             );
         }
         else if (!isNull(match[13]) && match[13].toLowerCase()==="scale") {
             t = new QTransform();
-            t.scale(match[14], match[15]);
+            t.scale(parseFloat(match[14]), parseFloat(match[15]));
+        }
+        else if (!isNull(match[16]) && match[16].toLowerCase()==="rotate") {
+            t = new QTransform();
+            t.translate(parseFloat(match[18]), parseFloat(match[19]));
+            t.rotate(parseFloat(match[17]));
+            t.translate(-parseFloat(match[18]), -parseFloat(match[19]));
         }
 
         if (!isNull(t)) {
@@ -390,6 +406,13 @@ SvgImporter.prototype.importShape = function(shape) {
         }
     }
 
+    // auto convert splines into lines / arcs if appropriate:
+    if (isSplineShape(shape)) {
+        if (RSettings.getBoolValue("SvgImport/AutoConvertSplines", true)===true) {
+            shape = ShapeAlgorithms.splineToLineOrArc(shape, RSettings.getDoubleValue("SvgImport/AutoConvertSplinesTolerance", 0.01));
+        }
+    }
+
     var entity = shapeToEntity(this.getDocument(), shape);
 
     if (isNull(entity)) {
@@ -446,15 +469,16 @@ SvgImporter.prototype.importBezier = function(x1, y1, px1, py1, px2, py2, x2, y2
     spline.appendControlPoint(new RVector(px2, py2));
     spline.appendControlPoint(new RVector(x2, y2));
 
-    var shape;
-    if (RSettings.getBoolValue("SvgImport/AutoConvertSplines", true)===true) {
-        shape = ShapeAlgorithms.splineToLineOrArc(spline, 0.1);
-    }
-    else {
-        shape = spline;
-    }
+//    var shape;
+//    if (RSettings.getBoolValue("SvgImport/AutoConvertSplines", true)===true) {
+//        shape = ShapeAlgorithms.splineToLineOrArc(spline, 0.1);
+//    }
+//    else {
+//        shape = spline;
+//    }
+//    this.importShape(shape);
 
-    this.importShape(shape);
+    this.importShape(spline);
 };
 
 SvgImporter.prototype.importBezier2 = function(x1, y1, px, py, x2, y2) {

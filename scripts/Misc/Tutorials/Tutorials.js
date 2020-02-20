@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -23,7 +23,7 @@
  *
  * \brief This module contains ECMAScript example tutorials.
  */
-include("../Misc.js");
+include("scripts/Misc/Misc.js");
 
 /**
  * \class Tutorials

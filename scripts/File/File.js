@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,7 @@
  * \brief This module contains ECMAScript implementations of the
  * tools in the file menu.
  */
-include("../EAction.js");
+include("scripts/EAction.js");
 
 /**
  * \class File
@@ -67,7 +67,7 @@ File.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(false);
         action.setIcon(File.includeBasePath + "/File.svg");
-        action.setStatusTip(qsTr("Show file tools"));
+        //action.setStatusTip(qsTr("Show file tools"));
         action.setNoState();
         action.setDefaultCommands(["filemenu"]);
         action.setGroupSortOrder(10);
@@ -103,6 +103,37 @@ File.init = function() {
     File.getToolMatrixPanel();
 };
 
+/**
+ * \return Suggestion for initial file path for saving the given file or
+ * a file related to the given file.
+ *
+ * \param filePath Typically the path and file name of the drawing file.
+ * \param extension File extension to use for exported file (bmd, pdf, dxf, etc).
+ */
+File.getInitialSaveAsPath = function(filePath, extension) {
+    var ret = "";
+
+    var fi;
+
+    if (isNull(filePath) || filePath.length === 0) {
+        var mdiChild = EAction.getMdiChild();
+        var fn;
+        if (!isNull(mdiChild)) {
+            fn = stripDirtyFlag(EAction.getMdiChild().windowTitle)
+        }
+        else {
+            fn = "File";
+        }
+
+        fi = new QFileInfo(QDir.homePath());
+        ret = fi.absoluteFilePath() + QDir.separator + fn + "." + extension;
+    } else {
+        fi = new QFileInfo(filePath);
+        ret = fi.path() + QDir.separator + fi.completeBaseName() + "." + extension;
+    }
+    return ret;
+};
+
 
 /**
  * Advanced file save as dialog with extension completion.
@@ -110,13 +141,13 @@ File.init = function() {
  *
  * \param parentWidget Parent widget or null
  * \param caption Dialog caption
- * \param dir Initial directory of the dialog
+ * \param path Initial path with file name of the dialog
  * \param fileName Initial file name to suggest to user
  * \param filterStrings Array of filter strings in the format 'My File Type (*.mft *.mftype)'
  *
  * \return Array with complete file path and selected name filter or undefined.
  */
-File.getSaveFileName = function(parentWidget, caption, dir, filterStrings) {
+File.getSaveFileName = function(parentWidget, caption, path, filterStrings) {
     var fileDialog = new QFileDialog(parentWidget);
     
     // use native dialog:
@@ -129,28 +160,26 @@ File.getSaveFileName = function(parentWidget, caption, dir, filterStrings) {
         fileDialog.setOption(QFileDialog.DontUseCustomDirectoryIcons, true);
     }
 
-    var fiDir = new QFileInfo(dir);
+    var fiDir = new QFileInfo(path);
 
     fileDialog.setDirectory(fiDir.absolutePath());
     fileDialog.fileMode = QFileDialog.AnyFile;
     fileDialog.acceptMode = QFileDialog.AcceptSave;
 
+    filterStrings = translateFilterStrings(filterStrings);
     fileDialog.setNameFilters(filterStrings);
     
-    //if (!isNull(fileName)) {
-        //var fileInfo = new QFileInfo(fileName);
-        fileDialog.selectFile(fiDir.completeBaseName());
+    fileDialog.selectFile(fiDir.completeBaseName());
 
-        if (fiDir.suffix().length!==0) {
-            // preselect first name filter that matches current extension:
-            for (var i=0; i<filterStrings.length; ++i) {
-                if (filterStrings[i].contains("*." + fiDir.suffix().toLowerCase())) {
-                    fileDialog.selectNameFilter(filterStrings[i]);
-                    break;
-                }
+    if (fiDir.suffix().length!==0) {
+        // preselect first name filter that matches current extension:
+        for (var i=0; i<filterStrings.length; ++i) {
+            if (filterStrings[i].contains("*." + fiDir.suffix().toLowerCase())) {
+                fileDialog.selectNameFilter(filterStrings[i]);
+                break;
             }
         }
-    //}
+    }
 
     fileDialog.setLabelText(QFileDialog.FileType, qsTr("Format:"));
 
@@ -161,6 +190,7 @@ File.getSaveFileName = function(parentWidget, caption, dir, filterStrings) {
 
         if (!fileDialog.exec()) {
             fileDialog.destroy();
+            EAction.activateMainWindow();
             return undefined;
         }
 
@@ -189,7 +219,7 @@ File.getSaveFileName = function(parentWidget, caption, dir, filterStrings) {
             var buttons = new QMessageBox.StandardButtons(QMessageBox.Yes, QMessageBox.No);
             var ret = QMessageBox.warning(parentWidget, 
                 qsTr("Overwrite File?"), 
-                qsTr("The file '%1' already exists. Do you wish to overwrite it?").arg(fileToSave),
+                qsTr("The file \"%1\" already exists. Do you wish to overwrite it?").arg(fileToSave),
                 buttons);
             if (ret!=QMessageBox.Yes) {
                 done = false;
@@ -208,6 +238,7 @@ File.getSaveFileName = function(parentWidget, caption, dir, filterStrings) {
 File.getOpenFileName = function(parentWidget, caption, dir, filterStrings) {
     if (isNull(filterStrings)) {
         filterStrings = RFileImporterRegistry.getFilterStrings();
+        filterStrings = translateFilterStrings(filterStrings);
     }
     filterStrings = new Array(qsTr("All Files") + " (*)").concat(filterStrings);
 
@@ -223,12 +254,14 @@ File.getOpenFileName = function(parentWidget, caption, dir, filterStrings) {
     fileDialog.setLabelText(QFileDialog.FileType, qsTr("Format:"));
     if (!fileDialog.exec()) {
         fileDialog.destroy();
+        EAction.activateMainWindow();
         return undefined;
     }
 
     var fileNames = fileDialog.selectedFiles();
     if (fileNames.length===0) {
         fileDialog.destroy();
+        EAction.activateMainWindow();
         return undefined;
     }
 
@@ -237,7 +270,12 @@ File.getOpenFileName = function(parentWidget, caption, dir, filterStrings) {
     var suffix = new QFileInfo(fileName).suffix();
     suffix = suffix.toUpperCase();
 
-    return [ fileNames[0], fileDialog.selectedNameFilter() ];
+    var nameFilter = fileDialog.selectedNameFilter();
+
+    fileDialog.destroy();
+    EAction.activateMainWindow();
+
+    return [ fileNames[0], nameFilter ];
 };
 
 /**

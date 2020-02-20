@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -16,9 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with QCAD.
  */
+#include <QClipboard>
 #include <QDebug>
 #include <QEvent>
 #include <QKeyEvent>
+
+#if QT_VERSION >= 0x050000
+  #include <QGuiApplication>
+#else
+  #include <QApplication>
+#endif
 
 #include "RCommandLine.h"
 #include "RDebug.h"
@@ -35,7 +42,9 @@ QString RCommandLine::getLastCommand() {
 }
 
 void RCommandLine::appendCommand(const QString& cmd) {
-    history.append(cmd);
+    if (!cmd.isEmpty() && (history.isEmpty() || history.last() != cmd)) {
+        history.append(cmd);
+    }
     it = history.end();
 }
 
@@ -46,6 +55,30 @@ QStringList RCommandLine::getHistory() const {
 void RCommandLine::setHistory(QStringList& h) {
     history = h;
     it = history.end();
+}
+
+void RCommandLine::paste() {
+#if QT_VERSION >= 0x050000
+    QClipboard* cb = QGuiApplication::clipboard();
+#else
+    QClipboard* cb = QApplication::clipboard();
+#endif
+    //qDebug("pasting: " + cb.text());
+
+    QString text = cb->text();
+
+    // multi line paste and enter:
+    if (text.contains("\n")) {
+        QStringList lines = text.split('\n');
+        for (int i=0; i<lines.length(); i++) {
+            //qDebug("line: " + lines[i]);
+            emit commandConfirmed(lines[i]);
+        }
+    }
+    else {
+        // single line paste only:
+        QLineEdit::paste();
+    }
 }
 
 bool RCommandLine::event(QEvent* event) {
@@ -69,16 +102,16 @@ void RCommandLine::keyPressEvent(QKeyEvent* event) {
         break;
     case Qt::Key_V:
         if (event->modifiers() == Qt::ControlModifier) {
-            emit multiLinePaste();
+            paste();
             return;
         }
         break;
     case Qt::Key_Enter:
     case Qt::Key_Return: {
         QString t = text();
-        if (!t.isEmpty() && (history.isEmpty() || history.last() != t)) {
-            history.append(t);
-        }
+//        if (!t.isEmpty() && (history.isEmpty() || history.last() != t)) {
+//            history.append(t);
+//        }
         it = history.end();
         emit commandConfirmed(t);
         }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -64,14 +64,15 @@ public:
     static RPropertyTypeId PropertyKnotN;
     static RPropertyTypeId PropertyPeriodic;
     static RPropertyTypeId PropertyDegree;
-//    static RPropertyTypeId PropertyUseStartTangent;
-//    static RPropertyTypeId PropertyStartTangentX;
-//    static RPropertyTypeId PropertyStartTangentY;
-//    static RPropertyTypeId PropertyStartTangentZ;
-//    static RPropertyTypeId PropertyUseEndTangent;
-//    static RPropertyTypeId PropertyEndTangentX;
-//    static RPropertyTypeId PropertyEndTangentY;
-//    static RPropertyTypeId PropertyEndTangentZ;
+
+    static RPropertyTypeId PropertyUseStartTangent;
+    static RPropertyTypeId PropertyStartTangentX;
+    static RPropertyTypeId PropertyStartTangentY;
+    static RPropertyTypeId PropertyStartTangentZ;
+    static RPropertyTypeId PropertyUseEndTangent;
+    static RPropertyTypeId PropertyEndTangentX;
+    static RPropertyTypeId PropertyEndTangentY;
+    static RPropertyTypeId PropertyEndTangentZ;
 
     static RPropertyTypeId PropertyLength;
     static RPropertyTypeId PropertyTotalLength;
@@ -91,11 +92,11 @@ public:
         return new RSplineEntity(*this);
     }
 
-    bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
+    virtual bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
         RTransaction* transaction=NULL);
-    QPair<QVariant, RPropertyAttributes> getProperty(
+    virtual QPair<QVariant, RPropertyAttributes> getProperty(
             RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
 
     virtual void exportEntity(RExporter& e, bool preview=false, bool forceSelected=false) const;
 
@@ -224,6 +225,10 @@ public:
         return data.countControlPoints();
     }
 
+    RVector getControlPointAt(int i) const {
+        return data.getControlPointAt(i);
+    }
+
     QList<RVector> getFitPoints() const {
         return data.getFitPoints();
     }
@@ -234,6 +239,10 @@ public:
 
     int countFitPoints() const {
         return data.countFitPoints();
+    }
+
+    RVector getFitPointAt(int i) const {
+        return data.getFitPointAt(i);
     }
 
     QList<double> getKnotVector() const {
@@ -308,6 +317,10 @@ public:
 
     void simplify(double tolerance) {
         data.simplify(tolerance);
+    }
+
+    QList<RSpline> getBezierSegments(const RBox& queryBox = RDEFAULT_RBOX) const {
+        return data.getBezierSegments(queryBox);
     }
 
     /*

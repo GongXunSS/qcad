@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -81,13 +81,9 @@ public:
         return new RUcs(*this);
     }
 
-    virtual bool isSelectedForPropertyEditing() {
-        return false;
-    }
-
     virtual QPair<QVariant, RPropertyAttributes> getProperty(
             RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
     virtual bool setProperty(RPropertyTypeId propertyTypeId,
             const QVariant& value, RTransaction* transaction=NULL);
 

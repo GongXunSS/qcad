@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -104,7 +104,7 @@ bool RAttributeEntity::setProperty(RPropertyTypeId propertyTypeId,
 }
 
 QPair<QVariant, RPropertyAttributes> RAttributeEntity::getProperty(
-        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes) {
+        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes, bool showOnRequest) {
 
     if (propertyTypeId == PropertyTag) {
         return qMakePair(QVariant(data.tag), RPropertyAttributes());
@@ -124,46 +124,7 @@ QPair<QVariant, RPropertyAttributes> RAttributeEntity::getProperty(
         );
     }
 
-    return RTextBasedEntity::getProperty(propertyTypeId, humanReadable, noAttributes);
-}
-
-bool RAttributeEntity::isVisible() const {
-    // delegate attribute visibility to block reference:
-    // only show block attributes of visible blocks:
-    if (RSettings::getHideAttributeWithBlock()) {
-        REntity::Id blockRefId = getParentId();
-        const RDocument* document = getDocument();
-        if (document!=NULL) {
-            RLayer::Id layer0Id = document->getLayer0Id();
-            bool onLayer0 = getLayerId()==layer0Id;
-            QSharedPointer<REntity> parentEntity = document->queryEntityDirect(blockRefId);
-            QSharedPointer<RBlockReferenceEntity> blockRef = parentEntity.dynamicCast<RBlockReferenceEntity>();
-            if (!blockRef.isNull()) {
-                bool blockRefOnLayer0 = blockRef->getLayerId()==layer0Id;
-                // delegate visibility of block attribute to block reference:
-                if (onLayer0) {
-                    if (blockRefOnLayer0) {
-                        QSharedPointer<RLayer> layer0 = document->queryLayerDirect(getLayerId());
-                        if (!layer0.isNull() && layer0->isOff()) {
-                            return false;
-                        }
-                    }
-                    else {
-                        QSharedPointer<RLayer> layer = document->queryLayerDirect(blockRef->getLayerId());
-                        if (!layer.isNull() && layer->isOff()) {
-                            return false;
-                        }
-                    }
-                    return blockRef->isVisible();
-                }
-                else if (!blockRef->isVisible()) {
-                    return false;
-                }
-            }
-        }
-    }
-
-    return REntity::isVisible();
+    return RTextBasedEntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 void RAttributeEntity::exportEntity(RExporter& e, bool preview, bool forceSelected) const {
@@ -177,10 +138,10 @@ void RAttributeEntity::exportEntity(RExporter& e, bool preview, bool forceSelect
     if (!isInvisible()) {
         if (e.isTextRenderedAsText()) {
             QList<RPainterPath> paths = e.exportText(getData(), forceSelected);
-            e.exportPainterPaths(paths);
+            e.exportPainterPaths(paths, getPosition().z);
         }
         else {
-            e.exportPainterPathSource(getData());
+            e.exportPainterPathSource(getData(), getPosition().z);
         }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -70,7 +70,9 @@ public:
 
     virtual bool cloneOnChange() const {
         // force clone to preserve custom pattern for undo:
-        return hasCustomPattern();
+        //return hasCustomPattern();
+        // 20190510: always clone (since allowing non-uniform scaling of hatches)
+        return true;
     }
 
     virtual RBox getBoundingBox(bool ignoreEmpty=false) const;
@@ -81,7 +83,7 @@ public:
 
     virtual QList<RRefPoint> getReferencePoints(RS::ProjectionRenderingHint hint = RS::RenderTop) const;
 
-    virtual bool moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint);
+    virtual bool moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers = Qt::NoModifier);
 
     virtual bool move(const RVector& offset);
     virtual bool rotate(double rotation, const RVector& center = RDEFAULT_RVECTOR);
@@ -148,7 +150,7 @@ public:
 
     void newLoop();
     void cancelLoop();
-    void addBoundary(QSharedPointer<RShape> shape);
+    void addBoundary(QSharedPointer<RShape> shape, bool addAutoLoops = true);
     RPainterPath getBoundaryPath(double pixelSizeHint = RDEFAULT_MIN1) const;
     virtual QList<RPainterPath> getPainterPaths(bool draft = false, double pixelSizeHint = RDEFAULT_MIN1) const;
 

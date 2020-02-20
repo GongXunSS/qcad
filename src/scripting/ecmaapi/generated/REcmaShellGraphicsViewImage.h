@@ -38,6 +38,18 @@
         
     
     
+      int getNumThreads(
+                
+            );
+        
+    
+    
+      void setNumThreads(
+                int n
+            );
+        
+    
+    
       void clear(
                 
             );
@@ -86,6 +98,13 @@
     
       void zoom(
                 const RVector & center, double factor
+            );
+        
+    
+    
+      void pan(
+                const RVector & delta, bool regen
+        = true
             );
         
     
@@ -172,6 +191,18 @@
         
     
     
+      void setHairlineMinimumMode(
+                bool on
+            );
+        
+    
+    
+      bool getHairlineMinimumMode(
+                
+            );
+        
+    
+    
       void setAntialiasing(
                 bool on
             );
@@ -197,6 +228,24 @@
     
     
       RDocumentInterface * getDocumentInterface(
+                
+            );
+        
+    
+    
+      void setExporting(
+                bool on
+            );
+        
+    
+    
+      bool isExporting(
+                
+            );
+        
+    
+    
+      bool isPrintingOrExporting(
                 
             );
         
@@ -403,9 +452,27 @@
         
     
     
-      void paintEntity(
-                QPainter * painter, REntity::Id id, bool preview
+      void paintEntitiesMulti(
+                const RBox & queryBox
+            );
+        
+    
+    
+      void paintEntitiesThread(
+                int threadId, QList < REntity::Id > & list, int start, int end
+            );
+        
+    
+    
+      void paintEntityThread(
+                int threadId, REntity::Id id, bool preview
         = false
+            );
+        
+    
+    
+      void paintOverlay(
+                QPainter * painter
             );
         
     
@@ -434,18 +501,6 @@
         
     
     
-      void emitDecorateBackground(
-                QPainter * painter
-            );
-        
-    
-    
-      void emitDecorateForeground(
-                QPainter * painter
-            );
-        
-    
-    
       void clearBackground(
                 
             );
@@ -464,6 +519,22 @@
         
     
     
+      void clearOverlay(
+                int overlayId
+            );
+        
+      void clearOverlay(
+                int overlayId, RObject::Id objectId
+            );
+        
+    
+    
+      void addToOverlay(
+                int overlayId, RObject::Id objectId, const RGraphicsSceneDrawable & drawable
+            );
+        
+    
+    
       void setColorCorrectionOverride(
                 bool on
             );
@@ -478,6 +549,24 @@
     
       void setMinimumLineweight(
                 double lw
+            );
+        
+    
+    
+      double getMinimumLineweight(
+                
+            );
+        
+    
+    
+      void setMaximumLineweight(
+                double lw
+            );
+        
+    
+    
+      double getMaximumLineweight(
+                
             );
         
     
@@ -732,7 +821,8 @@
             );
         
       void zoomIn(
-                const RVector & center
+                const RVector & center, double factor
+        = 1.2
             );
         
     
@@ -741,7 +831,8 @@
             );
         
       void zoomOut(
-                const RVector & center
+                const RVector & center, double factor
+        = 1.2
             );
         
     
@@ -751,13 +842,14 @@
         
     
       bool zoomToSelection(
-                
+                int margin
+        = RDEFAULT_MIN1
             );
         
     
-      void pan(
-                const RVector & delta, bool regen
-        = true
+      bool zoomToEntities(
+                const QSet < REntity::Id > & ids, int margin
+        = RDEFAULT_MIN1
             );
         
     

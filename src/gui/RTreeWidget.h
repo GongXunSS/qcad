@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -49,6 +49,8 @@ public:
     QModelIndex	getIndex(QTreeWidgetItem* item, int column = 0) {
         return indexFromItem(item, column);
     }
+
+    QTreeWidgetItem* getActiveItem();
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent* e);

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -31,6 +31,9 @@ function ShapeRectanglePP(guiAction) {
 
     this.createPolyline = false;
     this.fill = false;
+    this.roundCorners = false;
+    this.radius = 1.0;
+
     this.setUiOptions("../Shape.ui");
 }
 
@@ -71,6 +74,14 @@ ShapeRectanglePP.prototype.slotCreatePolylineChanged = function(checked) {
 
 ShapeRectanglePP.prototype.slotFillChanged = function(checked) {
     Shape.slotFillChanged(this, checked);
+};
+
+ShapeRectanglePP.prototype.slotRoundCornersChanged = function(checked) {
+    Shape.slotRoundCornersChanged(this, checked);
+};
+
+ShapeRectanglePP.prototype.slotRadiusChanged = function(v) {
+    Shape.slotRadiusChanged(this, v);
 };
 
 ShapeRectanglePP.prototype.initUiOptions = function(resume, optionsToolBar) {

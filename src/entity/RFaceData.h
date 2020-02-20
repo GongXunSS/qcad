@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -26,7 +26,7 @@
 
 /**
  * Stores and manages all data that defines the geometry and
- * appearance of a trace entity.
+ * appearance of a face entity.
  *
  * \scriptable
  * \copyable

@@ -81,7 +81,13 @@
             
             REcmaHelper::registerFunction(&engine, proto, isValid, "isValid");
             
+            REcmaHelper::registerFunction(&engine, proto, isSane, "isSane");
+            
             REcmaHelper::registerFunction(&engine, proto, setToolTip, "setToolTip");
+            
+            REcmaHelper::registerFunction(&engine, proto, getNormalTextColor, "getNormalTextColor");
+            
+            REcmaHelper::registerFunction(&engine, proto, setTextColor, "setTextColor");
             
             REcmaHelper::registerFunction(&engine, proto, slotTextChanged, "slotTextChanged");
             
@@ -741,6 +747,55 @@
             return result;
         }
          QScriptValue
+        REcmaMathLineEdit::isSane
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaMathLineEdit::isSane", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaMathLineEdit::isSane";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RMathLineEdit* self = 
+                        getSelf("isSane", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'bool'
+    bool cppResult =
+        
+               self->isSane();
+        // return type: bool
+                // standard Type
+                result = QScriptValue(cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RMathLineEdit.isSane().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaMathLineEdit::isSane", context, engine);
+            return result;
+        }
+         QScriptValue
         REcmaMathLineEdit::setToolTip
         (QScriptContext* context, QScriptEngine* engine) 
         
@@ -793,6 +848,110 @@
                    context);
             }
             //REcmaHelper::functionEnd("REcmaMathLineEdit::setToolTip", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaMathLineEdit::getNormalTextColor
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaMathLineEdit::getNormalTextColor", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaMathLineEdit::getNormalTextColor";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RMathLineEdit* self = 
+                        getSelf("getNormalTextColor", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    0
+    ){
+    // prepare arguments:
+    
+    // end of arguments
+
+    // call C++ function:
+    // return type 'QColor'
+    QColor cppResult =
+        
+               self->getNormalTextColor();
+        // return type: QColor
+                // not standard type nor reference
+                result = qScriptValueFromValue(engine, cppResult);
+            
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RMathLineEdit.getNormalTextColor().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaMathLineEdit::getNormalTextColor", context, engine);
+            return result;
+        }
+         QScriptValue
+        REcmaMathLineEdit::setTextColor
+        (QScriptContext* context, QScriptEngine* engine) 
+        
+        {
+            //REcmaHelper::functionStart("REcmaMathLineEdit::setTextColor", context, engine);
+            //qDebug() << "ECMAScript WRAPPER: REcmaMathLineEdit::setTextColor";
+            //QCoreApplication::processEvents();
+
+            QScriptValue result = engine->undefinedValue();
+            
+                    // public function: can be called from ECMA wrapper of ECMA shell:
+                    RMathLineEdit* self = 
+                        getSelf("setTextColor", context);
+                  
+
+                //Q_ASSERT(self!=NULL);
+                if (self==NULL) {
+                    return REcmaHelper::throwError("self is NULL", context);
+                }
+                
+    
+    if( context->argumentCount() ==
+    1 && (
+            context->argument(0).isBool()
+        ) /* type: bool */
+    
+    ){
+    // prepare arguments:
+    
+                    // argument isStandardType
+                    bool
+                    a0 =
+                    (bool)
+                    
+                    context->argument( 0 ).
+                    toBool();
+                
+    // end of arguments
+
+    // call C++ function:
+    // return type 'void'
+    
+               self->setTextColor(a0);
+    } else
+
+
+        
+            {
+               return REcmaHelper::throwError("Wrong number/types of arguments for RMathLineEdit.setTextColor().",
+                   context);
+            }
+            //REcmaHelper::functionEnd("REcmaMathLineEdit::setTextColor", context, engine);
             return result;
         }
          QScriptValue

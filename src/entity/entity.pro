@@ -10,6 +10,12 @@ SOURCES = \
     RCircleEntity.cpp \
     RDimAlignedData.cpp \
     RDimAlignedEntity.cpp \
+    RDimAngular2LData.cpp \
+    RDimAngular2LEntity.cpp \
+    RDimAngular3PData.cpp \
+    RDimAngular3PEntity.cpp \
+    RDimArcLengthData.cpp \
+    RDimArcLengthEntity.cpp \
     RDimAngularData.cpp \
     RDimAngularEntity.cpp \
     RDimDiametricData.cpp \
@@ -64,6 +70,12 @@ HEADERS = \
     RCircleEntity.h \
     RDimAlignedData.h \
     RDimAlignedEntity.h \
+    RDimAngular2LData.h \
+    RDimAngular2LEntity.h \
+    RDimAngular3PData.h \
+    RDimAngular3PEntity.h \
+    RDimArcLengthData.h \
+    RDimArcLengthEntity.h \
     RDimAngularData.h \
     RDimAngularEntity.h \
     RDimDiametricData.h \
@@ -119,6 +131,7 @@ NAME = $${RLIBNAME}entity
 TARGET = $${NAME}
 OTHER_FILES += entity.dox
 DEFINES += QCADENTITY_LIBRARY
+RC_FILE = entity.rc
 LIBS += -l$${RLIBNAME}core -lopennurbs
 !win32 {
     include( ../../shared_ts.pri )

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -104,11 +104,11 @@ public:
     virtual void clearPreview();
     virtual bool isPreviewEmpty();
 
-    virtual void addToPreview(REntity::Id entityId, const QList<RGraphicsSceneDrawable>& drawables) {
+    virtual void addToPreview(REntity::Id entityId, QList<RGraphicsSceneDrawable>& drawables) {
         Q_UNUSED(entityId)
         Q_UNUSED(drawables)
     }
-    virtual void addToPreview(REntity::Id entityId, const RGraphicsSceneDrawable& drawable) {
+    virtual void addToPreview(REntity::Id entityId, RGraphicsSceneDrawable& drawable) {
         Q_UNUSED(entityId)
         Q_UNUSED(drawable)
     }
@@ -131,18 +131,23 @@ public:
      */
     virtual void highlightEntity(REntity& entity) = 0;
 
-    /**
-     * Highlights the reference point at the given position. This is typically
-     * used to highlight reference point when the mouse hovers over them.
-     */
     virtual void highlightReferencePoint(const RRefPoint& position);
+
+    virtual void selectReferencePoints(const RBox& box, bool add);
 
     virtual void exportCurrentEntity(bool preview = false, bool forceSelected = false);
     virtual void unexportEntity(REntity::Id entityId);
 
-    QMultiMap<REntity::Id, RRefPoint>& getReferencePoints() {
+    int countReferencePoints() const;
+
+    /**
+     * \nonscriptable
+     */
+    QMap<REntity::Id, QList<RRefPoint> >& getReferencePoints() {
         return referencePoints;
     }
+
+    bool hasSelectedReferencePoints() const;
 
 //    virtual bool isVisualExporter() const {
 //        return true;
@@ -172,9 +177,8 @@ protected:
     /**
      * Internal map of reference points for every selected entity in the scene.
      * Used for drawing reference points.
-     * TODO: store selection status of reference points.
      */
-    QMultiMap<REntity::Id, RRefPoint> referencePoints;
+    QMap<REntity::Id, QList<RRefPoint> > referencePoints;
 
 private:
     bool deleting;

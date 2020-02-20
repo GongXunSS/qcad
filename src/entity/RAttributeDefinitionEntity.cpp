@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -104,14 +104,14 @@ bool RAttributeDefinitionEntity::setProperty(RPropertyTypeId propertyTypeId,
 }
 
 QPair<QVariant, RPropertyAttributes> RAttributeDefinitionEntity::getProperty(
-        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes) {
+        RPropertyTypeId& propertyTypeId, bool humanReadable, bool noAttributes, bool showOnRequest) {
 
     if (propertyTypeId == PropertyTag) {
         return qMakePair(QVariant(data.tag), RPropertyAttributes());
     } else if (propertyTypeId == PropertyPrompt) {
         return qMakePair(QVariant(data.prompt), RPropertyAttributes());
     }
-    return RTextBasedEntity::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return RTextBasedEntity::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
 
 //void RAttributeDefinitionEntity::exportEntity(RExporter& e, bool preview) const {

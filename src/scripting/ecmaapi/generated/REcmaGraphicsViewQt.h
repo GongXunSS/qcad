@@ -51,6 +51,12 @@
 
         // methods of secondary base class RGraphicsViewImage:
         static  QScriptValue
+        getNumThreads
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setNumThreads
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         clear
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -73,6 +79,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         zoom
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        pan
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         centerToBox
@@ -114,6 +123,12 @@
         getHairlineMode
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        setHairlineMinimumMode
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getHairlineMinimumMode
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         setAntialiasing
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -127,6 +142,15 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getDocumentInterface
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setExporting
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isExporting
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        isPrintingOrExporting
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setPrinting
@@ -207,19 +231,22 @@
         paintEntities
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        paintEntity
+        paintEntitiesMulti
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        paintEntitiesThread
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        paintEntityThread
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        paintOverlay
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getBuffer
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getTransform
-        (QScriptContext* context, QScriptEngine* engine) 
-        ;static  QScriptValue
-        emitDecorateBackground
-        (QScriptContext* context, QScriptEngine* engine) 
-        ;static  QScriptValue
-        emitDecorateForeground
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         clearBackground
@@ -231,6 +258,12 @@
         setBackgroundTransform
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
+        clearOverlay
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        addToOverlay
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
         setColorCorrectionOverride
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
@@ -238,6 +271,15 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setMinimumLineweight
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getMinimumLineweight
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        setMaximumLineweight
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getMaximumLineweight
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         setPaintOffset

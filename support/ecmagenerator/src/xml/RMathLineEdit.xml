@@ -61,12 +61,29 @@ xmlns:rs="http://www.ribbonsoft.com">
     isStatic="false" isVirtual="false" isScriptOverwritable="true">
       <variant returnType="bool" isPureVirtual="false" />
     </method>
+    <method name="isSane" cppName="isSane" specifier="public"
+    isStatic="false" isVirtual="false" isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
     <method name="setToolTip" cppName="setToolTip"
     specifier="public" isStatic="false" isVirtual="false"
     isScriptOverwritable="true">
       <variant returnType="void" isPureVirtual="false">
         <arg type="QString &amp;" typeName="QString" name="toolTip"
         isConst="true" />
+      </variant>
+    </method>
+    <method name="getNormalTextColor" cppName="getNormalTextColor"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="QColor" isPureVirtual="false" />
+    </method>
+    <method name="setTextColor" cppName="setTextColor"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="bool" typeName="bool" name="error"
+        isConst="false" />
       </variant>
     </method>
     <method name="keyPressEvent" cppName="keyPressEvent"

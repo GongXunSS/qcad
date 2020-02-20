@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -37,7 +37,6 @@ HatchDialog.prototype.show =  function(hatchDataIn) {
     }
 
     this.dialog = WidgetFactory.createDialog(HatchDialog.basePath, "HatchDialog.ui", EAction.getMainWindow());
-    //this.dialog.windowIcon = new QIcon(HatchDialog.basePath + "/Hatch.svg");
 
     var radioSolid = this.dialog.findChild("SolidFill");
     var radioHatch = this.dialog.findChild("HatchPattern");

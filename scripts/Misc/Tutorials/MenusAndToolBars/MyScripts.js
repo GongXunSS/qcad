@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -20,7 +20,7 @@
 
 // All actions are derived from class EAction, so we need to 
 // include this class definition here:
-include("../EAction.js");
+include("scripts/EAction.js");
 
 // Constructor calls base class constructor:
 function MyScripts(guiAction) {

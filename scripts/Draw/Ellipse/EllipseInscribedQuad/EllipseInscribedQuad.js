@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -17,7 +17,7 @@
  * along with QCAD.
  */
 
-include("../Ellipse.js");
+include("scripts/Draw/Ellipse/Ellipse.js");
 include("scripts/ShapeAlgorithms.js");
 
 /**
@@ -243,8 +243,13 @@ EllipseInscribedQuad.prototype.getOperation = function(preview) {
         return undefined;
     }
 
-    var doc = this.getDocument();
+    if (isEllipseShape(shape)) {
+        shape = RShape.ellipseToArcCircleEllipse(shape);
+    }
 
+    shape = Ellipse.postProcess(shape);
+
+    var doc = this.getDocument();
     var e = shapeToEntity(doc, shape);
     if (isNull(e)) {
         return undefined;

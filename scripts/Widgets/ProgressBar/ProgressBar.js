@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -97,7 +97,9 @@ ProgressBar.progress = function(value) {
         }
     }
     var appWin = EAction.getMainWindow();
-    appWin.enabled = false;
+    if (appWin.enabled) {
+        appWin.disable();
+    }
 };
 
 ProgressBar.progressEnd = function() {
@@ -116,6 +118,8 @@ ProgressBar.progressEnd = function() {
         }
     }
     var appWin = EAction.getMainWindow();
-    appWin.enabled = true;
+    if (!appWin.enabled) {
+        appWin.enable();
+    }
 };
 

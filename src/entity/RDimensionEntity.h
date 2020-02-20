@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -68,6 +68,11 @@ public:
     static RPropertyTypeId PropertyDimBlockName;
     static RPropertyTypeId PropertyAutoTextPos;
     static RPropertyTypeId PropertyFontName;
+    static RPropertyTypeId PropertyArrow1Flipped;
+    static RPropertyTypeId PropertyArrow2Flipped;
+
+    static RPropertyTypeId PropertyExtLineFix;
+    static RPropertyTypeId PropertyExtLineFixLength;
     //static RPropertyTypeId PropertyHeight;
     //static RPropertyTypeId PropertyAngle;
     //static RPropertyTypeId PropertyLineSpacingFactor;
@@ -87,11 +92,11 @@ public:
         return RPropertyTypeId::getPropertyTypeIds(typeid(RDimensionEntity));
     }
 
-    bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
+    virtual bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
         RTransaction* transaction=NULL);
-    QPair<QVariant, RPropertyAttributes> getProperty(
+    virtual QPair<QVariant, RPropertyAttributes> getProperty(
             RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
 
     virtual void exportEntity(RExporter& e, bool preview=false, bool forceSelected=false) const;
 
@@ -181,6 +186,33 @@ public:
 
     bool hasDimensionBlockReference() const {
         return getData().hasDimensionBlockReference();
+    }
+
+    bool isArrow1Flipped() const {
+        return getData().isArrow1Flipped();
+    }
+    void setArrow1Flipped(bool on) {
+        getData().setArrow1Flipped(on);
+    }
+    bool isArrow2Flipped() const {
+        return getData().isArrow2Flipped();
+    }
+    void setArrow2Flipped(bool on) {
+        getData().setArrow2Flipped(on);
+    }
+
+    bool isExtLineFix() const {
+        return getData().isExtLineFix();
+    }
+    void setExtLineFix(bool on) {
+        getData().setExtLineFix(on);
+    }
+
+    double getExtLineFixLength() const {
+        return getData().getExtLineFixLength();
+    }
+    void setExtLineFixLength(double v) {
+        getData().setExtLineFixLength(v);
     }
 
     static QSet<QString> getDimensionBlockNames(RDocument* doc);

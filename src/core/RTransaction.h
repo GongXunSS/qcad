@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -214,8 +214,8 @@ public:
     void addAffectedObjects(const QSet<RObject::Id>& objectIds);
     void addAffectedObject(QSharedPointer<RObject> object);
 
-    void deleteObject(RObject::Id objectId);
-    void deleteObject(QSharedPointer<RObject> object);
+    void deleteObject(RObject::Id objectId, bool force = false);
+    void deleteObject(QSharedPointer<RObject> object, bool force = false);
 
     /**
      * \return List of object IDs of objects that are affected by
@@ -286,8 +286,10 @@ protected:
 
     /**
      * List of IDs of all objects that are affected by this transaction.
+     * Needs to be in order (not a set):
      */
     QList<RObject::Id> affectedObjectIds;
+    QSet<RObject::Id> affectedObjectIdsSet;
 
     /**
      * List of IDs of all block references that need to be updated.

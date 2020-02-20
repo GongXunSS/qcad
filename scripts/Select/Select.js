@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,7 @@
  * \brief This module contains ECMAScript implementations of advanced
  * selection tools.
  */
-include("../EAction.js");
+include("scripts/EAction.js");
 
 /**
  * \class Select
@@ -218,7 +218,7 @@ Select.getCadToolBarPanel = function() {
         action.objectName = actionName;
         action.setRequiresDocument(true);
         action.setIcon(Select.includeBasePath + "/Select.svg");
-        action.setStatusTip(qsTr("Show selection tools"));
+        //action.setStatusTip(qsTr("Show selection tools"));
         action.setDefaultShortcut(new QKeySequence("w,s"));
         action.setNoState();
         action.setDefaultCommands(["selectionmenu"]);

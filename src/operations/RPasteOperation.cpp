@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -41,6 +41,10 @@ RTransaction RPasteOperation::apply(RDocument& document, bool preview) {
     // 20151118: allow also entities on locked / invisible layers to be pasted:
     transaction.setAllowAll(true);
 
+    if (offsets.isEmpty()) {
+        offsets.append(RVector(0,0));
+    }
+
     int iMax = offsets.length();
     if (preview && iMax>10) {
         iMax = 10;
@@ -74,7 +78,8 @@ RTransaction RPasteOperation::apply(RDocument& document, bool preview) {
             false,           // toModelSpace (paste to current block, not model space)
             preview,
             attributes,
-            properties
+            properties,
+            blockProperties
         );
     }
 

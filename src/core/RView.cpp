@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -60,10 +60,7 @@ bool RView::setProperty(RPropertyTypeId propertyTypeId,
 
 QPair<QVariant, RPropertyAttributes> RView::getProperty(
         RPropertyTypeId& propertyTypeId, bool humanReadable,
-        bool noAttributes) {
-
-    Q_UNUSED(humanReadable)
-    Q_UNUSED(noAttributes)
+        bool noAttributes, bool showOnRequest) {
 
     if (propertyTypeId == PropertyName) {
         return qMakePair(QVariant(name), RPropertyAttributes());
@@ -78,13 +75,8 @@ QPair<QVariant, RPropertyAttributes> RView::getProperty(
         return qMakePair(QVariant(height), RPropertyAttributes());
     }
 
-    return RObject::getProperty(propertyTypeId, humanReadable, noAttributes);
+    return RObject::getProperty(propertyTypeId, humanReadable, noAttributes, showOnRequest);
 }
-
-bool RView::isSelectedForPropertyEditing() {
-    return false;
-}
-
 
 /**
  * Stream operator for QDebug

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -68,10 +68,20 @@ public:
     static RPropertyTypeId PropertyEndWidthN;
     static RPropertyTypeId PropertyGlobalWidth;
 
+    static RPropertyTypeId PropertyOrientation;
     static RPropertyTypeId PropertyLength;
     static RPropertyTypeId PropertyTotalLength;
     static RPropertyTypeId PropertyArea;
     static RPropertyTypeId PropertyTotalArea;
+
+    static RPropertyTypeId PropertyBaseAngle;
+    static RPropertyTypeId PropertySize1;
+    static RPropertyTypeId PropertySize2;
+
+    static RPropertyTypeId PropertyElevation;
+
+//    static QString TrClockwise;
+//    static QString TrCounterclockwise;
 
 public:
     RPolylineEntity(RDocument* document, const RPolylineData& data);
@@ -90,11 +100,11 @@ public:
 
     void setShape(const RPolyline& l);
 
-    bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
+    virtual bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
         RTransaction* transaction=NULL);
-    QPair<QVariant, RPropertyAttributes> getProperty(
+    virtual QPair<QVariant, RPropertyAttributes> getProperty(
             RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
 
     virtual void exportEntity(RExporter& e, bool preview=false, bool forceSelected=false) const;
 
@@ -162,6 +172,10 @@ public:
         return data.isArcSegmentAt(i);
     }
 
+    bool hasArcSegments() const {
+        return data.hasArcSegments();
+    }
+
     int getClosestSegment(const RVector& point) const {
         return data.getClosestSegment(point);
     }
@@ -186,12 +200,44 @@ public:
         data.setMinimumWidth(w);
     }
 
+    void setGlobalWidth(double w) {
+        data.setGlobalWidth(w);
+    }
+
+    void setStartWidthAt(int i, double w) {
+        data.setStartWidthAt(i, w);
+    }
+
     double getStartWidthAt(int i) const {
         return data.getStartWidthAt(i);
     }
 
+    void setEndWidthAt(int i, double w) {
+        data.setEndWidthAt(i, w);
+    }
+
     double getEndWidthAt(int i) const {
         return data.getEndWidthAt(i);
+    }
+
+    bool hasWidths() const {
+        return data.hasWidths();
+    }
+
+    void setStartWidths(const QList<double>& sw) {
+        data.setStartWidths(sw);
+    }
+
+    QList<double> getStartWidths() const {
+        return data.getStartWidths();
+    }
+
+    void setEndWidths(const QList<double>& ew) {
+        data.setEndWidths(ew);
+    }
+
+    QList<double> getEndWidths() const {
+        return data.getEndWidths();
     }
 
     double getDirection1() const {
@@ -289,6 +335,17 @@ public:
         return data.getPolylineGen();
     }
 
+    void setElevation(double v) {
+        data.setElevation(v);
+    }
+    double getElevation() const {
+        return data.getElevation();
+    }
+
+    bool isFlat() const {
+        return data.isFlat();
+    }
+
     RS::Ending getTrimEnd(const RVector& trimPoint, const RVector& clickPoint) {
         return data.getTrimEnd(trimPoint, clickPoint);
     }
@@ -298,6 +355,24 @@ public:
     }
     bool trimEndPoint(const RVector& trimPoint, const RVector& clickPoint = RVector::invalid, bool extend = false) {
         return data.trimEndPoint(trimPoint, clickPoint, extend);
+    }
+
+    bool trimStartPoint(double trimDist) {
+        return data.trimStartPoint(trimDist);
+    }
+    bool trimEndPoint(double trimDist) {
+        return data.trimEndPoint(trimDist);
+    }
+
+    QList<RPolyline> morph(const RPolyline& target, int steps) const {
+        return data.morph(target, steps);
+    }
+
+    bool contains(const RVector& point, bool borderIsInside=false, double tolerance=RS::PointTolerance) const {
+        return data.contains(point, borderIsInside, tolerance);
+    }
+    bool containsShape(const RShape& shape) const {
+        return data.containsShape(shape);
     }
 
 protected:

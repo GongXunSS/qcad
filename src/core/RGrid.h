@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -72,6 +72,13 @@ public:
     virtual void paintRuler(RRuler& ruler, qreal devicePixelRatio = 1.0) = 0;
 
     virtual QString getInfoText() = 0;
+
+    virtual bool isIsometric() const {
+        return false;
+    }
+    virtual RS::IsoProjectionType getProjection() const {
+        return RS::NoProjection;
+    }
 
     int getViewportNumber() const;
 

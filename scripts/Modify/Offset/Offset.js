@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -64,7 +64,9 @@ Offset.prototype.initState = function() {
 
     switch (this.state) {
     case Offset.State.ChoosingEntity:
-        this.setLeftMouseTip(this.getLeftMouseTip());
+        var tr = this.getLeftMouseTip();
+        this.setLeftMouseTip(tr);
+        this.setCommandPrompt(tr);
         break;
     }
 
@@ -161,10 +163,10 @@ Offset.prototype.getOperation = function(preview) {
         var c = RShape.getErrorCode();
         if (c!==0) {
             if (isCircleShape(this.shape)) {
-                this.error = qsTr("Radius dropped below 0.0 after %1 concentric circle(s).").arg(c-1);
+                this.error = qsTr("Radius dropped below 0.0 after %n concentric circle(s).", "", c-1);
             }
             else if (isArcShape(this.shape)) {
-                this.error = qsTr("Radius dropped below 0.0 after %1 concentric arc(s).").arg(c-1);
+                this.error = qsTr("Radius dropped below 0.0 after %n concentric arc(s).", "", c-1);
             }
         }
     }

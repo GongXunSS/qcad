@@ -66,6 +66,19 @@ xmlns:rs="http://www.ribbonsoft.com">
         isConst="false" />
       </variant>
     </method>
+    <method name="isPixelUnit" cppName="isPixelUnit"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="bool" isPureVirtual="false" />
+    </method>
+    <method name="setPixelUnit" cppName="setPixelUnit"
+    specifier="public" isStatic="false" isVirtual="false"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="bool" typeName="bool" name="on"
+        isConst="false" />
+      </variant>
+    </method>
     <method name="setOrigin" cppName="setOrigin" specifier="public"
     isStatic="false" isVirtual="false" isScriptOverwritable="true">
       <variant returnType="void" isPureVirtual="false">
@@ -116,6 +129,8 @@ xmlns:rs="http://www.ribbonsoft.com">
         hasDefault="true" default="false" isConst="false" />
         <arg type="bool" typeName="bool" name="noAttributes"
         hasDefault="true" default="false" isConst="false" />
+        <arg type="bool" typeName="bool" name="showOnRequest"
+        hasDefault="true" default="false" isConst="false" />
       </variant>
     </method>
     <method name="setProperty" cppName="setProperty"
@@ -131,10 +146,17 @@ xmlns:rs="http://www.ribbonsoft.com">
         isConst="false" />
       </variant>
     </method>
-    <method name="isSelectedForPropertyEditing"
-    cppName="isSelectedForPropertyEditing" specifier="public"
-    isStatic="false" isVirtual="true" isScriptOverwritable="true">
-      <variant returnType="bool" isPureVirtual="false" />
+    <method name="setCustomProperty" cppName="setCustomProperty"
+    specifier="public" isStatic="false" isVirtual="true"
+    isScriptOverwritable="true">
+      <variant returnType="void" isPureVirtual="false">
+        <arg type="QString &amp;" typeName="QString" name="title"
+        isConst="true" />
+        <arg type="QString &amp;" typeName="QString" name="key"
+        isConst="true" />
+        <arg type="QVariant &amp;" typeName="QVariant" name="value"
+        isConst="true" />
+      </variant>
     </method>
     <property name="PropertyCustom" type="RPropertyTypeId"
     isConst="false" isStatic="true" />
@@ -145,6 +167,8 @@ xmlns:rs="http://www.ribbonsoft.com">
     <property name="PropertyName" type="RPropertyTypeId"
     isConst="false" isStatic="true" />
     <property name="PropertyFrozen" type="RPropertyTypeId"
+    isConst="false" isStatic="true" />
+    <property name="PropertyPixelUnit" type="RPropertyTypeId"
     isConst="false" isStatic="true" />
     <property name="PropertyOriginX" type="RPropertyTypeId"
     isConst="false" isStatic="true" />

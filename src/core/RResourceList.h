@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -78,8 +78,11 @@ public:
      * \return Resource with the given name or an invalid resource.
      * The returned resource is loaded first if it isn't already.
      */
-    T* get(const QString& resName, int rec=0) {
-        QString resNameSub = getSubName(resName);
+    T* get(const QString& resName, bool substitute = true) {
+        QString resNameSub = resName;
+        if (substitute) {
+            resNameSub = getSubName(resName);
+        }
 
         // check if resource is available:
         if (!RS::mapContainsCaseInsensitive(resMap, resNameSub)) {

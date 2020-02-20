@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -45,7 +45,6 @@ class RTransaction;
  * \ingroup core
  * \scriptable
  * \sharedPointerSupport
- * \copyable
  */
 class QCADCORE_EXPORT RLinetype: public RObject {
 
@@ -60,6 +59,7 @@ public:
 public:
     RLinetype(RDocument* document=NULL);
     RLinetype(RDocument* document, const RLinetypePattern& pattern);
+    RLinetype(const RLinetype& other);
 
     virtual ~RLinetype();
 
@@ -113,11 +113,9 @@ public:
 
     virtual QPair<QVariant, RPropertyAttributes> getProperty(
             RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
     virtual bool setProperty(RPropertyTypeId propertyTypeId,
             const QVariant& value, RTransaction* transaction=NULL);
-
-    virtual bool isSelectedForPropertyEditing();
 
     RLinetypePattern getPattern() const;
     void setPattern(const RLinetypePattern& p);

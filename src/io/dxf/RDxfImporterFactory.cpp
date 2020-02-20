@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  *
  * This file is part of the QCAD project.
  *
@@ -21,7 +21,7 @@
 
 QStringList RDxfImporterFactory::getFilterStrings() {
     QStringList ret;
-    ret << QObject::tr("DXF Files [dxflib] %1").arg("(*.dxf)");
+    ret << QString("DXF Files [dxflib] (*.dxf)");
     return ret;
 }
 

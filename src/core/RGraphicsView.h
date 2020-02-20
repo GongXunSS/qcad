@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -141,13 +141,14 @@ public:
     void restoreViewport();
     void zoomIn();
     void zoomOut();
-    void zoomIn(const RVector& center);
-    void zoomOut(const RVector& center);
+    void zoomIn(const RVector& center, double factor=1.2);
+    void zoomOut(const RVector& center, double factor=1.2);
     virtual void zoom(const RVector& center, double factor);
     virtual void zoomTo(const RBox& window, int margin = 0);
     void zoomPrevious();
     void autoZoom(int margin = RDEFAULT_MIN1, bool ignoreEmpty=false, bool ignoreLineweight=false);
-    bool zoomToSelection();
+    bool zoomToSelection(int margin = RDEFAULT_MIN1);
+    bool zoomToEntities(const QSet<REntity::Id>& ids, int margin = RDEFAULT_MIN1);
 
     virtual void centerToPoint(const RVector& point);
     virtual void centerToBox(const RBox& box);
@@ -253,6 +254,11 @@ public:
     int getMargin();
     void setMargin(int m);
 
+    void setExporting(bool on);
+    bool isExporting() const;
+
+    bool isPrintingOrExporting() const;
+
     void setPrinting(bool on);
     bool isPrinting() const;
     void setPrintPreview(bool on);
@@ -264,6 +270,9 @@ public:
 
     void setHairlineMode(bool on);
     bool getHairlineMode();
+
+    void setHairlineMinimumMode(bool on);
+    bool getHairlineMinimumMode();
 
     QList<RTextLabel> getTextLabels();
     void clearTextLabels();
@@ -324,12 +333,14 @@ public:
     }
 
 protected:
+    bool exporting;
     bool printing;
     bool printPreview;
     RVector printPointSize;
 
     ColorMode colorMode;
     bool hairlineMode;
+    bool hairlineMinimumMode;
 
     /**
      * The scene this view is attached to.

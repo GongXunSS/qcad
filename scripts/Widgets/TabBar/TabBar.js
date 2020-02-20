@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -89,14 +89,14 @@ TabBar.initTabBar = function() {
             button.styleSheet = "border:0px";
 
             var fileNewAction = RGuiAction.getByScriptFile("scripts/File/NewFile/NewFile.js");
-            //action.icon = new QIcon("scripts/Widgets/TabBar/AddTab.svg");
-            //button.icon = new QIcon("scripts/Widgets/TabBar/AddTab.svg");
+            //action.icon = new QIcon(autoPath("scripts/Widgets/TabBar/AddTab.svg"));
+            //button.icon = new QIcon(autoPath("scripts/Widgets/TabBar/AddTab.svg"));
 
             var action = new RGuiAction(fileNewAction.text, RMainWindowQt.getMainWindow());
             action.setProperty("Configurable", false);
             action.setRequiresDocument(false);
             action.setScriptFile(fileNewAction.getScriptFile(), true);
-            action.setIcon("scripts/Widgets/TabBar/AddTab.svg");
+            action.setIcon(autoPath("scripts/Widgets/TabBar/AddTab.svg"));
             action.setNoState();
 
             button.setDefaultAction(action);

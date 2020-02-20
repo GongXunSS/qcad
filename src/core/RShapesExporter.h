@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  *
  * This file is part of the QCAD project.
  *
@@ -39,8 +39,8 @@ public:
         return exporter.getLineTypePatternScale(p);
     }
 
-    virtual void exportPainterPaths(const QList<RPainterPath>& paths) {
-        exporter.exportPainterPaths(paths);
+    virtual void exportPainterPaths(const QList<RPainterPath>& paths, double z = 0.0) {
+        exporter.exportPainterPaths(paths, z);
     }
 
     virtual void exportPainterPaths(const QList<RPainterPath>& paths, double angle, const RVector& pos);

@@ -56,7 +56,7 @@
         clone
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
-        to2D
+        setZ
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getVectorProperties
@@ -84,6 +84,9 @@
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getPointsWithDistanceToEnd
+        (QScriptContext* context, QScriptEngine* engine) 
+        ;static  QScriptValue
+        getPointCloud
         (QScriptContext* context, QScriptEngine* engine) 
         ;static  QScriptValue
         getAngleAt

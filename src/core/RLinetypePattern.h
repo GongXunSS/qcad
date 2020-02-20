@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -43,7 +43,7 @@
  * \copyable
  */
 class QCADCORE_EXPORT RLinetypePattern {
-    Q_DECLARE_TR_FUNCTIONS(RLinetypePattern);
+    Q_DECLARE_TR_FUNCTIONS(RLinetypePattern)
 
     friend class RLinetype;
 
@@ -72,6 +72,8 @@ public:
     void setDescription(const QString& d);
     double getScreenScale() const;
     void setScreenScale(double s);
+    bool getNoOffset() const;
+    void setNoOffset(bool n);
 
     QString getLabel() const;
     bool isMetric() const {
@@ -147,6 +149,7 @@ private:
     QString name;
     QString description;
     double screenScale;
+    bool noOffset;
     mutable QString patternString;
 
     QList<double> pattern;

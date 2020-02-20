@@ -1,6 +1,6 @@
 /**
  * Modifications Copyright (c) 2015 by Robert S.
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -72,7 +72,7 @@ ShapePolygonAFPP.prototype.setState = function(state) {
         }
         this.setCommandPrompt(trCorner2);
         this.setLeftMouseTip(trCorner2);
-        this.setRightMouseTip(qsTr("Done"));
+        this.setRightMouseTip(EAction.trDone);
         break;
     }
 

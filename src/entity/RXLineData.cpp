@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -50,8 +50,9 @@ QList<RRefPoint> RXLineData::getReferencePoints(RS::ProjectionRenderingHint hint
     return ret;
 }
 
-bool RXLineData::moveReferencePoint(const RVector& referencePoint,
-        const RVector& targetPoint) {
+bool RXLineData::moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers) {
+    Q_UNUSED(modifiers)
+
     bool ret = false;
     if (referencePoint.equalsFuzzy(basePoint)) {
         basePoint = targetPoint;

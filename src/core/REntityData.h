@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -87,6 +87,13 @@ public:
         return RS::EntityUnknown;
     }
 
+    /**
+     * \return True if entity is of point nature (point, pixel based block).
+     */
+    virtual bool isPointType() const {
+        return false;
+    }
+
     virtual bool isValid() const {
         return true;
     }
@@ -128,7 +135,10 @@ public:
 
     virtual RBox getBoundingBox(bool ignoreEmpty=false) const;
 
+    void copyAttributesFrom(const REntityData& entityData, bool copyBlockId = true);
+
     virtual void to2D();
+    virtual void setZ(double z);
 
     /**
      * \return List of bounding boxes that contain this entity.
@@ -202,6 +212,7 @@ public:
         return layerId;
     }
 
+    void setLayerName(const QString& layerName);
     QString getLayerName() const;
 
     virtual void setBlockId(RBlock::Id blockId) {
@@ -278,6 +289,7 @@ public:
         return color;
     }
 
+    virtual RColor getColor(const RColor& unresolvedColor, const QStack<REntity *>& blockRefStack) const;
     virtual RColor getColor(bool resolve, const QStack<REntity *>& blockRefStack) const;
 
     virtual RColor getDisplayColor() {
@@ -306,6 +318,7 @@ public:
     virtual QList<RVector> getEndPoints(const RBox& queryBox = RDEFAULT_RBOX) const;
     virtual QList<RVector> getMiddlePoints(const RBox& queryBox = RDEFAULT_RBOX) const;
     virtual QList<RVector> getCenterPoints(const RBox& queryBox = RDEFAULT_RBOX) const;
+    virtual QList<RVector> getArcReferencePoints(const RBox& queryBox = RDEFAULT_RBOX) const;
     virtual QList<RVector> getPointsWithDistanceToEnd(
         double distance, int from = RS::FromAny, const RBox& queryBox = RDEFAULT_RBOX) const;
 
@@ -343,15 +356,23 @@ public:
     virtual bool intersectsWith(const RShape& shape) const;
 
     /**
+     * Called when user clicks a reference point.
+     *
+     * \return True if clicking the reference point had any immediate effect.
+     */
+    virtual bool clickReferencePoint(const RVector& referencePoint) {
+        Q_UNUSED(referencePoint)
+        return false;
+    }
+
+    /**
      * Moves the given reference point to the given target point or does nothing
      * if this entity has no reference point as the given location.
      *
      * \return True if a reference point has been moved successfully,
      *        false otherwise.
      */
-    virtual bool moveReferencePoint(
-        const RVector& referencePoint, const RVector& targetPoint
-    ) = 0;
+    virtual bool moveReferencePoint(const RVector& referencePoint, const RVector& targetPoint, Qt::KeyboardModifiers modifiers = Qt::NoModifier) = 0;
 
     virtual bool move(const RVector& offset);
     virtual bool rotate(double rotation, const RVector& center = RDEFAULT_RVECTOR);

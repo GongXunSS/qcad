@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -50,8 +50,8 @@ RPoint::RPoint(const RVector& position) :
 RPoint::~RPoint() {
 }
 
-void RPoint::to2D() {
-    position.z = 0.0;
+void RPoint::setZ(double z) {
+    position.z = z;
 }
 
 QList<RVector> RPoint::getVectorProperties() const {
@@ -89,6 +89,14 @@ QList<RVector> RPoint::getPointsWithDistanceToEnd(double distance, int from) con
     Q_UNUSED(from)
 
     QList<RVector> ret;
+    return ret;
+}
+
+QList<RVector> RPoint::getPointCloud(double segmentLength) const {
+    Q_UNUSED(segmentLength)
+
+    QList<RVector> ret;
+    ret.append(getPosition());
     return ret;
 }
 

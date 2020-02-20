@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -24,7 +24,7 @@
  * \brief This module contains ECMAScript examples and uncategorized
  * scripts.
  */
-include("../EAction.js");
+include("scripts/EAction.js");
 
 /**
  * \class Misc
@@ -61,8 +61,8 @@ Misc.getCadToolBarPanel = function() {
         action.setScriptFile(Misc.includeBasePath + "/Misc.js");
         action.objectName = actionName;
         action.setRequiresDocument(false);
-        //action.setIcon(Misc.includeBasePath + "/Misc.svg");
-        action.setStatusTip(qsTr("Show misc tools"));
+        action.setIcon(Misc.includeBasePath + "/Misc.svg");
+        //action.setStatusTip(qsTr("Show misc tools"));
         action.setNoState();
         action.setDefaultCommands(["miscmenu"]);
         action.setGroupSortOrder(80);

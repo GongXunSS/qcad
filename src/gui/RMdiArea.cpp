@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -38,6 +38,10 @@ RMdiArea::RMdiArea(QWidget* parent) :
         addTabButton = new QToolButton(this);
         addTabButton->hide();
     }
+
+    if (RSettings::hasDarkGuiBackground()) {
+        setBackground(QBrush(QColor("#1E1E1E")));
+    }
 }
 
 /**
@@ -59,6 +63,13 @@ void RMdiArea::resizeEvent(QResizeEvent* event) {
 
     updateTabBarSize();
     updateAddButtonLocation();
+}
+
+void RMdiArea::keyPressEvent(QKeyEvent* event) {
+    QMdiArea::keyPressEvent(event);
+
+    // make sure arrow key events can be handled in main window:
+    event->ignore();
 }
 
 void RMdiArea::updateTabBarSize() {

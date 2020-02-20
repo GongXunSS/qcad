@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -22,7 +22,7 @@
 
 #include "entity_global.h"
 
-#include "RDimensionEntity.h"
+#include "RDimLinearEntity.h"
 #include "RDimAlignedData.h"
 
 class RDocument;
@@ -35,7 +35,7 @@ class RExporter;
  * \sharedPointerSupport
  * \ingroup entity
  */
-class QCADENTITY_EXPORT RDimAlignedEntity: public RDimensionEntity {
+class QCADENTITY_EXPORT RDimAlignedEntity: public RDimLinearEntity {
 
     Q_DECLARE_TR_FUNCTIONS(RDimAlignedEntity)
 
@@ -66,6 +66,11 @@ public:
     static RPropertyTypeId PropertyDimBlockName;
     static RPropertyTypeId PropertyAutoTextPos;
     static RPropertyTypeId PropertyFontName;
+    static RPropertyTypeId PropertyArrow1Flipped;
+    static RPropertyTypeId PropertyArrow2Flipped;
+
+    static RPropertyTypeId PropertyExtLineFix;
+    static RPropertyTypeId PropertyExtLineFixLength;
 
     static RPropertyTypeId PropertyDimensionLinePosX;
     static RPropertyTypeId PropertyDimensionLinePosY;
@@ -91,11 +96,11 @@ public:
         return new RDimAlignedEntity(*this);
     }
 
-    bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
+    virtual bool setProperty(RPropertyTypeId propertyTypeId, const QVariant& value,
         RTransaction* transaction=NULL);
-    QPair<QVariant, RPropertyAttributes> getProperty(
+    virtual QPair<QVariant, RPropertyAttributes> getProperty(
             RPropertyTypeId& propertyTypeId,
-            bool humanReadable = false, bool noAttributes = false);
+            bool humanReadable = false, bool noAttributes = false, bool showOnRequest = false);
 
     virtual RDimAlignedData& getData() {
         return data;
@@ -123,6 +128,10 @@ public:
 
     RVector getExtensionPoint2() const {
         return data.getExtensionPoint2();
+    }
+
+    double getAngle() const {
+        return data.getAngle();
     }
 
 protected:

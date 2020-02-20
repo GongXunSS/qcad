@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2017 by Andrew Mustun. All rights reserved.
+ * Copyright (c) 2011-2018 by Andrew Mustun. All rights reserved.
  * 
  * This file is part of the QCAD project.
  *
@@ -29,6 +29,7 @@
 #include <QPen>
 #include <QStack>
 #include <QTextLayout>
+#include <QTransform>
 
 #include "REntity.h"
 #include "RImageData.h"
@@ -75,6 +76,11 @@ public:
     RExporter(RDocument& document, RMessageHandler* messageHandler = NULL, RProgressHandler* progressHandler = NULL);
     virtual ~RExporter();
 
+private:
+    void init();
+
+public:
+
     QString getErrorMessage() const;
 
     void setLayerSource(RDocument* ls);
@@ -99,6 +105,7 @@ public:
     virtual QBrush getBrush(const RPainterPath& path);
     virtual QBrush getBrush();
 
+    virtual RColor getColor(const RColor& unresolvedColor);
     virtual RColor getColor(bool resolve);
 
     virtual void setEntityAttributes(bool forceSelected=false);
@@ -129,6 +136,7 @@ public:
     virtual const REntity* getEntity() const;
 
     virtual bool isEntitySelected();
+    virtual bool isPatternContinuous(const RLinetypePattern& p);
 
     virtual void startExport();
     virtual void endExport();
@@ -140,12 +148,14 @@ public:
     virtual void exportIntListWithName(const QString& dictionaryName, const QString& name, const QString& listName, QList<int64_t>& values);
 
     virtual void exportLayers();
+    virtual void exportLayerStates();
     virtual void exportBlocks();
     virtual void exportViews();
     virtual void exportLinetypes();
 
     virtual void exportLayer(RLayer& /*layer*/) {}
     virtual void exportLayer(RLayer::Id layerId);
+    virtual void exportLayerState(RLayerState& /*layerState*/) {}
     virtual void exportBlock(RBlock& /*block*/) {}
     virtual void exportBlock(RBlock::Id blockId);
     virtual void exportView(RView& /*view*/) {}
@@ -222,9 +232,9 @@ public:
     /**
      * \nonscriptable
      */
-    virtual void exportPainterPathSource(const RPainterPathSource& pathSource);
+    virtual void exportPainterPathSource(const RPainterPathSource& pathSource, double z = 0.0);
 
-    virtual void exportPainterPaths(const QList<RPainterPath>& paths);
+    virtual void exportPainterPaths(const QList<RPainterPath>& paths, double z = 0.0);
     virtual void exportPainterPaths(const QList<RPainterPath>& paths, double angle, const RVector& pos);
 
     virtual void exportBoundingBoxPaths(const QList<RPainterPath>& paths);
@@ -232,6 +242,24 @@ public:
     virtual void exportImage(const RImageData& image, bool forceSelected = false);
     virtual QList<RPainterPath> exportText(const RTextBasedData& text, bool forceSelected = false);
     virtual void exportClipRectangle(const RBox& clipRectangle, bool forceSelected = false);
+    virtual void exportTransform(const QTransform& t);
+    virtual void exportEndTransform();
+
+    virtual void exportTranslation(const RVector& offset);
+    virtual void exportEndTranslation();
+
+    virtual void exportRotation(double angle);
+    virtual void exportEndRotation();
+
+    virtual void exportScale(const RVector& factors);
+    virtual void exportEndScale();
+
+//    virtual void clearTransform() {
+//        transform = QTransform();
+//    }
+//    virtual QTransform getTransform() const {
+//        return transform;
+//    }
 
     virtual void exportThickPolyline(const RPolyline& polyline) {
         RPolyline pl = polyline;
@@ -331,6 +359,8 @@ public:
         return pixelSizeHint;
     }
 
+    virtual double getCurrentPixelSizeHint() const;
+
     void setPixelSizeHint(double v) {
         pixelSizeHint = v;
     }
@@ -351,8 +381,17 @@ public:
         pixelWidth = on;
     }
 
+//    bool getCombineTransforms() const {
+//        return combineTransforms;
+//    }
+
+//    void setCombineTransforms(bool on) {
+//        combineTransforms = on;
+//    }
+
 protected:
     RDocument* document;
+    QTransform transform;
     QPen currentPen;
     RLinetypePattern currentLinetypePattern;
     QBrush currentBrush;
@@ -370,6 +409,9 @@ protected:
     bool pixelUnit;
     bool clipping;
     bool pixelWidth;
+    Qt::PenCapStyle penCapStyle;
+    //bool combineTransforms;
+    QStack<double> blockScales;
 
 private:
     RS::ProjectionRenderingHint projectionRenderingHint;
